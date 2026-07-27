@@ -1,0 +1,203 @@
+import { useState } from "react";
+import { toast } from "sonner";
+import { Clock, ExternalLink, Loader2, Lock } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useMissions, useProfile, useSubmitMission, type Mission } from "@/lib/data";
+
+function PendingState({ status, reason }: { status?: string; reason?: string | null }) {
+  if (status === "rejected") {
+    return (
+      <div className="panel p-8 text-center">
+        <Lock className="mx-auto h-6 w-6 text-destructive" />
+        <h2 className="mt-4 text-lg font-semibold">Compte refusé</h2>
+        <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+          {reason || "Votre compte Reddit ne remplit pas les critères (3 mois, 100 karma, avatar, qualité)."}
+        </p>
+      </div>
+    );
+  }
+  return (
+    <div className="panel p-8 text-center">
+      <Clock className="mx-auto h-6 w-6 text-warning" />
+      <h2 className="mt-4 text-lg font-semibold">Compte en attente de validation</h2>
+      <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+        Nous vérifions votre compte Reddit (3 mois d'ancienneté, 100 de karma, avatar configuré,
+        qualité générale). Les missions apparaîtront ici dès validation.
+      </p>
+    </div>
+  );
+}
+
+export function OpportunityList({ type }: { type: "post" | "comment" }) {
+  const { data: profile, isLoading: loadingProfile } = useProfile();
+  const { data: missions, isLoading } = useMissions(type);
+  const submit = useSubmitMission();
+  const [selected, setSelected] = useState<Mission | null>(null);
+  const [url, setUrl] = useState("");
+
+  if (loadingProfile || isLoading) {
+    return <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />;
+  }
+  if (profile?.status !== "accepted") {
+    return <PendingState status={profile?.status} reason={profile?.rejection_reason} />;
+  }
+  if (!missions?.length) {
+    return (
+      <div className="panel p-8 text-center text-sm text-muted-foreground">
+        Aucune mission disponible pour le moment. Revenez bientôt.
+      </div>
+    );
+  }
+
+  function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!selected) return;
+    const clean = url.trim();
+    if (!/^https?:\/\/(www\.|old\.)?reddit\.com\/.+/i.test(clean)) {
+      toast.error("Entrez un lien Reddit valide.");
+      return;
+    }
+    submit.mutate(
+      { mission: selected, url: clean },
+      {
+        onSuccess: () => {
+          toast.success("Mission soumise. Elle est en attente de validation.");
+          setSelected(null);
+          setUrl("");
+        },
+        onError: (err) => toast.error(err.message),
+      },
+    );
+  }
+
+  return (
+    <>
+      <div className="grid gap-3">
+        {missions.map((m) => (
+          <button
+            key={m.id}
+            onClick={() => {
+              setSelected(m);
+              setUrl("");
+            }}
+            className="panel flex flex-col gap-3 p-5 text-left transition-colors hover:border-primary/50 sm:flex-row sm:items-center sm:justify-between"
+          >
+            <div className="min-w-0">
+              <h3 className="truncate text-base font-semibold">{m.title}</h3>
+              <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                <span>r/{m.subreddit}</span>
+                <span>·</span>
+                <span>{m.estimated_minutes} min</span>
+                <span>·</span>
+                <span>{m.difficulty}</span>
+              </div>
+            </div>
+            <Badge className="w-fit shrink-0 text-sm">{Number(m.payout).toFixed(0)} $</Badge>
+          </button>
+        ))}
+      </div>
+
+      <Dialog open={!!selected} onOpenChange={(o) => !o && setSelected(null)}>
+        <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-lg">
+          {selected ? (
+            <>
+              <DialogHeader>
+                <DialogTitle>{selected.title}</DialogTitle>
+              </DialogHeader>
+
+              <div className="space-y-5 text-sm">
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="secondary">r/{selected.subreddit}</Badge>
+                  <Badge variant="secondary">{selected.estimated_minutes} min</Badge>
+                  <Badge variant="secondary">{selected.difficulty}</Badge>
+                  <Badge>{Number(selected.payout).toFixed(0)} $</Badge>
+                </div>
+
+                {type === "post" ? (
+                  <>
+                    <Field label="Communauté Reddit">
+                      <LinkOut href={selected.community_url || `https://reddit.com/r/${selected.subreddit}`} />
+                    </Field>
+                    <Field label="Titre exact à utiliser">
+                      <pre className="whitespace-pre-wrap font-sans">{selected.post_title}</pre>
+                    </Field>
+                    <Field label="Body complet">
+                      <pre className="whitespace-pre-wrap font-sans">{selected.post_body}</pre>
+                    </Field>
+                    {selected.flair ? (
+                      <Field label="Flair à sélectionner">{selected.flair}</Field>
+                    ) : null}
+                  </>
+                ) : (
+                  <>
+                    <Field label="Post Reddit concerné">
+                      <LinkOut href={selected.target_post_url ?? ""} />
+                    </Field>
+                    <Field label="Commentaire exact à publier">
+                      <pre className="whitespace-pre-wrap font-sans">{selected.comment_text}</pre>
+                    </Field>
+                  </>
+                )}
+
+                {selected.instructions ? (
+                  <Field label="Consignes particulières">
+                    <pre className="whitespace-pre-wrap font-sans">{selected.instructions}</pre>
+                  </Field>
+                ) : null}
+
+                <p className="rounded-lg border border-border bg-background/60 p-3 text-xs text-muted-foreground">
+                  La publication doit rester en ligne au minimum 3 heures et ne pas être supprimée
+                  après paiement.
+                </p>
+
+                <form onSubmit={onSubmit} className="space-y-3">
+                  <label className="text-xs font-medium text-muted-foreground">
+                    {type === "post" ? "Lien vers votre publication Reddit" : "Lien vers votre commentaire"}
+                  </label>
+                  <Input
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                    placeholder="https://reddit.com/r/…"
+                    required
+                    maxLength={500}
+                  />
+                  <Button type="submit" className="w-full" disabled={submit.isPending}>
+                    {submit.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                    Soumettre
+                  </Button>
+                </form>
+              </div>
+            </>
+          ) : null}
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</div>
+      <div className="mt-1.5 rounded-lg border border-border bg-background/50 p-3 text-sm leading-relaxed">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function LinkOut({ href }: { href: string }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center gap-1.5 break-all text-primary hover:underline"
+    >
+      {href} <ExternalLink className="h-3.5 w-3.5 shrink-0" />
+    </a>
+  );
+}
