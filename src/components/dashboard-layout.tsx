@@ -16,10 +16,10 @@ import { useIsAdmin, useProfile } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
 const nav = [
-  { to: "/opportunites/posts", label: "Opportunités Posts", icon: FileText },
-  { to: "/opportunites/commentaires", label: "Opportunités Commentaires", icon: MessageSquare },
-  { to: "/historique", label: "Historique", icon: History },
-  { to: "/profil", label: "Profil", icon: UserIcon },
+  { to: "/opportunities/posts", label: "Post opportunities", icon: FileText },
+  { to: "/opportunities/comments", label: "Comment opportunities", icon: MessageSquare },
+  { to: "/history", label: "My missions", icon: History },
+  { to: "/profile", label: "Profile", icon: UserIcon },
 ] as const;
 
 export function DashboardLayout({
@@ -88,7 +88,7 @@ export function DashboardLayout({
           <div className="truncate text-xs text-muted-foreground">{profile?.email}</div>
           <Button variant="ghost" size="sm" className="w-full justify-start" onClick={signOut}>
             <LogOut className="mr-2 h-4 w-4" />
-            Déconnexion
+            Sign out
           </Button>
         </div>
       </aside>

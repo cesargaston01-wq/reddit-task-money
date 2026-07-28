@@ -6,7 +6,7 @@ import { MissionBrowser } from "@/components/opportunity-list";
 import { useProfile } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/decouvrir")({
+export const Route = createFileRoute("/discover")({
   ssr: false,
   head: () => ({
     meta: [

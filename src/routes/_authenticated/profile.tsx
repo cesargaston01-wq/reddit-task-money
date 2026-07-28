@@ -11,11 +11,11 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useMySubmissions, useProfile } from "@/lib/data";
 
-export const Route = createFileRoute("/_authenticated/profil")({
+export const Route = createFileRoute("/_authenticated/profile")({
   head: () => ({
     meta: [
-      { title: "Profil — KarmaWork" },
-      { name: "description", content: "Votre wallet crypto, votre profil Reddit et vos gains." },
+      { title: "Profile — KarmaWork" },
+      { name: "description", content: "Your crypto wallet, your Reddit profile and your earnings." },
     ],
   }),
   component: ProfilePage,
@@ -39,7 +39,7 @@ function ProfilePage() {
 
   async function save() {
     const clean = wallet.trim();
-    if (clean.length < 10 || clean.length > 120) return toast.error("Adresse wallet invalide.");
+    if (clean.length < 10 || clean.length > 120) return toast.error("Invalid wallet address.");
     setSaving(true);
     const { error } = await supabase
       .from("profiles")
@@ -48,37 +48,37 @@ function ProfilePage() {
     setSaving(false);
     if (error) return toast.error(error.message);
     qc.invalidateQueries({ queryKey: ["profile"] });
-    toast.success("Wallet mis à jour.");
+    toast.success("Wallet updated.");
   }
 
   return (
-    <DashboardLayout title="Profil" description="Vos informations et vos gains.">
+    <DashboardLayout title="Profile" description="Your details and your earnings.">
       {isLoading || !profile ? (
         <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
       ) : (
         <div className="space-y-6">
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <Stat label="Missions réalisées" value={String(done)} />
-            <Stat label="Total gagné" value={`${earned.toFixed(0)} $`} />
-            <Stat label="En attente" value={String(pending)} />
-            <Stat label="Validées" value={String(approved.length)} />
+            <Stat label="Missions completed" value={String(done)} />
+            <Stat label="Total earned" value={`$${earned.toFixed(0)}`} />
+            <Stat label="Pending" value={String(pending)} />
+            <Stat label="Approved" value={String(approved.length)} />
           </div>
 
           <div className="panel space-y-4 p-6">
             <div>
-              <div className="text-xs uppercase tracking-wide text-muted-foreground">Statut du compte</div>
+              <div className="text-xs uppercase tracking-wide text-muted-foreground">Account status</div>
               <div className="mt-2">
                 {profile.status === "accepted" ? (
-                  <Badge className="bg-success text-success-foreground">Accepté</Badge>
+                  <Badge className="bg-success text-success-foreground">Accepted</Badge>
                 ) : profile.status === "rejected" ? (
-                  <Badge variant="destructive">Refusé</Badge>
+                  <Badge variant="destructive">Rejected</Badge>
                 ) : (
-                  <Badge variant="secondary">En attente</Badge>
+                  <Badge variant="secondary">Pending</Badge>
                 )}
               </div>
             </div>
             <div>
-              <div className="text-xs uppercase tracking-wide text-muted-foreground">Profil Reddit</div>
+              <div className="text-xs uppercase tracking-wide text-muted-foreground">Reddit profile</div>
               <a
                 href={profile.reddit_profile_url}
                 target="_blank"
@@ -89,15 +89,15 @@ function ProfilePage() {
               </a>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="wallet">Wallet crypto</Label>
+              <Label htmlFor="wallet">Crypto wallet</Label>
               <div className="flex flex-col gap-2 sm:flex-row">
                 <Input id="wallet" value={wallet} onChange={(e) => setWallet(e.target.value)} maxLength={120} />
                 <Button onClick={save} disabled={saving || wallet === profile.wallet_address}>
-                  Enregistrer
+                  Save
                 </Button>
               </div>
               <p className="text-xs text-muted-foreground">
-                Seul le wallet peut être modifié. Les paiements sont envoyés manuellement en crypto.
+                Only the wallet can be edited. Payments are sent manually in crypto.
               </p>
             </div>
           </div>

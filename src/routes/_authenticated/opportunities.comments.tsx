@@ -2,17 +2,17 @@ import { createFileRoute } from "@tanstack/react-router";
 import { DashboardLayout } from "@/components/dashboard-layout";
 import { OpportunityList } from "@/components/opportunity-list";
 
-export const Route = createFileRoute("/_authenticated/opportunites/commentaires")({
+export const Route = createFileRoute("/_authenticated/opportunities/comments")({
   head: () => ({
     meta: [
-      { title: "Opportunités Commentaires — KarmaWork" },
-      { name: "description", content: "Missions de commentaires Reddit rémunérées 3 $." },
+      { title: "Comment opportunities — KarmaWork" },
+      { name: "description", content: "Paid Reddit comment missions rewarded $3 each." },
     ],
   }),
   component: () => (
     <DashboardLayout
-      title="Opportunités Commentaires"
-      description="Une mission disparaît dès qu'un membre la soumet. 3 $ par commentaire validé."
+      title="Comment opportunities"
+      description="A mission disappears as soon as a member submits it. $3 per approved comment."
     >
       <OpportunityList type="comment" />
     </DashboardLayout>
