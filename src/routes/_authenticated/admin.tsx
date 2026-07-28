@@ -256,35 +256,90 @@ function AdminPage() {
         </TabsContent>
 
         <TabsContent value="users" className="mt-6 grid gap-3">
-          {(profiles ?? []).map((p) => (
-            <div key={p.id} className="panel flex flex-wrap items-center justify-between gap-3 p-4">
-              <div className="min-w-0">
-                <div className="truncate font-medium">{p.full_name || "—"}</div>
-                <div className="truncate text-xs text-muted-foreground">{p.email}</div>
-                <a
-                  href={p.reddit_profile_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block truncate text-xs text-primary hover:underline"
+          <div className="flex flex-wrap items-center gap-2">
+            <Input
+              value={userSearch}
+              onChange={(e) => setUserSearch(e.target.value)}
+              placeholder="Search by name, email or Reddit profile"
+              className="max-w-xs"
+            />
+            <div className="flex gap-1">
+              {(["all", "pending", "accepted", "rejected"] as const).map((f) => (
+                <Button
+                  key={f}
+                  size="sm"
+                  variant={userFilter === f ? "default" : "outline"}
+                  onClick={() => setUserFilter(f)}
                 >
-                  {p.reddit_profile_url}
-                </a>
-                <div className="truncate text-xs text-muted-foreground">Wallet: {p.wallet_address}</div>
-              </div>
-              <div className="flex shrink-0 items-center gap-2">
-                <Badge variant={p.status === "accepted" ? "default" : p.status === "rejected" ? "destructive" : "secondary"}>
-                  {p.status === "accepted" ? "Accepted" : p.status === "rejected" ? "Rejected" : "Pending"}
-                </Badge>
-                <Button size="sm" onClick={() => setAccountStatus(p.id, "accepted")}>
-                  Accept
+                  {f === "all" ? "All" : f.charAt(0).toUpperCase() + f.slice(1)}
                 </Button>
-                <Button size="sm" variant="outline" onClick={() => setAccountStatus(p.id, "rejected")}>
-                  Reject
-                </Button>
-              </div>
+              ))}
             </div>
-          ))}
+            <span className="ml-auto text-xs text-muted-foreground">
+              {visibleProfiles.length} member{visibleProfiles.length > 1 ? "s" : ""}
+            </span>
+          </div>
+
+          {visibleProfiles.map((p) => {
+            const act = activity.get(p.id);
+            return (
+              <div key={p.id} className="panel flex flex-wrap items-center justify-between gap-3 p-4">
+                <div className="min-w-0">
+                  <div className="truncate font-medium">{p.full_name || "—"}</div>
+                  <div className="truncate text-xs text-muted-foreground">{p.email}</div>
+                  <a
+                    href={p.reddit_profile_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block truncate text-xs text-primary hover:underline"
+                  >
+                    {p.reddit_profile_url}
+                  </a>
+                  <div className="truncate text-xs text-muted-foreground">Wallet: {p.wallet_address}</div>
+                  <div className="mt-2 text-xs text-muted-foreground">Joined {fmtDate(p.created_at)}</div>
+                  {act ? (
+                    <div className="text-xs text-muted-foreground">
+                      Last mission {fmtDate(act.last.created_at)} —{" "}
+                      <span className="text-foreground">{act.last.missions?.title ?? "Mission"}</span>{" "}
+                      <span
+                        className={
+                          act.last.status === "approved"
+                            ? "text-success"
+                            : act.last.status === "rejected"
+                              ? "text-destructive"
+                              : ""
+                        }
+                      >
+                        ({act.last.status})
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="text-xs text-muted-foreground">No mission yet</div>
+                  )}
+                  <div className="text-xs text-muted-foreground">
+                    {act?.approved ?? 0} approved · ${(act?.earned ?? 0).toFixed(2)} earned ·{" "}
+                    {act?.total ?? 0} submission{(act?.total ?? 0) > 1 ? "s" : ""}
+                  </div>
+                </div>
+                <div className="flex shrink-0 items-center gap-2">
+                  <Badge variant={p.status === "accepted" ? "default" : p.status === "rejected" ? "destructive" : "secondary"}>
+                    {p.status === "accepted" ? "Accepted" : p.status === "rejected" ? "Rejected" : "Pending"}
+                  </Badge>
+                  <Button size="sm" onClick={() => setAccountStatus(p.id, "accepted")}>
+                    Accept
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => setAccountStatus(p.id, "rejected")}>
+                    Reject
+                  </Button>
+                </div>
+              </div>
+            );
+          })}
+          {!visibleProfiles.length ? (
+            <div className="panel p-8 text-center text-sm text-muted-foreground">No member found.</div>
+          ) : null}
         </TabsContent>
+
       </Tabs>
 
       <Dialog open={!!draft} onOpenChange={(o) => !o && setDraft(null)}>
