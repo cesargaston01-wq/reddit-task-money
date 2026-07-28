@@ -71,8 +71,11 @@ function Landing() {
           <Link to="/" className="font-display text-lg font-bold tracking-tight">
             Karma<span className="text-primary">Work</span>
           </Link>
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" disabled title="Bientôt disponible">
+          <div className="flex items-center gap-1 sm:gap-2">
+            <Button asChild variant="ghost" size="sm">
+              <Link to="/decouvrir">Découvrir les tâches rémunérées</Link>
+            </Button>
+            <Button variant="ghost" size="sm" disabled title="Bientôt disponible" className="hidden sm:inline-flex">
               Poster une annonce
             </Button>
             <Button asChild size="sm">
