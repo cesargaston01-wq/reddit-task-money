@@ -61,6 +61,51 @@ function AdminPage() {
     .filter((s) => s.status === "approved" && !s.paid)
     .reduce((sum, s) => sum + Number(s.amount), 0);
 
+  const fmtDate = (v: string) =>
+    new Date(v).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+
+  const activity = new Map<
+    string,
+    { last: (typeof submissions extends undefined ? never : NonNullable<typeof submissions>)[number]; approved: number; earned: number; total: number }
+  >();
+  for (const s of submissions ?? []) {
+    const cur = activity.get(s.user_id);
+    if (!cur) {
+      activity.set(s.user_id, {
+        last: s,
+        approved: s.status === "approved" ? 1 : 0,
+        earned: s.status === "approved" ? Number(s.amount) : 0,
+        total: 1,
+      });
+    } else {
+      if (new Date(s.created_at) > new Date(cur.last.created_at)) cur.last = s;
+      cur.total += 1;
+      if (s.status === "approved") {
+        cur.approved += 1;
+        cur.earned += Number(s.amount);
+      }
+    }
+  }
+
+  const query = userSearch.trim().toLowerCase();
+  const visibleProfiles = (profiles ?? [])
+    .filter((p) => (userFilter === "all" ? true : p.status === userFilter))
+    .filter((p) =>
+      !query
+        ? true
+        : `${p.full_name} ${p.email} ${p.reddit_profile_url}`.toLowerCase().includes(query),
+    )
+    .sort((a, b) => {
+      const la = activity.get(a.id)?.last.created_at;
+      const lb = activity.get(b.id)?.last.created_at;
+      if (la && lb) return new Date(lb).getTime() - new Date(la).getTime();
+      if (la) return -1;
+      if (lb) return 1;
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
+
+
+
   async function saveMission() {
     if (!draft) return;
     const payload = {
