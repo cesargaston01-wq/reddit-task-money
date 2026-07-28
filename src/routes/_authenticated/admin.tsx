@@ -64,9 +64,10 @@ function AdminPage() {
   const fmtDate = (v: string) =>
     new Date(v).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
 
+  type AdminSubmission = NonNullable<typeof submissions>[number];
   const activity = new Map<
     string,
-    { last: (typeof submissions extends undefined ? never : NonNullable<typeof submissions>)[number]; approved: number; earned: number; total: number }
+    { last: AdminSubmission; approved: number; earned: number; total: number }
   >();
   for (const s of submissions ?? []) {
     const cur = activity.get(s.user_id);
