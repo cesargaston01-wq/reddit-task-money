@@ -139,7 +139,7 @@ export function useSubmitMission() {
   return useMutation({
     mutationFn: async ({ mission, url }: { mission: Mission; url: string }) => {
       const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) throw new Error("Session expirée");
+      if (!userData.user) throw new Error("Session expired");
       const { error } = await supabase.from("submissions").insert({
         mission_id: mission.id,
         user_id: userData.user.id,
@@ -147,7 +147,7 @@ export function useSubmitMission() {
         amount: mission.payout,
       });
       if (error) {
-        if (error.code === "23505") throw new Error("Cette mission vient d'être prise par un autre membre.");
+        if (error.code === "23505") throw new Error("This mission was just taken by another member.");
         throw error;
       }
     },
