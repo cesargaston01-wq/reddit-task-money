@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
+import { Link } from "@tanstack/react-router";
 import { Clock, ExternalLink, Loader2, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,16 +34,32 @@ function PendingState({ status, reason }: { status?: string; reason?: string | n
 
 export function OpportunityList({ type }: { type: "post" | "comment" }) {
   const { data: profile, isLoading: loadingProfile } = useProfile();
+
+  if (loadingProfile) {
+    return <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />;
+  }
+  if (profile?.status !== "accepted") {
+    return <PendingState status={profile?.status} reason={profile?.rejection_reason} />;
+  }
+  return <MissionBrowser type={type} canSubmit />;
+}
+
+export function MissionBrowser({
+  type,
+  canSubmit,
+  lockedMessage,
+}: {
+  type: "post" | "comment";
+  canSubmit: boolean;
+  lockedMessage?: string;
+}) {
   const { data: missions, isLoading } = useMissions(type);
   const submit = useSubmitMission();
   const [selected, setSelected] = useState<Mission | null>(null);
   const [url, setUrl] = useState("");
 
-  if (loadingProfile || isLoading) {
+  if (isLoading) {
     return <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />;
-  }
-  if (profile?.status !== "accepted") {
-    return <PendingState status={profile?.status} reason={profile?.rejection_reason} />;
   }
   if (!missions?.length) {
     return (
@@ -153,22 +170,34 @@ export function OpportunityList({ type }: { type: "post" | "comment" }) {
                   après paiement.
                 </p>
 
-                <form onSubmit={onSubmit} className="space-y-3">
-                  <label className="text-xs font-medium text-muted-foreground">
-                    {type === "post" ? "Lien vers votre publication Reddit" : "Lien vers votre commentaire"}
-                  </label>
-                  <Input
-                    value={url}
-                    onChange={(e) => setUrl(e.target.value)}
-                    placeholder="https://reddit.com/r/…"
-                    required
-                    maxLength={500}
-                  />
-                  <Button type="submit" className="w-full" disabled={submit.isPending}>
-                    {submit.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                    Soumettre
-                  </Button>
-                </form>
+                {canSubmit ? (
+                  <form onSubmit={onSubmit} className="space-y-3">
+                    <label className="text-xs font-medium text-muted-foreground">
+                      {type === "post" ? "Lien vers votre publication Reddit" : "Lien vers votre commentaire"}
+                    </label>
+                    <Input
+                      value={url}
+                      onChange={(e) => setUrl(e.target.value)}
+                      placeholder="https://reddit.com/r/…"
+                      required
+                      maxLength={500}
+                    />
+                    <Button type="submit" className="w-full" disabled={submit.isPending}>
+                      {submit.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                      Soumettre
+                    </Button>
+                  </form>
+                ) : (
+                  <div className="space-y-3">
+                    <p className="text-xs text-muted-foreground">
+                      {lockedMessage ??
+                        "Lecture seule : seules les personnes avec un compte vérifié peuvent prendre cette mission."}
+                    </p>
+                    <Button asChild className="w-full">
+                      <Link to="/auth">Connecte-toi avec un compte vérifié pour postuler</Link>
+                    </Button>
+                  </div>
+                )}
               </div>
             </>
           ) : null}
