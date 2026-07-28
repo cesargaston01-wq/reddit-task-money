@@ -24,7 +24,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
       { title: "Administration — KarmaWork" },
-      { name: "description", content: "Gestion des missions, soumissions et comptes Reddit." },
+      { name: "description", content: "Manage missions, submissions and Reddit accounts." },
     ],
   }),
   component: AdminPage,
@@ -50,7 +50,7 @@ function AdminPage() {
   if (!isAdmin) {
     return (
       <DashboardLayout title="Administration">
-        <div className="panel p-8 text-center text-sm text-muted-foreground">Accès réservé.</div>
+        <div className="panel p-8 text-center text-sm text-muted-foreground">Access restricted.</div>
       </DashboardLayout>
     );
   }
@@ -68,7 +68,7 @@ function AdminPage() {
       community_url: draft.community_url ?? "",
       payout: Number(draft.payout ?? (draft.type === "post" ? 5 : 3)),
       estimated_minutes: Number(draft.estimated_minutes ?? 10),
-      difficulty: draft.difficulty ?? "Facile",
+      difficulty: draft.difficulty ?? "Easy",
       post_title: draft.post_title ?? null,
       post_body: draft.post_body ?? null,
       flair: draft.flair ?? null,
@@ -77,13 +77,13 @@ function AdminPage() {
       comment_text: draft.comment_text ?? null,
       is_active: draft.is_active ?? true,
     };
-    if (!payload.title || !payload.subreddit) return toast.error("Titre et communauté requis.");
+    if (!payload.title || !payload.subreddit) return toast.error("Title and community are required.");
 
     const { error } = draft.id
       ? await supabase.from("missions").update(payload).eq("id", draft.id)
       : await supabase.from("missions").insert(payload);
     if (error) return toast.error(error.message);
-    toast.success("Mission enregistrée.");
+    toast.success("Mission saved.");
     setDraft(null);
     qc.invalidateQueries({ queryKey: ["missions"] });
   }
@@ -92,7 +92,7 @@ function AdminPage() {
     const { error } = await supabase.from("missions").delete().eq("id", id);
     if (error) return toast.error(error.message);
     qc.invalidateQueries({ queryKey: ["missions"] });
-    toast.success("Mission supprimée.");
+    toast.success("Mission deleted.");
   }
 
   async function reviewSubmission(id: string, status: "approved" | "rejected") {
@@ -103,7 +103,7 @@ function AdminPage() {
     if (error) return toast.error(error.message);
     qc.invalidateQueries({ queryKey: ["submissions"] });
     qc.invalidateQueries({ queryKey: ["missions"] });
-    toast.success(status === "approved" ? "Soumission validée." : "Soumission refusée.");
+    toast.success(status === "approved" ? "Submission approved." : "Submission rejected.");
   }
 
   async function markPaid(id: string) {
@@ -116,25 +116,25 @@ function AdminPage() {
     const { error } = await supabase.from("profiles").update({ status }).eq("id", id);
     if (error) return toast.error(error.message);
     qc.invalidateQueries({ queryKey: ["profiles"] });
-    toast.success("Statut mis à jour.");
+    toast.success("Status updated.");
   }
 
   return (
-    <DashboardLayout title="Administration" description={`Montant total à payer : ${toPay.toFixed(0)} $`}>
+    <DashboardLayout title="Administration" description={`Total amount to pay: $${toPay.toFixed(0)}`}>
       <Tabs defaultValue="missions">
         <TabsList>
           <TabsTrigger value="missions">Missions</TabsTrigger>
-          <TabsTrigger value="submissions">Soumissions</TabsTrigger>
-          <TabsTrigger value="users">Utilisateurs</TabsTrigger>
+          <TabsTrigger value="submissions">Submissions</TabsTrigger>
+          <TabsTrigger value="users">Users</TabsTrigger>
         </TabsList>
 
         <TabsContent value="missions" className="mt-6 space-y-4">
           <div className="flex flex-wrap gap-2">
             <Button size="sm" onClick={() => setDraft({ type: "post", payout: 5 })}>
-              <Plus className="mr-1 h-4 w-4" /> Mission Post
+              <Plus className="mr-1 h-4 w-4" /> Post mission
             </Button>
             <Button size="sm" variant="outline" onClick={() => setDraft({ type: "comment", payout: 3 })}>
-              <Plus className="mr-1 h-4 w-4" /> Mission Commentaire
+              <Plus className="mr-1 h-4 w-4" /> Comment mission
             </Button>
           </div>
           <div className="grid gap-3">
@@ -143,8 +143,8 @@ function AdminPage() {
                 <div className="min-w-0">
                   <div className="truncate font-medium">{m.title}</div>
                   <div className="text-xs text-muted-foreground">
-                    {m.type === "post" ? "Post" : "Commentaire"} · r/{m.subreddit} ·{" "}
-                    {Number(m.payout).toFixed(0)} $ {m.is_active ? "" : "· inactive"}
+                    {m.type === "post" ? "Post" : "Comment"} · r/{m.subreddit} · $
+                    {Number(m.payout).toFixed(0)} {m.is_active ? "" : "· inactive"}
                   </div>
                 </div>
                 <div className="flex shrink-0 gap-1">
@@ -167,11 +167,11 @@ function AdminPage() {
                 <div className="min-w-0">
                   <div className="truncate font-medium">{s.missions?.title ?? "Mission"}</div>
                   <div className="text-xs text-muted-foreground">
-                    {s.profile?.full_name} · {s.profile?.email} · {Number(s.amount).toFixed(0)} $
+                    {s.profile?.full_name} · {s.profile?.email} · ${Number(s.amount).toFixed(0)}
                   </div>
                 </div>
                 <Badge variant={s.status === "pending" ? "secondary" : s.status === "approved" ? "default" : "destructive"}>
-                  {s.status === "pending" ? "En attente" : s.status === "approved" ? "Validé" : "Refusé"}
+                  {s.status === "pending" ? "Pending" : s.status === "approved" ? "Approved" : "Rejected"}
                 </Badge>
               </div>
               <a
@@ -186,24 +186,24 @@ function AdminPage() {
                 {s.status === "pending" ? (
                   <>
                     <Button size="sm" onClick={() => reviewSubmission(s.id, "approved")}>
-                      Valider
+                      Approve
                     </Button>
                     <Button size="sm" variant="outline" onClick={() => reviewSubmission(s.id, "rejected")}>
-                      Refuser
+                      Reject
                     </Button>
                   </>
                 ) : null}
                 {s.status === "approved" && !s.paid ? (
                   <Button size="sm" variant="outline" onClick={() => markPaid(s.id)}>
-                    Marquer payé
+                    Mark as paid
                   </Button>
                 ) : null}
-                {s.paid ? <span className="text-xs text-success">Payé</span> : null}
+                {s.paid ? <span className="text-xs text-success">Paid</span> : null}
               </div>
             </div>
           ))}
           {!submissions?.length ? (
-            <div className="panel p-8 text-center text-sm text-muted-foreground">Aucune soumission.</div>
+            <div className="panel p-8 text-center text-sm text-muted-foreground">No submission yet.</div>
           ) : null}
         </TabsContent>
 
@@ -221,17 +221,17 @@ function AdminPage() {
                 >
                   {p.reddit_profile_url}
                 </a>
-                <div className="truncate text-xs text-muted-foreground">Wallet : {p.wallet_address}</div>
+                <div className="truncate text-xs text-muted-foreground">Wallet: {p.wallet_address}</div>
               </div>
               <div className="flex shrink-0 items-center gap-2">
                 <Badge variant={p.status === "accepted" ? "default" : p.status === "rejected" ? "destructive" : "secondary"}>
-                  {p.status === "accepted" ? "Accepté" : p.status === "rejected" ? "Refusé" : "En attente"}
+                  {p.status === "accepted" ? "Accepted" : p.status === "rejected" ? "Rejected" : "Pending"}
                 </Badge>
                 <Button size="sm" onClick={() => setAccountStatus(p.id, "accepted")}>
-                  Accepter
+                  Accept
                 </Button>
                 <Button size="sm" variant="outline" onClick={() => setAccountStatus(p.id, "rejected")}>
-                  Refuser
+                  Reject
                 </Button>
               </div>
             </div>
@@ -243,35 +243,35 @@ function AdminPage() {
         <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>
-              {draft?.id ? "Modifier la mission" : draft?.type === "post" ? "Nouvelle mission Post" : "Nouvelle mission Commentaire"}
+              {draft?.id ? "Edit mission" : draft?.type === "post" ? "New post mission" : "New comment mission"}
             </DialogTitle>
           </DialogHeader>
           {draft ? (
             <div className="space-y-4">
-              <FieldInput label="Nom de la mission" value={draft.title ?? ""} onChange={(v) => setDraft({ ...draft, title: v })} />
-              <FieldInput label="Communauté (sans r/)" value={draft.subreddit ?? ""} onChange={(v) => setDraft({ ...draft, subreddit: v })} />
-              <FieldInput label="Lien de la communauté" value={draft.community_url ?? ""} onChange={(v) => setDraft({ ...draft, community_url: v })} />
+              <FieldInput label="Mission name" value={draft.title ?? ""} onChange={(v) => setDraft({ ...draft, title: v })} />
+              <FieldInput label="Community (without r/)" value={draft.subreddit ?? ""} onChange={(v) => setDraft({ ...draft, subreddit: v })} />
+              <FieldInput label="Community link" value={draft.community_url ?? ""} onChange={(v) => setDraft({ ...draft, community_url: v })} />
               <div className="grid grid-cols-3 gap-3">
-                <FieldInput label="Paiement ($)" type="number" value={String(draft.payout ?? "")} onChange={(v) => setDraft({ ...draft, payout: Number(v) })} />
-                <FieldInput label="Temps (min)" type="number" value={String(draft.estimated_minutes ?? 10)} onChange={(v) => setDraft({ ...draft, estimated_minutes: Number(v) })} />
-                <FieldInput label="Difficulté" value={draft.difficulty ?? "Facile"} onChange={(v) => setDraft({ ...draft, difficulty: v })} />
+                <FieldInput label="Payout ($)" type="number" value={String(draft.payout ?? "")} onChange={(v) => setDraft({ ...draft, payout: Number(v) })} />
+                <FieldInput label="Time (min)" type="number" value={String(draft.estimated_minutes ?? 10)} onChange={(v) => setDraft({ ...draft, estimated_minutes: Number(v) })} />
+                <FieldInput label="Difficulty" value={draft.difficulty ?? "Easy"} onChange={(v) => setDraft({ ...draft, difficulty: v })} />
               </div>
 
               {draft.type === "post" ? (
                 <>
-                  <FieldInput label="Titre exact du post" value={draft.post_title ?? ""} onChange={(v) => setDraft({ ...draft, post_title: v })} />
-                  <FieldArea label="Body complet" value={draft.post_body ?? ""} onChange={(v) => setDraft({ ...draft, post_body: v })} />
+                  <FieldInput label="Exact post title" value={draft.post_title ?? ""} onChange={(v) => setDraft({ ...draft, post_title: v })} />
+                  <FieldArea label="Full body" value={draft.post_body ?? ""} onChange={(v) => setDraft({ ...draft, post_body: v })} />
                   <FieldInput label="Flair" value={draft.flair ?? ""} onChange={(v) => setDraft({ ...draft, flair: v })} />
                 </>
               ) : (
                 <>
-                  <FieldInput label="Lien du post Reddit" value={draft.target_post_url ?? ""} onChange={(v) => setDraft({ ...draft, target_post_url: v })} />
-                  <FieldArea label="Commentaire exact" value={draft.comment_text ?? ""} onChange={(v) => setDraft({ ...draft, comment_text: v })} />
+                  <FieldInput label="Reddit post link" value={draft.target_post_url ?? ""} onChange={(v) => setDraft({ ...draft, target_post_url: v })} />
+                  <FieldArea label="Exact comment" value={draft.comment_text ?? ""} onChange={(v) => setDraft({ ...draft, comment_text: v })} />
                 </>
               )}
-              <FieldArea label="Consignes particulières" value={draft.instructions ?? ""} onChange={(v) => setDraft({ ...draft, instructions: v })} />
+              <FieldArea label="Specific instructions" value={draft.instructions ?? ""} onChange={(v) => setDraft({ ...draft, instructions: v })} />
               <Button className="w-full" onClick={saveMission}>
-                Enregistrer
+                Save
               </Button>
             </div>
           ) : null}

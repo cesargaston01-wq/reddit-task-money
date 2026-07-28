@@ -10,24 +10,24 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as DecouvrirRouteImport } from './routes/decouvrir'
+import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedProfilRouteImport } from './routes/_authenticated/profil'
-import { Route as AuthenticatedHistoriqueRouteImport } from './routes/_authenticated/historique'
+import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
+import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
-import { Route as AuthenticatedOpportunitesPostsRouteImport } from './routes/_authenticated/opportunites.posts'
-import { Route as AuthenticatedOpportunitesCommentairesRouteImport } from './routes/_authenticated/opportunites.commentaires'
+import { Route as AuthenticatedOpportunitiesPostsRouteImport } from './routes/_authenticated/opportunities.posts'
+import { Route as AuthenticatedOpportunitiesCommentsRouteImport } from './routes/_authenticated/opportunities.comments'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DecouvrirRoute = DecouvrirRouteImport.update({
-  id: '/decouvrir',
-  path: '/decouvrir',
+const DiscoverRoute = DiscoverRouteImport.update({
+  id: '/discover',
+  path: '/discover',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -44,14 +44,14 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedProfilRoute = AuthenticatedProfilRouteImport.update({
-  id: '/profil',
-  path: '/profil',
+const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedHistoriqueRoute = AuthenticatedHistoriqueRouteImport.update({
-  id: '/historique',
-  path: '/historique',
+const AuthenticatedHistoryRoute = AuthenticatedHistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
@@ -59,96 +59,96 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedOpportunitesPostsRoute =
-  AuthenticatedOpportunitesPostsRouteImport.update({
-    id: '/opportunites/posts',
-    path: '/opportunites/posts',
+const AuthenticatedOpportunitiesPostsRoute =
+  AuthenticatedOpportunitiesPostsRouteImport.update({
+    id: '/opportunities/posts',
+    path: '/opportunities/posts',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AuthenticatedOpportunitesCommentairesRoute =
-  AuthenticatedOpportunitesCommentairesRouteImport.update({
-    id: '/opportunites/commentaires',
-    path: '/opportunites/commentaires',
+const AuthenticatedOpportunitiesCommentsRoute =
+  AuthenticatedOpportunitiesCommentsRouteImport.update({
+    id: '/opportunities/comments',
+    path: '/opportunities/comments',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/decouvrir': typeof DecouvrirRoute
+  '/discover': typeof DiscoverRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRoute
-  '/historique': typeof AuthenticatedHistoriqueRoute
-  '/profil': typeof AuthenticatedProfilRoute
-  '/opportunites/commentaires': typeof AuthenticatedOpportunitesCommentairesRoute
-  '/opportunites/posts': typeof AuthenticatedOpportunitesPostsRoute
+  '/history': typeof AuthenticatedHistoryRoute
+  '/profile': typeof AuthenticatedProfileRoute
+  '/opportunities/comments': typeof AuthenticatedOpportunitiesCommentsRoute
+  '/opportunities/posts': typeof AuthenticatedOpportunitiesPostsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/decouvrir': typeof DecouvrirRoute
+  '/discover': typeof DiscoverRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRoute
-  '/historique': typeof AuthenticatedHistoriqueRoute
-  '/profil': typeof AuthenticatedProfilRoute
-  '/opportunites/commentaires': typeof AuthenticatedOpportunitesCommentairesRoute
-  '/opportunites/posts': typeof AuthenticatedOpportunitesPostsRoute
+  '/history': typeof AuthenticatedHistoryRoute
+  '/profile': typeof AuthenticatedProfileRoute
+  '/opportunities/comments': typeof AuthenticatedOpportunitiesCommentsRoute
+  '/opportunities/posts': typeof AuthenticatedOpportunitiesPostsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
-  '/decouvrir': typeof DecouvrirRoute
+  '/discover': typeof DiscoverRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
-  '/_authenticated/historique': typeof AuthenticatedHistoriqueRoute
-  '/_authenticated/profil': typeof AuthenticatedProfilRoute
-  '/_authenticated/opportunites/commentaires': typeof AuthenticatedOpportunitesCommentairesRoute
-  '/_authenticated/opportunites/posts': typeof AuthenticatedOpportunitesPostsRoute
+  '/_authenticated/history': typeof AuthenticatedHistoryRoute
+  '/_authenticated/profile': typeof AuthenticatedProfileRoute
+  '/_authenticated/opportunities/comments': typeof AuthenticatedOpportunitiesCommentsRoute
+  '/_authenticated/opportunities/posts': typeof AuthenticatedOpportunitiesPostsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/auth'
-    | '/decouvrir'
+    | '/discover'
     | '/sitemap.xml'
     | '/admin'
-    | '/historique'
-    | '/profil'
-    | '/opportunites/commentaires'
-    | '/opportunites/posts'
+    | '/history'
+    | '/profile'
+    | '/opportunities/comments'
+    | '/opportunities/posts'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
-    | '/decouvrir'
+    | '/discover'
     | '/sitemap.xml'
     | '/admin'
-    | '/historique'
-    | '/profil'
-    | '/opportunites/commentaires'
-    | '/opportunites/posts'
+    | '/history'
+    | '/profile'
+    | '/opportunities/comments'
+    | '/opportunities/posts'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
-    | '/decouvrir'
+    | '/discover'
     | '/sitemap.xml'
     | '/_authenticated/admin'
-    | '/_authenticated/historique'
-    | '/_authenticated/profil'
-    | '/_authenticated/opportunites/commentaires'
-    | '/_authenticated/opportunites/posts'
+    | '/_authenticated/history'
+    | '/_authenticated/profile'
+    | '/_authenticated/opportunities/comments'
+    | '/_authenticated/opportunities/posts'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
-  DecouvrirRoute: typeof DecouvrirRoute
+  DiscoverRoute: typeof DiscoverRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
 
@@ -161,11 +161,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/decouvrir': {
-      id: '/decouvrir'
-      path: '/decouvrir'
-      fullPath: '/decouvrir'
-      preLoaderRoute: typeof DecouvrirRouteImport
+    '/discover': {
+      id: '/discover'
+      path: '/discover'
+      fullPath: '/discover'
+      preLoaderRoute: typeof DiscoverRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -189,18 +189,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/profil': {
-      id: '/_authenticated/profil'
-      path: '/profil'
-      fullPath: '/profil'
-      preLoaderRoute: typeof AuthenticatedProfilRouteImport
+    '/_authenticated/profile': {
+      id: '/_authenticated/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthenticatedProfileRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/historique': {
-      id: '/_authenticated/historique'
-      path: '/historique'
-      fullPath: '/historique'
-      preLoaderRoute: typeof AuthenticatedHistoriqueRouteImport
+    '/_authenticated/history': {
+      id: '/_authenticated/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof AuthenticatedHistoryRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/admin': {
@@ -210,18 +210,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/opportunites/posts': {
-      id: '/_authenticated/opportunites/posts'
-      path: '/opportunites/posts'
-      fullPath: '/opportunites/posts'
-      preLoaderRoute: typeof AuthenticatedOpportunitesPostsRouteImport
+    '/_authenticated/opportunities/posts': {
+      id: '/_authenticated/opportunities/posts'
+      path: '/opportunities/posts'
+      fullPath: '/opportunities/posts'
+      preLoaderRoute: typeof AuthenticatedOpportunitiesPostsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/opportunites/commentaires': {
-      id: '/_authenticated/opportunites/commentaires'
-      path: '/opportunites/commentaires'
-      fullPath: '/opportunites/commentaires'
-      preLoaderRoute: typeof AuthenticatedOpportunitesCommentairesRouteImport
+    '/_authenticated/opportunities/comments': {
+      id: '/_authenticated/opportunities/comments'
+      path: '/opportunities/comments'
+      fullPath: '/opportunities/comments'
+      preLoaderRoute: typeof AuthenticatedOpportunitiesCommentsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
   }
@@ -229,19 +229,19 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
-  AuthenticatedHistoriqueRoute: typeof AuthenticatedHistoriqueRoute
-  AuthenticatedProfilRoute: typeof AuthenticatedProfilRoute
-  AuthenticatedOpportunitesCommentairesRoute: typeof AuthenticatedOpportunitesCommentairesRoute
-  AuthenticatedOpportunitesPostsRoute: typeof AuthenticatedOpportunitesPostsRoute
+  AuthenticatedHistoryRoute: typeof AuthenticatedHistoryRoute
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+  AuthenticatedOpportunitiesCommentsRoute: typeof AuthenticatedOpportunitiesCommentsRoute
+  AuthenticatedOpportunitiesPostsRoute: typeof AuthenticatedOpportunitiesPostsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
-  AuthenticatedHistoriqueRoute: AuthenticatedHistoriqueRoute,
-  AuthenticatedProfilRoute: AuthenticatedProfilRoute,
-  AuthenticatedOpportunitesCommentairesRoute:
-    AuthenticatedOpportunitesCommentairesRoute,
-  AuthenticatedOpportunitesPostsRoute: AuthenticatedOpportunitesPostsRoute,
+  AuthenticatedHistoryRoute: AuthenticatedHistoryRoute,
+  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
+  AuthenticatedOpportunitiesCommentsRoute:
+    AuthenticatedOpportunitiesCommentsRoute,
+  AuthenticatedOpportunitiesPostsRoute: AuthenticatedOpportunitiesPostsRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -251,7 +251,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
-  DecouvrirRoute: DecouvrirRoute,
+  DiscoverRoute: DiscoverRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport

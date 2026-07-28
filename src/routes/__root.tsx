@@ -79,10 +79,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "KarmaWork — Missions Reddit rémunérées" },
+      { title: "KarmaWork — Paid Reddit missions" },
       {
         name: "description",
-        content: "Monétisez votre compte Reddit : missions de posts et de commentaires payées en crypto.",
+        content: "Monetize your Reddit account: post and comment missions paid in crypto.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -109,7 +109,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="fr">
+    <html lang="en">
       <head>
         <HeadContent />
       </head>

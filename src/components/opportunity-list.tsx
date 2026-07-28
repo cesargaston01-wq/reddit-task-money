@@ -13,9 +13,10 @@ function PendingState({ status, reason }: { status?: string; reason?: string | n
     return (
       <div className="panel p-8 text-center">
         <Lock className="mx-auto h-6 w-6 text-destructive" />
-        <h2 className="mt-4 text-lg font-semibold">Compte refusé</h2>
+        <h2 className="mt-4 text-lg font-semibold">Account rejected</h2>
         <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-          {reason || "Votre compte Reddit ne remplit pas les critères (3 mois, 100 karma, avatar, qualité)."}
+          {reason ||
+            "Your Reddit account doesn't meet the requirements (3 months old, 100+ karma, profile picture set up, overall quality)."}
         </p>
       </div>
     );
@@ -23,10 +24,10 @@ function PendingState({ status, reason }: { status?: string; reason?: string | n
   return (
     <div className="panel p-8 text-center">
       <Clock className="mx-auto h-6 w-6 text-warning" />
-      <h2 className="mt-4 text-lg font-semibold">Compte en attente de validation</h2>
+      <h2 className="mt-4 text-lg font-semibold">Account pending review</h2>
       <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-        Nous vérifions votre compte Reddit (3 mois d'ancienneté, 100 de karma, avatar configuré,
-        qualité générale). Les missions apparaîtront ici dès validation.
+        We're reviewing your Reddit account (3 months old, 100+ karma, profile picture set up,
+        overall quality). Missions will appear here as soon as you're approved.
       </p>
     </div>
   );
@@ -64,7 +65,7 @@ export function MissionBrowser({
   if (!missions?.length) {
     return (
       <div className="panel p-8 text-center text-sm text-muted-foreground">
-        Aucune mission disponible pour le moment. Revenez bientôt.
+        No mission available right now. Check back soon.
       </div>
     );
   }
@@ -74,14 +75,14 @@ export function MissionBrowser({
     if (!selected) return;
     const clean = url.trim();
     if (!/^https?:\/\/(www\.|old\.)?reddit\.com\/.+/i.test(clean)) {
-      toast.error("Entrez un lien Reddit valide.");
+      toast.error("Enter a valid Reddit link.");
       return;
     }
     submit.mutate(
       { mission: selected, url: clean },
       {
         onSuccess: () => {
-          toast.success("Mission soumise. Elle est en attente de validation.");
+          toast.success("Mission submitted. It's pending review.");
           setSelected(null);
           setUrl("");
         },
@@ -112,7 +113,7 @@ export function MissionBrowser({
                 <span>{m.difficulty}</span>
               </div>
             </div>
-            <Badge className="w-fit shrink-0 text-sm">{Number(m.payout).toFixed(0)} $</Badge>
+            <Badge className="w-fit shrink-0 text-sm">${Number(m.payout).toFixed(0)}</Badge>
           </button>
         ))}
       </div>
@@ -130,50 +131,48 @@ export function MissionBrowser({
                   <Badge variant="secondary">r/{selected.subreddit}</Badge>
                   <Badge variant="secondary">{selected.estimated_minutes} min</Badge>
                   <Badge variant="secondary">{selected.difficulty}</Badge>
-                  <Badge>{Number(selected.payout).toFixed(0)} $</Badge>
+                  <Badge>${Number(selected.payout).toFixed(0)}</Badge>
                 </div>
 
                 {type === "post" ? (
                   <>
-                    <Field label="Communauté Reddit">
+                    <Field label="Reddit community">
                       <LinkOut href={selected.community_url || `https://reddit.com/r/${selected.subreddit}`} />
                     </Field>
-                    <Field label="Titre exact à utiliser">
+                    <Field label="Exact title to use">
                       <pre className="whitespace-pre-wrap font-sans">{selected.post_title}</pre>
                     </Field>
-                    <Field label="Body complet">
+                    <Field label="Full body">
                       <pre className="whitespace-pre-wrap font-sans">{selected.post_body}</pre>
                     </Field>
-                    {selected.flair ? (
-                      <Field label="Flair à sélectionner">{selected.flair}</Field>
-                    ) : null}
+                    {selected.flair ? <Field label="Flair to select">{selected.flair}</Field> : null}
                   </>
                 ) : (
                   <>
-                    <Field label="Post Reddit concerné">
+                    <Field label="Target Reddit post">
                       <LinkOut href={selected.target_post_url ?? ""} />
                     </Field>
-                    <Field label="Commentaire exact à publier">
+                    <Field label="Exact comment to publish">
                       <pre className="whitespace-pre-wrap font-sans">{selected.comment_text}</pre>
                     </Field>
                   </>
                 )}
 
                 {selected.instructions ? (
-                  <Field label="Consignes particulières">
+                  <Field label="Specific instructions">
                     <pre className="whitespace-pre-wrap font-sans">{selected.instructions}</pre>
                   </Field>
                 ) : null}
 
                 <p className="rounded-lg border border-border bg-background/60 p-3 text-xs text-muted-foreground">
-                  La publication doit rester en ligne au minimum 3 heures et ne pas être supprimée
-                  après paiement.
+                  The publication must stay online for at least 3 hours and must not be deleted after
+                  payment.
                 </p>
 
                 {canSubmit ? (
                   <form onSubmit={onSubmit} className="space-y-3">
                     <label className="text-xs font-medium text-muted-foreground">
-                      {type === "post" ? "Lien vers votre publication Reddit" : "Lien vers votre commentaire"}
+                      {type === "post" ? "Link to your Reddit post" : "Link to your comment"}
                     </label>
                     <Input
                       value={url}
@@ -184,17 +183,17 @@ export function MissionBrowser({
                     />
                     <Button type="submit" className="w-full" disabled={submit.isPending}>
                       {submit.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                      Soumettre
+                      Take this mission
                     </Button>
                   </form>
                 ) : (
                   <div className="space-y-3">
                     <p className="text-xs text-muted-foreground">
                       {lockedMessage ??
-                        "Lecture seule : seules les personnes avec un compte vérifié peuvent prendre cette mission."}
+                        "Read-only: only members with a verified account can take this mission."}
                     </p>
                     <Button asChild className="w-full">
-                      <Link to="/auth">Connecte-toi avec un compte vérifié pour postuler</Link>
+                      <Link to="/auth">Sign in with a verified account to apply</Link>
                     </Button>
                   </div>
                 )}
