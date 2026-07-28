@@ -39,6 +39,8 @@ function AdminPage() {
   const { data: submissions } = useAllSubmissions();
   const { data: profiles } = useAllProfiles();
   const [draft, setDraft] = useState<Draft | null>(null);
+  const [userSearch, setUserSearch] = useState("");
+  const [userFilter, setUserFilter] = useState<"all" | "pending" | "accepted" | "rejected">("all");
 
   if (loadingRole) {
     return (
