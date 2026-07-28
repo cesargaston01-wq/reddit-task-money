@@ -19,17 +19,16 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "KarmaWork — Monétisez votre compte Reddit" },
+      { title: "KarmaWork — Monetize your Reddit account" },
       {
         name: "description",
         content:
-          "Gagnez de l'argent avec votre compte Reddit : publiez des posts (5 $) et des commentaires (3 $) sur des communautés pertinentes. Paiement en crypto.",
+          "Earn money with your Reddit account: publish posts ($5) and comments ($3) in relevant communities. Paid in crypto.",
       },
-      { property: "og:title", content: "KarmaWork — Monétisez votre compte Reddit" },
+      { property: "og:title", content: "KarmaWork — Monetize your Reddit account" },
       {
         property: "og:description",
-        content:
-          "Missions Reddit rémunérées : 5 $ par post, 3 $ par commentaire. Comptes de qualité uniquement.",
+        content: "Paid Reddit missions: $5 per post, $3 per comment. Quality accounts only.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -41,26 +40,26 @@ export const Route = createFileRoute("/")({
 const steps = [
   {
     n: "01",
-    title: "Créez votre compte",
-    text: "Inscrivez-vous avec votre profil Reddit et votre wallet crypto. Cela prend moins d'une minute.",
+    title: "Create your account",
+    text: "Sign up with your Reddit profile and your crypto wallet. It takes less than a minute.",
   },
   {
     n: "02",
-    title: "Faites valider votre compte",
-    text: "Nous vérifions manuellement l'ancienneté, le karma et la qualité générale de votre compte Reddit.",
+    title: "Get your account verified",
+    text: "We manually review the age, karma and overall quality of your Reddit account.",
   },
   {
     n: "03",
-    title: "Réalisez des missions",
-    text: "Choisissez une mission, publiez, soumettez votre lien. Paiement en crypto après validation.",
+    title: "Complete missions",
+    text: "Pick a mission, publish it, submit your link. Paid in crypto once approved.",
   },
 ];
 
 const criteria = [
-  { icon: Clock, title: "3 mois d'ancienneté", text: "Le compte doit avoir au moins 3 mois." },
-  { icon: Sparkles, title: "100 de karma minimum", text: "Post ou commentaire karma cumulé." },
-  { icon: BadgeCheck, title: "Avatar configuré", text: "Un profil complet et crédible." },
-  { icon: ShieldCheck, title: "Compte de qualité", text: "Historique naturel, sans spam ni bans." },
+  { icon: Clock, title: "3 months old", text: "The account must be at least 3 months old." },
+  { icon: Sparkles, title: "100+ karma", text: "Combined post or comment karma." },
+  { icon: BadgeCheck, title: "Profile picture set up", text: "A complete, credible profile." },
+  { icon: ShieldCheck, title: "Quality account", text: "Natural history, no spam and no bans." },
 ];
 
 function Landing() {
@@ -73,14 +72,14 @@ function Landing() {
           </Link>
           <div className="flex items-center gap-1 sm:gap-2">
             <Button asChild variant="ghost" size="sm">
-              <Link to="/decouvrir">Découvrir les tâches rémunérées</Link>
+              <Link to="/discover">Discover paid tasks</Link>
             </Button>
-            <Button variant="ghost" size="sm" disabled title="Bientôt disponible" className="hidden sm:inline-flex">
-              Poster une annonce
+            <Button variant="ghost" size="sm" disabled title="Coming soon" className="hidden sm:inline-flex">
+              Post a listing
             </Button>
             <Button asChild size="sm">
               <Link to="/auth">
-                Commencer à gagner<ArrowRight className="ml-1 h-4 w-4" />
+                Start earning money<ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </Button>
           </div>
@@ -92,47 +91,47 @@ function Landing() {
           <div className="mx-auto max-w-6xl px-5 py-24 text-center md:py-32">
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-3 py-1 text-xs text-muted-foreground">
               <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-              Missions payées en crypto, sans délai administratif
+              Missions paid in crypto, no admin delays
             </span>
             <h1 className="mx-auto mt-6 max-w-3xl text-4xl font-bold leading-[1.05] md:text-6xl">
-              Gagnez de l'argent avec votre compte Reddit
+              Earn money with your Reddit account
             </h1>
             <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground md:text-lg">
-              Publiez des posts et des commentaires sur des communautés pertinentes. Des missions
-              claires, des consignes exactes, un paiement fixe.
+              Publish posts and comments in relevant communities. Clear missions, exact
+              instructions, a fixed payout.
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Button asChild size="lg">
                 <Link to="/auth">
-                  Commencer à gagner<ArrowRight className="ml-1 h-4 w-4" />
+                  Start earning money<ArrowRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>
-              <Button variant="outline" size="lg" disabled title="Bientôt disponible">
-                Poster une annonce
+              <Button variant="outline" size="lg" disabled title="Coming soon">
+                Post a listing
               </Button>
             </div>
 
             <div className="mx-auto mt-16 grid max-w-3xl gap-4 sm:grid-cols-2">
               <div className="panel elevated p-6 text-left">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Sparkles className="h-4 w-4 text-primary" /> Mission Post
+                  <Sparkles className="h-4 w-4 text-primary" /> Post mission
                 </div>
-                <div className="mt-3 font-display text-4xl font-bold">5 $</div>
-                <p className="mt-1 text-sm text-muted-foreground">par publication validée</p>
+                <div className="mt-3 font-display text-4xl font-bold">$5</div>
+                <p className="mt-1 text-sm text-muted-foreground">per approved post</p>
               </div>
               <div className="panel elevated p-6 text-left">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <MessageSquare className="h-4 w-4 text-primary" /> Mission Commentaire
+                  <MessageSquare className="h-4 w-4 text-primary" /> Comment mission
                 </div>
-                <div className="mt-3 font-display text-4xl font-bold">3 $</div>
-                <p className="mt-1 text-sm text-muted-foreground">par commentaire validé</p>
+                <div className="mt-3 font-display text-4xl font-bold">$3</div>
+                <p className="mt-1 text-sm text-muted-foreground">per approved comment</p>
               </div>
             </div>
           </div>
         </section>
 
         <section className="mx-auto max-w-6xl px-5 py-20">
-          <h2 className="text-2xl font-bold md:text-3xl">Comment ça marche</h2>
+          <h2 className="text-2xl font-bold md:text-3xl">How it works</h2>
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             {steps.map((s) => (
               <div key={s.n} className="panel p-6">
@@ -147,9 +146,9 @@ function Landing() {
         <section className="border-y border-border/60 bg-surface/30">
           <div className="mx-auto max-w-6xl px-5 py-20">
             <div className="flex flex-col gap-2">
-              <h2 className="text-2xl font-bold md:text-3xl">Critères d'acceptation</h2>
+              <h2 className="text-2xl font-bold md:text-3xl">Quality requirements</h2>
               <p className="max-w-xl text-sm text-muted-foreground">
-                Chaque compte est vérifié manuellement avant d'accéder aux missions.
+                Every account is reviewed manually before getting access to missions.
               </p>
             </div>
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -167,16 +166,16 @@ function Landing() {
         <section className="mx-auto max-w-6xl px-5 py-20">
           <div className="grid gap-10 md:grid-cols-2">
             <div>
-              <h2 className="text-2xl font-bold md:text-3xl">Combien pouvez-vous gagner ?</h2>
+              <h2 className="text-2xl font-bold md:text-3xl">How much can you earn?</h2>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                Les gains dépendent du nombre de missions disponibles et de votre réactivité. Une
-                mission est réservée dès qu'elle est soumise : premier arrivé, premier servi.
+                Earnings depend on how many missions are available and how fast you are. A mission
+                is locked as soon as it's submitted: first come, first served.
               </p>
               <ul className="mt-6 space-y-3 text-sm">
                 {[
-                  "5 missions post par semaine → 25 $",
-                  "10 commentaires par semaine → 30 $",
-                  "Aucun plafond : tout dépend des missions ouvertes",
+                  "5 post missions per week → $25",
+                  "10 comments per week → $30",
+                  "No cap: it all depends on the open missions",
                 ].map((line) => (
                   <li key={line} className="flex items-start gap-3">
                     <BadgeCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
@@ -187,13 +186,13 @@ function Landing() {
             </div>
             <div className="panel elevated p-8">
               <Wallet className="h-6 w-6 text-primary" />
-              <h3 className="mt-4 text-xl font-semibold">Paiements en crypto</h3>
+              <h3 className="mt-4 text-xl font-semibold">Crypto payments</h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                Renseignez votre wallet à l'inscription. Après validation d'une mission (publication
-                maintenue au moins 3 heures), le paiement est envoyé manuellement sur votre adresse.
+                Add your wallet when you sign up. Once a mission is approved (publication kept
+                online for at least 3 hours), the payment is sent manually to your address.
               </p>
               <div className="mt-6 rounded-lg border border-border bg-background/60 p-4 text-xs text-muted-foreground">
-                En participant, vous acceptez de ne pas supprimer vos publications après paiement.
+                By participating, you agree not to delete your publications after being paid.
               </div>
             </div>
           </div>
@@ -201,28 +200,28 @@ function Landing() {
 
         <section className="border-y border-border/60 bg-surface/30">
           <div className="mx-auto max-w-3xl px-5 py-20">
-            <h2 className="text-2xl font-bold md:text-3xl">Questions fréquentes</h2>
+            <h2 className="text-2xl font-bold md:text-3xl">Frequently asked questions</h2>
             <Accordion type="single" collapsible className="mt-6">
               {[
                 {
-                  q: "Qui publie les missions ?",
-                  a: "Pour l'instant, toutes les missions sont publiées par l'équipe KarmaWork. L'ouverture aux entreprises viendra dans une prochaine version.",
+                  q: "Who publishes the missions?",
+                  a: "For now, every mission is published by the KarmaWork team. Opening it up to companies will come in a future version.",
                 },
                 {
-                  q: "Quand suis-je payé ?",
-                  a: "Après vérification de votre publication et un délai minimum de 3 heures de mise en ligne. Le paiement est ensuite envoyé sur votre wallet crypto.",
+                  q: "When do I get paid?",
+                  a: "After your publication is reviewed and has been online for at least 3 hours. The payment is then sent to your crypto wallet.",
                 },
                 {
-                  q: "Puis-je supprimer ma publication ?",
-                  a: "Non. Les publications doivent rester en ligne. Supprimer un post après paiement entraîne un refus des missions suivantes.",
+                  q: "Can I delete my publication?",
+                  a: "No. Publications must stay online. Deleting a post after being paid results in your future missions being refused.",
                 },
                 {
-                  q: "Que se passe-t-il si mon compte est refusé ?",
-                  a: "Vous recevez le motif dans votre espace. Vous pouvez repostuler avec un compte qui remplit les critères.",
+                  q: "What happens if my account is rejected?",
+                  a: "You get the reason in your dashboard. You can re-apply with an account that meets the requirements.",
                 },
                 {
-                  q: "Plusieurs personnes peuvent-elles faire la même mission ?",
-                  a: "Non. Dès qu'une mission est soumise, elle disparaît automatiquement pour tous les autres membres.",
+                  q: "Can several people do the same mission?",
+                  a: "No. As soon as a mission is submitted, it automatically disappears for everyone else.",
                 },
               ].map((item, i) => (
                 <AccordionItem key={item.q} value={`item-${i}`}>
@@ -237,13 +236,13 @@ function Landing() {
         </section>
 
         <section className="mx-auto max-w-3xl px-5 py-24 text-center">
-          <h2 className="text-3xl font-bold md:text-4xl">Prêt à monétiser votre karma ?</h2>
+          <h2 className="text-3xl font-bold md:text-4xl">Ready to monetize your karma?</h2>
           <p className="mx-auto mt-3 max-w-lg text-sm text-muted-foreground">
-            Inscription gratuite. Validation manuelle sous 48h.
+            Free sign-up. Manual review within 48 hours.
           </p>
           <Button asChild size="lg" className="mt-8">
             <Link to="/auth">
-              Commencer à gagner<ArrowRight className="ml-1 h-4 w-4" />
+              Start earning money<ArrowRight className="ml-1 h-4 w-4" />
             </Link>
           </Button>
         </section>
@@ -251,7 +250,7 @@ function Landing() {
 
       <footer className="border-t border-border/60 py-8">
         <div className="mx-auto max-w-6xl px-5 text-xs text-muted-foreground">
-          © {new Date().getFullYear()} KarmaWork — Missions Reddit rémunérées.
+          © {new Date().getFullYear()} KarmaWork — Paid Reddit missions.
         </div>
       </footer>
     </div>

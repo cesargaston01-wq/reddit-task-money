@@ -10,16 +10,16 @@ export const Route = createFileRoute("/discover")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Découvrir les tâches rémunérées — KarmaWork" },
+      { title: "Discover paid tasks — KarmaWork" },
       {
         name: "description",
         content:
-          "Parcourez librement toutes les missions Reddit disponibles : posts rémunérés 5 $ et commentaires 3 $, consignes complètes en lecture seule.",
+          "Browse every available Reddit mission for free: paid posts at $5 and comments at $3, with full read-only instructions.",
       },
-      { property: "og:title", content: "Découvrir les tâches rémunérées — KarmaWork" },
+      { property: "og:title", content: "Discover paid tasks — KarmaWork" },
       {
         property: "og:description",
-        content: "Toutes les opportunités Reddit ouvertes : 5 $ par post, 3 $ par commentaire.",
+        content: "All open Reddit opportunities: $5 per post, $3 per comment.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -34,8 +34,8 @@ function DiscoverPage() {
   const canSubmit = profile?.status === "accepted";
 
   const tabs = [
-    { key: "post" as const, label: "Opportunités post", icon: FileText, price: "5 $" },
-    { key: "comment" as const, label: "Opportunités commentaire", icon: MessageSquare, price: "3 $" },
+    { key: "post" as const, label: "Post opportunities", icon: FileText, price: "$5" },
+    { key: "comment" as const, label: "Comment opportunities", icon: MessageSquare, price: "$3" },
   ];
 
   return (
@@ -47,11 +47,11 @@ function DiscoverPage() {
           </Link>
           <div className="flex items-center gap-2">
             <Button asChild variant="ghost" size="sm">
-              <Link to="/decouvrir">Découvrir les tâches rémunérées</Link>
+              <Link to="/discover">Discover paid tasks</Link>
             </Button>
             <Button asChild size="sm">
               <Link to="/auth">
-                Commencer à gagner<ArrowRight className="ml-1 h-4 w-4" />
+                Start earning money<ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </Button>
           </div>
@@ -59,10 +59,9 @@ function DiscoverPage() {
       </header>
 
       <main className="mx-auto max-w-4xl px-5 py-14">
-        <h1 className="text-3xl font-bold md:text-4xl">Découvrir les tâches rémunérées</h1>
+        <h1 className="text-3xl font-bold md:text-4xl">Discover paid tasks</h1>
         <p className="mt-3 max-w-2xl text-sm text-muted-foreground">
-          Toutes les missions ouvertes, en lecture seule. Un compte Reddit vérifié est nécessaire
-          pour en prendre une.
+          Every open mission, read-only. A verified Reddit account is required to take one.
         </p>
 
         <div className="mt-8 flex flex-wrap gap-2">
@@ -86,9 +85,9 @@ function DiscoverPage() {
 
         {!canSubmit ? (
           <div className="panel mt-6 p-4 text-sm text-muted-foreground">
-            Vous consultez les missions en lecture seule.{" "}
+            You're browsing missions in read-only mode.{" "}
             <Link to="/auth" className="text-primary hover:underline">
-              Connecte-toi avec un compte vérifié pour postuler
+              Sign in with a verified account to apply
             </Link>
             .
           </div>
@@ -101,7 +100,7 @@ function DiscoverPage() {
 
       <footer className="border-t border-border/60 py-8">
         <div className="mx-auto max-w-6xl px-5 text-xs text-muted-foreground">
-          © {new Date().getFullYear()} KarmaWork — Missions Reddit rémunérées.
+          © {new Date().getFullYear()} KarmaWork — Paid Reddit missions.
         </div>
       </footer>
     </div>
