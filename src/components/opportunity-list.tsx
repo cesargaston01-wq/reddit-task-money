@@ -104,11 +104,23 @@ export function MissionBrowser({
             className="panel flex flex-col gap-3 p-5 text-left transition-colors hover:border-primary/50 sm:flex-row sm:items-center sm:justify-between"
           >
             <div className="min-w-0">
-              <h3 className="truncate text-base font-semibold">{m.title}</h3>
+              <h3
+                className={`truncate text-base font-semibold ${
+                  canSubmit ? "" : "select-none blur-[5px]"
+                }`}
+              >
+                {m.title}
+              </h3>
               <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
                 <span>r/{m.subreddit}</span>
+                {canSubmit ? null : (
+                  <span className="inline-flex items-center gap-1 text-muted-foreground">
+                    <Lock className="h-3 w-3" /> Details locked
+                  </span>
+                )}
               </div>
             </div>
+
             <Badge className="w-fit shrink-0 text-sm">${Number(m.payout).toFixed(0)}</Badge>
           </button>
         ))}
@@ -119,7 +131,9 @@ export function MissionBrowser({
           {selected ? (
             <>
               <DialogHeader>
-                <DialogTitle>{selected.title}</DialogTitle>
+                <DialogTitle className={canSubmit ? "" : "select-none blur-[6px]"}>
+                  {selected.title}
+                </DialogTitle>
               </DialogHeader>
 
               <div className="space-y-5 text-sm">
@@ -128,40 +142,45 @@ export function MissionBrowser({
                   <Badge>${Number(selected.payout).toFixed(0)}</Badge>
                 </div>
 
-                {type === "post" ? (
-                  <>
-                    <Field label="Reddit community">
-                      <LinkOut href={selected.community_url || `https://reddit.com/r/${selected.subreddit}`} />
-                    </Field>
-                    <Field label="Exact title to use">
-                      <pre className="whitespace-pre-wrap font-sans">{selected.post_title}</pre>
-                    </Field>
-                    <Field label="Full body">
-                      <pre className="whitespace-pre-wrap font-sans">{selected.post_body}</pre>
-                    </Field>
-                    {selected.flair ? <Field label="Flair to select">{selected.flair}</Field> : null}
-                  </>
-                ) : (
-                  <>
-                    <Field label="Target Reddit post">
-                      <LinkOut href={selected.target_post_url ?? ""} />
-                    </Field>
+                <Field label="Reddit community">
+                  <LinkOut
+                    href={
+                      type === "post"
+                        ? selected.community_url || `https://reddit.com/r/${selected.subreddit}`
+                        : selected.target_post_url || `https://reddit.com/r/${selected.subreddit}`
+                    }
+                  />
+                </Field>
+
+                <Blurred hidden={!canSubmit}>
+                  {type === "post" ? (
+                    <>
+                      <Field label="Exact title to use">
+                        <pre className="whitespace-pre-wrap font-sans">{selected.post_title}</pre>
+                      </Field>
+                      <Field label="Full body">
+                        <pre className="whitespace-pre-wrap font-sans">{selected.post_body}</pre>
+                      </Field>
+                      {selected.flair ? <Field label="Flair to select">{selected.flair}</Field> : null}
+                    </>
+                  ) : (
                     <Field label="Exact comment to publish">
                       <pre className="whitespace-pre-wrap font-sans">{selected.comment_text}</pre>
                     </Field>
-                  </>
-                )}
+                  )}
 
-                {selected.instructions ? (
-                  <Field label="Specific instructions">
-                    <pre className="whitespace-pre-wrap font-sans">{selected.instructions}</pre>
-                  </Field>
-                ) : null}
+                  {selected.instructions ? (
+                    <Field label="Specific instructions">
+                      <pre className="whitespace-pre-wrap font-sans">{selected.instructions}</pre>
+                    </Field>
+                  ) : null}
+                </Blurred>
 
                 <p className="rounded-lg border border-border bg-background/60 p-3 text-xs text-muted-foreground">
                   The publication must stay online for at least 3 hours and must not be deleted after
                   payment.
                 </p>
+
 
                 {canSubmit ? (
                   <form onSubmit={onSubmit} className="space-y-3">
@@ -221,5 +240,21 @@ function LinkOut({ href }: { href: string }) {
     >
       {href} <ExternalLink className="h-3.5 w-3.5 shrink-0" />
     </a>
+  );
+}
+
+function Blurred({ hidden, children }: { hidden: boolean; children: React.ReactNode }) {
+  if (!hidden) return <div className="space-y-5">{children}</div>;
+  return (
+    <div className="relative">
+      <div aria-hidden className="pointer-events-none select-none space-y-5 blur-[6px]">
+        {children}
+      </div>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className="inline-flex items-center gap-2 rounded-full border border-border bg-background/80 px-3 py-1.5 text-xs text-muted-foreground backdrop-blur-sm">
+          <Lock className="h-3.5 w-3.5" /> Sign in with a verified account to see the details
+        </span>
+      </div>
+    </div>
   );
 }
