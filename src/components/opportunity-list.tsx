@@ -16,7 +16,7 @@ function PendingState({ status, reason }: { status?: string; reason?: string | n
         <h2 className="mt-4 text-lg font-semibold">Account rejected</h2>
         <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
           {reason ||
-            "Your Reddit account doesn't meet the requirements (3 months old, 100+ karma, profile picture set up, overall quality)."}
+            "Your Reddit account doesn't meet the requirements (3 months old, 100+ karma, overall quality)."}
         </p>
       </div>
     );

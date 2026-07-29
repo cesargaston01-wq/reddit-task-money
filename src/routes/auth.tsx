@@ -34,7 +34,7 @@ const signupSchema = z.object({
     .trim()
     .max(255)
     .regex(/^https?:\/\/(www\.)?reddit\.com\/user\/[A-Za-z0-9_-]+\/?$/, "e.g. https://reddit.com/user/username"),
-  wallet_address: z.string().trim().min(10, "Address is too short").max(120),
+  
 });
 
 function AuthPage() {
@@ -62,7 +62,7 @@ function AuthPage() {
       email: fd.get("email"),
       password: fd.get("password"),
       reddit_profile_url: fd.get("reddit_profile_url"),
-      wallet_address: fd.get("wallet_address"),
+      
     });
     if (!parsed.success) return toast.error(parsed.error.issues[0].message);
 
@@ -75,7 +75,7 @@ function AuthPage() {
         data: {
           full_name: parsed.data.full_name,
           reddit_profile_url: parsed.data.reddit_profile_url,
-          wallet_address: parsed.data.wallet_address,
+          
         },
       },
     });
@@ -125,10 +125,6 @@ function AuthPage() {
                   required
                   maxLength={255}
                 />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="s-wallet">Crypto wallet address</Label>
-                <Input id="s-wallet" name="wallet_address" placeholder="0x… / TR…" required maxLength={120} />
               </div>
               <Button type="submit" className="w-full" disabled={loading}>
                 Create my account
