@@ -115,8 +115,6 @@ function AdminPage() {
       subreddit: (draft.subreddit ?? "").trim().replace(/^r\//, ""),
       community_url: draft.community_url ?? "",
       payout: Number(draft.payout ?? (draft.type === "post" ? 5 : 3)),
-      estimated_minutes: Number(draft.estimated_minutes ?? 10),
-      difficulty: draft.difficulty ?? "Easy",
       post_title: draft.post_title ?? null,
       post_body: draft.post_body ?? null,
       flair: draft.flair ?? null,
@@ -354,11 +352,7 @@ function AdminPage() {
               <FieldInput label="Mission name" value={draft.title ?? ""} onChange={(v) => setDraft({ ...draft, title: v })} />
               <FieldInput label="Community (without r/)" value={draft.subreddit ?? ""} onChange={(v) => setDraft({ ...draft, subreddit: v })} />
               <FieldInput label="Community link" value={draft.community_url ?? ""} onChange={(v) => setDraft({ ...draft, community_url: v })} />
-              <div className="grid grid-cols-3 gap-3">
-                <FieldInput label="Payout ($)" type="number" value={String(draft.payout ?? "")} onChange={(v) => setDraft({ ...draft, payout: Number(v) })} />
-                <FieldInput label="Time (min)" type="number" value={String(draft.estimated_minutes ?? 10)} onChange={(v) => setDraft({ ...draft, estimated_minutes: Number(v) })} />
-                <FieldInput label="Difficulty" value={draft.difficulty ?? "Easy"} onChange={(v) => setDraft({ ...draft, difficulty: v })} />
-              </div>
+              <FieldInput label="Payout ($)" type="number" value={String(draft.payout ?? "")} onChange={(v) => setDraft({ ...draft, payout: Number(v) })} />
 
               {draft.type === "post" ? (
                 <>

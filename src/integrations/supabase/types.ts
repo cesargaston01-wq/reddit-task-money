@@ -19,8 +19,6 @@ export type Database = {
           comment_text: string | null
           community_url: string
           created_at: string
-          difficulty: string
-          estimated_minutes: number
           flair: string | null
           id: string
           instructions: string | null
@@ -37,8 +35,6 @@ export type Database = {
           comment_text?: string | null
           community_url?: string
           created_at?: string
-          difficulty?: string
-          estimated_minutes?: number
           flair?: string | null
           id?: string
           instructions?: string | null
@@ -55,8 +51,6 @@ export type Database = {
           comment_text?: string | null
           community_url?: string
           created_at?: string
-          difficulty?: string
-          estimated_minutes?: number
           flair?: string | null
           id?: string
           instructions?: string | null
