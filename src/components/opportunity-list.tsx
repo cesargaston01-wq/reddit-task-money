@@ -242,3 +242,19 @@ function LinkOut({ href }: { href: string }) {
     </a>
   );
 }
+
+function Blurred({ hidden, children }: { hidden: boolean; children: React.ReactNode }) {
+  if (!hidden) return <div className="space-y-5">{children}</div>;
+  return (
+    <div className="relative">
+      <div aria-hidden className="pointer-events-none select-none space-y-5 blur-[6px]">
+        {children}
+      </div>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className="inline-flex items-center gap-2 rounded-full border border-border bg-background/80 px-3 py-1.5 text-xs text-muted-foreground backdrop-blur-sm">
+          <Lock className="h-3.5 w-3.5" /> Sign in with a verified account to see the details
+        </span>
+      </div>
+    </div>
+  );
+}
