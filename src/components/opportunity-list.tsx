@@ -104,11 +104,23 @@ export function MissionBrowser({
             className="panel flex flex-col gap-3 p-5 text-left transition-colors hover:border-primary/50 sm:flex-row sm:items-center sm:justify-between"
           >
             <div className="min-w-0">
-              <h3 className="truncate text-base font-semibold">{m.title}</h3>
+              <h3
+                className={`truncate text-base font-semibold ${
+                  canSubmit ? "" : "select-none blur-[5px]"
+                }`}
+              >
+                {m.title}
+              </h3>
               <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
                 <span>r/{m.subreddit}</span>
+                {canSubmit ? null : (
+                  <span className="inline-flex items-center gap-1 text-muted-foreground">
+                    <Lock className="h-3 w-3" /> Details locked
+                  </span>
+                )}
               </div>
             </div>
+
             <Badge className="w-fit shrink-0 text-sm">${Number(m.payout).toFixed(0)}</Badge>
           </button>
         ))}
