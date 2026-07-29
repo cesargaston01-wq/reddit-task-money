@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { Link } from "@tanstack/react-router";
-import { Clock, ExternalLink, Loader2, Lock } from "lucide-react";
+import { AlertTriangle, Clock, ExternalLink, Loader2, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -176,10 +176,23 @@ export function MissionBrowser({
                   ) : null}
                 </Blurred>
 
+                <div className="flex gap-3 rounded-lg border border-warning/40 bg-warning/10 p-3">
+                  <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-warning" />
+                  <div className="text-xs leading-relaxed">
+                    <p className="font-semibold text-warning">Follow the instructions exactly</p>
+                    <p className="mt-1 text-muted-foreground">
+                      Do not change anything in the title, body, comment, flair or instructions. Copy
+                      the content exactly as provided. Any modification means your submission will not
+                      be accepted and will not be paid.
+                    </p>
+                  </div>
+                </div>
+
                 <p className="rounded-lg border border-border bg-background/60 p-3 text-xs text-muted-foreground">
                   The publication must stay online for at least 3 hours and must not be deleted after
                   payment.
                 </p>
+
 
 
                 {canSubmit ? (
