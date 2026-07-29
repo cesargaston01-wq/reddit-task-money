@@ -107,10 +107,6 @@ export function MissionBrowser({
               <h3 className="truncate text-base font-semibold">{m.title}</h3>
               <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
                 <span>r/{m.subreddit}</span>
-                <span>·</span>
-                <span>{m.estimated_minutes} min</span>
-                <span>·</span>
-                <span>{m.difficulty}</span>
               </div>
             </div>
             <Badge className="w-fit shrink-0 text-sm">${Number(m.payout).toFixed(0)}</Badge>
@@ -129,8 +125,6 @@ export function MissionBrowser({
               <div className="space-y-5 text-sm">
                 <div className="flex flex-wrap gap-2">
                   <Badge variant="secondary">r/{selected.subreddit}</Badge>
-                  <Badge variant="secondary">{selected.estimated_minutes} min</Badge>
-                  <Badge variant="secondary">{selected.difficulty}</Badge>
                   <Badge>${Number(selected.payout).toFixed(0)}</Badge>
                 </div>
 
