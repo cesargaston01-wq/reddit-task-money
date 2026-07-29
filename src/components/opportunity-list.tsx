@@ -16,7 +16,7 @@ function PendingState({ status, reason }: { status?: string; reason?: string | n
         <h2 className="mt-4 text-lg font-semibold">Account rejected</h2>
         <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
           {reason ||
-            "Your Reddit account doesn't meet the requirements (3 months old, 100+ karma, profile picture set up, overall quality)."}
+            "Your Reddit account doesn't meet the requirements (3 months old, 100+ karma, overall quality)."}
         </p>
       </div>
     );
@@ -26,8 +26,8 @@ function PendingState({ status, reason }: { status?: string; reason?: string | n
       <Clock className="mx-auto h-6 w-6 text-warning" />
       <h2 className="mt-4 text-lg font-semibold">Account pending review</h2>
       <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-        We're reviewing your Reddit account (3 months old, 100+ karma, profile picture set up,
-        overall quality). Missions will appear here as soon as you're approved.
+        We're reviewing your Reddit account (3 months old, 100+ karma, overall quality). Missions
+        will appear here as soon as you're approved.
       </p>
     </div>
   );

@@ -295,7 +295,7 @@ function AdminPage() {
                   >
                     {p.reddit_profile_url}
                   </a>
-                  <div className="truncate text-xs text-muted-foreground">Wallet: {p.wallet_address}</div>
+                  <div className="truncate text-xs text-muted-foreground">Wallet: {p.wallet_address || "not set"}</div>
                   <div className="mt-2 text-xs text-muted-foreground">Joined {fmtDate(p.created_at)}</div>
                   {act ? (
                     <div className="text-xs text-muted-foreground">

@@ -41,7 +41,7 @@ const steps = [
   {
     n: "01",
     title: "Create your account",
-    text: "Sign up with your Reddit profile and your crypto wallet. It takes less than a minute.",
+    text: "Sign up with your Reddit profile. It takes less than a minute.",
   },
   {
     n: "02",
@@ -58,7 +58,7 @@ const steps = [
 const criteria = [
   { icon: Clock, title: "3 months old", text: "The account must be at least 3 months old." },
   { icon: Sparkles, title: "100+ karma", text: "Combined post or comment karma." },
-  { icon: BadgeCheck, title: "Profile picture set up", text: "A complete, credible profile." },
+  
   { icon: ShieldCheck, title: "Quality account", text: "Natural history, no spam and no bans." },
 ];
 
@@ -188,7 +188,7 @@ function Landing() {
               <Wallet className="h-6 w-6 text-primary" />
               <h3 className="mt-4 text-xl font-semibold">Crypto payments</h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                Add your wallet when you sign up. Once a mission is approved (publication kept
+                Add your wallet from your profile page. Once a mission is approved (publication kept
                 online for at least 3 hours), the payment is sent manually to your address.
               </p>
               <div className="mt-6 rounded-lg border border-border bg-background/60 p-4 text-xs text-muted-foreground">
