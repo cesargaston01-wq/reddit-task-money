@@ -131,7 +131,9 @@ export function MissionBrowser({
           {selected ? (
             <>
               <DialogHeader>
-                <DialogTitle>{selected.title}</DialogTitle>
+                <DialogTitle className={canSubmit ? "" : "select-none blur-[6px]"}>
+                  {selected.title}
+                </DialogTitle>
               </DialogHeader>
 
               <div className="space-y-5 text-sm">
@@ -140,40 +142,45 @@ export function MissionBrowser({
                   <Badge>${Number(selected.payout).toFixed(0)}</Badge>
                 </div>
 
-                {type === "post" ? (
-                  <>
-                    <Field label="Reddit community">
-                      <LinkOut href={selected.community_url || `https://reddit.com/r/${selected.subreddit}`} />
-                    </Field>
-                    <Field label="Exact title to use">
-                      <pre className="whitespace-pre-wrap font-sans">{selected.post_title}</pre>
-                    </Field>
-                    <Field label="Full body">
-                      <pre className="whitespace-pre-wrap font-sans">{selected.post_body}</pre>
-                    </Field>
-                    {selected.flair ? <Field label="Flair to select">{selected.flair}</Field> : null}
-                  </>
-                ) : (
-                  <>
-                    <Field label="Target Reddit post">
-                      <LinkOut href={selected.target_post_url ?? ""} />
-                    </Field>
+                <Field label="Reddit community">
+                  <LinkOut
+                    href={
+                      type === "post"
+                        ? selected.community_url || `https://reddit.com/r/${selected.subreddit}`
+                        : selected.target_post_url || `https://reddit.com/r/${selected.subreddit}`
+                    }
+                  />
+                </Field>
+
+                <Blurred hidden={!canSubmit}>
+                  {type === "post" ? (
+                    <>
+                      <Field label="Exact title to use">
+                        <pre className="whitespace-pre-wrap font-sans">{selected.post_title}</pre>
+                      </Field>
+                      <Field label="Full body">
+                        <pre className="whitespace-pre-wrap font-sans">{selected.post_body}</pre>
+                      </Field>
+                      {selected.flair ? <Field label="Flair to select">{selected.flair}</Field> : null}
+                    </>
+                  ) : (
                     <Field label="Exact comment to publish">
                       <pre className="whitespace-pre-wrap font-sans">{selected.comment_text}</pre>
                     </Field>
-                  </>
-                )}
+                  )}
 
-                {selected.instructions ? (
-                  <Field label="Specific instructions">
-                    <pre className="whitespace-pre-wrap font-sans">{selected.instructions}</pre>
-                  </Field>
-                ) : null}
+                  {selected.instructions ? (
+                    <Field label="Specific instructions">
+                      <pre className="whitespace-pre-wrap font-sans">{selected.instructions}</pre>
+                    </Field>
+                  ) : null}
+                </Blurred>
 
                 <p className="rounded-lg border border-border bg-background/60 p-3 text-xs text-muted-foreground">
                   The publication must stay online for at least 3 hours and must not be deleted after
                   payment.
                 </p>
+
 
                 {canSubmit ? (
                   <form onSubmit={onSubmit} className="space-y-3">
