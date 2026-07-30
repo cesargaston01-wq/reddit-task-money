@@ -57,13 +57,15 @@ function AuthPage() {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     const parsed = signupSchema.safeParse({
-      full_name: fd.get("full_name"),
       email: fd.get("email"),
       password: fd.get("password"),
       reddit_profile_url: fd.get("reddit_profile_url"),
-      
     });
     if (!parsed.success) return toast.error(parsed.error.issues[0].message);
+
+    const redditUsername =
+      parsed.data.reddit_profile_url.replace(/\/+$/, "").split("/").pop() ??
+      parsed.data.email.split("@")[0];
 
     setLoading(true);
     const { data, error } = await supabase.auth.signUp({
@@ -72,12 +74,12 @@ function AuthPage() {
       options: {
         emailRedirectTo: window.location.origin,
         data: {
-          full_name: parsed.data.full_name,
+          full_name: redditUsername,
           reddit_profile_url: parsed.data.reddit_profile_url,
-          
         },
       },
     });
+
     setLoading(false);
     if (error) return toast.error(error.message);
     if (!data.session) {
