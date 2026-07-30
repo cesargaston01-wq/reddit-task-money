@@ -26,7 +26,6 @@ export const Route = createFileRoute("/auth")({
 });
 
 const signupSchema = z.object({
-  full_name: z.string().trim().min(2, "Name is too short").max(80),
   email: z.string().trim().email("Invalid email").max(255),
   password: z.string().min(8, "8 characters minimum").max(72),
   reddit_profile_url: z
@@ -34,8 +33,8 @@ const signupSchema = z.object({
     .trim()
     .max(255)
     .regex(/^https?:\/\/(www\.)?reddit\.com\/user\/[A-Za-z0-9_-]+\/?$/, "e.g. https://reddit.com/user/username"),
-  
 });
+
 
 function AuthPage() {
   const navigate = useNavigate();
@@ -58,13 +57,15 @@ function AuthPage() {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     const parsed = signupSchema.safeParse({
-      full_name: fd.get("full_name"),
       email: fd.get("email"),
       password: fd.get("password"),
       reddit_profile_url: fd.get("reddit_profile_url"),
-      
     });
     if (!parsed.success) return toast.error(parsed.error.issues[0].message);
+
+    const redditUsername =
+      parsed.data.reddit_profile_url.replace(/\/+$/, "").split("/").pop() ??
+      parsed.data.email.split("@")[0];
 
     setLoading(true);
     const { data, error } = await supabase.auth.signUp({
@@ -73,12 +74,12 @@ function AuthPage() {
       options: {
         emailRedirectTo: window.location.origin,
         data: {
-          full_name: parsed.data.full_name,
+          full_name: redditUsername,
           reddit_profile_url: parsed.data.reddit_profile_url,
-          
         },
       },
     });
+
     setLoading(false);
     if (error) return toast.error(error.message);
     if (!data.session) {
@@ -104,10 +105,6 @@ function AuthPage() {
 
           <TabsContent value="signup" className="mt-6">
             <form onSubmit={handleSignup} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="s-name">Name</Label>
-                <Input id="s-name" name="full_name" required maxLength={80} />
-              </div>
               <div className="space-y-2">
                 <Label htmlFor="s-email">Email</Label>
                 <Input id="s-email" name="email" type="email" required maxLength={255} />
