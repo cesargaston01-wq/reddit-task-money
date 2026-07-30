@@ -1,6 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
+import {
+  reserveMission,
+  releaseMission,
+  submitMissionLink,
+} from "@/lib/missions.functions";
+
 
 export type Profile = Tables<"profiles">;
 export type Mission = Tables<"missions">;
@@ -57,6 +63,7 @@ export function useIsAdmin() {
 export function useMissions(type: "post" | "comment") {
   return useQuery({
     queryKey: ["missions", type],
+    refetchInterval: 30_000,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("missions")
@@ -69,6 +76,7 @@ export function useMissions(type: "post" | "comment") {
     },
   });
 }
+
 
 export function useAllMissions() {
   return useQuery({
