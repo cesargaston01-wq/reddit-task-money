@@ -26,7 +26,6 @@ export const Route = createFileRoute("/auth")({
 });
 
 const signupSchema = z.object({
-  full_name: z.string().trim().min(2, "Name is too short").max(80),
   email: z.string().trim().email("Invalid email").max(255),
   password: z.string().min(8, "8 characters minimum").max(72),
   reddit_profile_url: z
@@ -34,8 +33,8 @@ const signupSchema = z.object({
     .trim()
     .max(255)
     .regex(/^https?:\/\/(www\.)?reddit\.com\/user\/[A-Za-z0-9_-]+\/?$/, "e.g. https://reddit.com/user/username"),
-  
 });
+
 
 function AuthPage() {
   const navigate = useNavigate();
