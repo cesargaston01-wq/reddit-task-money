@@ -19,8 +19,12 @@ export function useSession() {
   return useQuery({
     queryKey: ["session"],
     queryFn: async () => {
-      const { data } = await supabase.auth.getUser();
-      return data.user ?? null;
+      const { data: sessionData } = await supabase.auth.getSession();
+      if (!sessionData.session) return null;
+
+      const { data, error } = await supabase.auth.getUser();
+      if (error || !data.user) return sessionData.session.user;
+      return data.user;
     },
   });
 }

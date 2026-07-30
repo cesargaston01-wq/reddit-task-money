@@ -15,6 +15,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useSession } from "@/lib/data";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -63,6 +64,8 @@ const criteria = [
 ];
 
 function Landing() {
+  const { data: user } = useSession();
+
   return (
     <div className="min-h-screen">
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
@@ -78,8 +81,8 @@ function Landing() {
               Post a listing
             </Button>
             <Button asChild size="sm">
-              <Link to="/auth">
-                Start earning money<ArrowRight className="ml-1 h-4 w-4" />
+              <Link to={user ? "/opportunities/posts" : "/auth"}>
+                {user ? "Go to dashboard" : "Start earning money"}<ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </Button>
           </div>
@@ -102,8 +105,8 @@ function Landing() {
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Button asChild size="lg">
-                <Link to="/auth">
-                  Start earning money<ArrowRight className="ml-1 h-4 w-4" />
+                <Link to={user ? "/opportunities/posts" : "/auth"}>
+                  {user ? "Go to dashboard" : "Start earning money"}<ArrowRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>
               <Button variant="outline" size="lg" disabled title="Coming soon">
