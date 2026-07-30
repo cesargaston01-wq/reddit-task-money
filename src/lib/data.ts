@@ -138,18 +138,7 @@ export function useSubmitMission() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ mission, url }: { mission: Mission; url: string }) => {
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) throw new Error("Session expired");
-      const { error } = await supabase.from("submissions").insert({
-        mission_id: mission.id,
-        user_id: userData.user.id,
-        submitted_url: url,
-        amount: mission.payout,
-      });
-      if (error) {
-        if (error.code === "23505") throw new Error("This mission was just taken by another member.");
-        throw error;
-      }
+      await submitMissionLink({ data: { missionId: mission.id, url } });
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["missions"] });
@@ -157,6 +146,23 @@ export function useSubmitMission() {
     },
   });
 }
+
+export function useReserveMission() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (missionId: string) => reserveMission({ data: { missionId } }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["missions"] }),
+  });
+}
+
+export function useReleaseMission() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (missionId: string) => releaseMission({ data: { missionId } }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["missions"] }),
+  });
+}
+
 
 export function useInvalidateAll() {
   const qc = useQueryClient();
