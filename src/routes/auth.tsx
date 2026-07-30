@@ -106,10 +106,6 @@ function AuthPage() {
           <TabsContent value="signup" className="mt-6">
             <form onSubmit={handleSignup} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="s-name">Name</Label>
-                <Input id="s-name" name="full_name" required maxLength={80} />
-              </div>
-              <div className="space-y-2">
                 <Label htmlFor="s-email">Email</Label>
                 <Input id="s-email" name="email" type="email" required maxLength={255} />
               </div>
