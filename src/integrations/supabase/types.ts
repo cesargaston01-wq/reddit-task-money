@@ -23,6 +23,7 @@ export type Database = {
           id: string
           instructions: string | null
           is_active: boolean
+          is_locked: boolean
           payout: number
           post_body: string | null
           post_title: string | null
@@ -39,6 +40,7 @@ export type Database = {
           id?: string
           instructions?: string | null
           is_active?: boolean
+          is_locked?: boolean
           payout?: number
           post_body?: string | null
           post_title?: string | null
@@ -55,6 +57,7 @@ export type Database = {
           id?: string
           instructions?: string | null
           is_active?: boolean
+          is_locked?: boolean
           payout?: number
           post_body?: string | null
           post_title?: string | null
@@ -176,7 +179,6 @@ export type Database = {
         Returns: boolean
       }
       is_accepted: { Args: { _user_id: string }; Returns: boolean }
-      mission_is_locked: { Args: { _mission_id: string }; Returns: boolean }
     }
     Enums: {
       account_status: "pending" | "accepted" | "rejected"
