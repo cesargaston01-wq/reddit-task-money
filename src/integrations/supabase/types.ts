@@ -27,6 +27,8 @@ export type Database = {
           payout: number
           post_body: string | null
           post_title: string | null
+          reserved_by: string | null
+          reserved_until: string | null
           subreddit: string
           target_post_url: string | null
           title: string
@@ -44,6 +46,8 @@ export type Database = {
           payout?: number
           post_body?: string | null
           post_title?: string | null
+          reserved_by?: string | null
+          reserved_until?: string | null
           subreddit: string
           target_post_url?: string | null
           title: string
@@ -61,6 +65,8 @@ export type Database = {
           payout?: number
           post_body?: string | null
           post_title?: string | null
+          reserved_by?: string | null
+          reserved_until?: string | null
           subreddit?: string
           target_post_url?: string | null
           title?: string
