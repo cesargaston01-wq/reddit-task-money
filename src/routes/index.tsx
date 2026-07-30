@@ -28,7 +28,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "KarmaWork — Monetize your Reddit account" },
       {
         property: "og:description",
-        content: "Paid Reddit missions: $5 per post, $3 per comment. Quality accounts only.",
+        content: "Earn money with your Reddit account: publish posts ($5) and comments ($3) in relevant communities. Paid in crypto.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
