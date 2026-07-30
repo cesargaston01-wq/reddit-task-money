@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useSession } from "@/lib/data";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -39,6 +40,11 @@ const signupSchema = z.object({
 function AuthPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const { data: user, isLoading: isRestoringSession } = useSession();
+
+  useEffect(() => {
+    if (user) navigate({ to: "/opportunities/posts", replace: true });
+  }, [navigate, user]);
 
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -88,6 +94,14 @@ function AuthPage() {
     }
     toast.success("Account created. Your Reddit profile is being reviewed.");
     navigate({ to: "/opportunities/posts" });
+  }
+
+  if (isRestoringSession || user) {
+    return (
+      <div className="hero-surface flex min-h-screen items-center justify-center px-5">
+        <p className="text-sm text-muted-foreground">Restoring your session…</p>
+      </div>
+    );
   }
 
   return (

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { ArrowRight, FileText, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MissionBrowser } from "@/components/opportunity-list";
-import { useProfile } from "@/lib/data";
+import { useProfile, useSession } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/discover")({
@@ -30,6 +30,7 @@ export const Route = createFileRoute("/discover")({
 
 function DiscoverPage() {
   const [tab, setTab] = useState<"post" | "comment">("post");
+  const { data: user } = useSession();
   const { data: profile } = useProfile();
   const canSubmit = profile?.status === "accepted";
 
@@ -50,8 +51,8 @@ function DiscoverPage() {
               <Link to="/discover">Discover paid tasks</Link>
             </Button>
             <Button asChild size="sm">
-              <Link to="/auth">
-                Start earning money<ArrowRight className="ml-1 h-4 w-4" />
+              <Link to={user ? "/opportunities/posts" : "/auth"}>
+                {user ? "Go to dashboard" : "Start earning money"}<ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </Button>
           </div>
