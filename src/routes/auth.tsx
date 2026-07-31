@@ -118,7 +118,7 @@ function AuthPage() {
           </TabsList>
 
           <TabsContent value="signup" className="mt-6">
-            <></>
+            
 
             <form onSubmit={handleSignup} className="space-y-4">
 
