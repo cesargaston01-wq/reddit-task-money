@@ -16,7 +16,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useSession } from "@/lib/data";
-import redditLogo from "@/assets/reddit-logo.webp.asset.json";
+import redditLogo from "@/assets/reddit-logo.png.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
