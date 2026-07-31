@@ -194,7 +194,11 @@ function Landing() {
                 className="relative mx-auto w-40 drop-shadow-[0_25px_60px_rgba(255,69,0,0.35)] sm:w-56 md:w-72"
                 width={288}
                 height={288}
+                loading="eager"
+                decoding="async"
+                fetchPriority="high"
               />
+
               <div className="relative mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4">
                 <div className="panel elevated p-4 text-left sm:p-5">
 
