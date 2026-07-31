@@ -9,6 +9,8 @@ import {
   Wallet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import HowItWorks from "@/components/ui/how-it-works";
+
 import {
   Accordion,
   AccordionContent,
