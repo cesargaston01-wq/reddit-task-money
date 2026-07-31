@@ -3,11 +3,13 @@ import {
   ArrowRight,
   BadgeCheck,
   Clock,
+  Mail,
   MessageSquare,
   ShieldCheck,
   Sparkles,
   Wallet,
 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import HowItWorks from "@/components/ui/how-it-works";
 import OrbitingReddit from "@/components/ui/orbiting-reddit";
@@ -299,12 +301,27 @@ function Landing() {
         </section>
       </main>
 
-      <footer className="border-t border-border/60 py-8">
-        <div className="mx-auto flex max-w-6xl items-center gap-2 px-5 text-xs text-muted-foreground">
-          <img src={redditLogoUrl} alt="" className="h-4 w-4 opacity-80" width={16} height={16} />
-          © {new Date().getFullYear()} TaskReddit — Paid Reddit missions.
+      <footer className="border-t border-border/60 py-10">
+        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-2">
+            <img src={redditLogoUrl} alt="" className="h-4 w-4 opacity-80" width={16} height={16} />
+            © {new Date().getFullYear()} TaskReddit — Paid Reddit missions.
+          </div>
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            <Link to="/discover" className="transition-colors hover:text-foreground">
+              Discover paid tasks
+            </Link>
+            <a
+              href="mailto:cesar@skilfut.com"
+              className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"
+            >
+              <Mail className="h-3.5 w-3.5 text-primary" />
+              cesar@skilfut.com
+            </a>
+          </div>
         </div>
       </footer>
+
 
     </div>
   );
