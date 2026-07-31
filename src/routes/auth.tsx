@@ -40,7 +40,7 @@ const signupSchema = z.object({
 function AuthPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [pendingEmail, setPendingEmail] = useState<string | null>(null);
+  
   const { data: user, isLoading: isRestoringSession } = useSession();
 
 
@@ -76,11 +76,11 @@ function AuthPage() {
       parsed.data.email.split("@")[0];
 
     setLoading(true);
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email: parsed.data.email,
       password: parsed.data.password,
       options: {
-        emailRedirectTo: window.location.origin,
+
         data: {
           full_name: redditUsername,
           reddit_profile_url: parsed.data.reddit_profile_url,
@@ -90,23 +90,10 @@ function AuthPage() {
 
     setLoading(false);
     if (error) return toast.error(error.message);
-    if (!data.session) {
-      setPendingEmail(parsed.data.email);
-      toast.success("Account created — check your inbox to confirm your email.");
-      return;
-    }
     toast.success("Account created. Your Reddit profile is being reviewed.");
     navigate({ to: "/opportunities/posts" });
   }
 
-  async function resendConfirmation() {
-    if (!pendingEmail) return;
-    setLoading(true);
-    const { error } = await supabase.auth.resend({ type: "signup", email: pendingEmail });
-    setLoading(false);
-    if (error) return toast.error(error.message);
-    toast.success("Confirmation email sent again.");
-  }
 
 
   if (isRestoringSession || user) {
@@ -131,26 +118,8 @@ function AuthPage() {
           </TabsList>
 
           <TabsContent value="signup" className="mt-6">
-            {pendingEmail && (
-              <div className="mb-5 rounded-lg border border-primary/40 bg-primary/10 p-4 text-sm">
-                <p className="font-medium">Confirm your email address</p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  We sent a confirmation link to <span className="text-foreground">{pendingEmail}</span>.
-                  Click it to activate your account, then sign in. Check your spam folder if you
-                  don't see it.
-                </p>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="mt-3"
-                  disabled={loading}
-                  onClick={resendConfirmation}
-                >
-                  Resend confirmation email
-                </Button>
-              </div>
-            )}
+            
+
             <form onSubmit={handleSignup} className="space-y-4">
 
               <div className="space-y-2">
@@ -175,9 +144,9 @@ function AuthPage() {
                 Create my account
               </Button>
               <p className="text-center text-xs text-muted-foreground">
-                You'll receive a confirmation email. Your account stays pending until it's manually
-                reviewed.
+                Your account stays pending until it's manually reviewed.
               </p>
+
 
             </form>
           </TabsContent>
