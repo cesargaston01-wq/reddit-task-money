@@ -1,27 +1,20 @@
-## Goal
+## Objectif
 
-In the admin area, the Users tab should show the full list of registered people with, for each one, when they signed up and when they last completed a mission.
+Supprimer l'étape de confirmation par email : après inscription, l'utilisateur est connecté immédiatement et arrive directement sur les opportunités.
 
-## What changes
+## Ce qui change
 
-Only the **Users** tab of the admin page (`/admin`). No database change is needed: the admin already loads every profile and every submission, so the "last mission" date can be derived from the submission data already in memory.
+1. **Backend auth** — activer la confirmation automatique des comptes. Les emails de confirmation ne sont plus envoyés du tout, donc plus de problème de spam à l'inscription.
 
-### Per-user info displayed
+2. **Page d'inscription (`src/routes/auth.tsx`)**
+   - Retirer l'encadré « Confirme ton adresse email » et le bouton « Resend confirmation email ».
+   - Retirer la mention « You'll receive a confirmation email » sous le formulaire ; garder « ton compte reste en attente de validation manuelle » (la revue du profil Reddit par l'admin reste inchangée).
+   - Après inscription réussie : redirection directe vers `/opportunities/posts`.
 
-Each user card keeps its current content (name, email, Reddit link, wallet, status badge, Accept/Reject buttons) and gains:
+3. **Rien d'autre ne bouge** : la validation manuelle des comptes Reddit dans l'admin, le statut `pending/accepted`, et l'accès aux missions restent identiques.
 
-- **Joined** — the account creation date, formatted (e.g. "Joined Mar 12, 2026").
-- **Last mission** — the date of that user's most recent submission, with the mission title and its state (pending / approved / rejected). Shows "No mission yet" when the user has never submitted.
-- **Totals** — a compact line with number of approved missions and total earned, so it's clear at a glance who is active.
+## À savoir
 
-### Sorting and searching
-
-- Users sorted by most recent activity first (users with a recent submission on top), then by signup date for those with no activity.
-- A small search field above the list filtering by name, email, or Reddit URL, plus quick filters for Pending / Accepted / Rejected, since the list grows with every signup.
-
-## Technical details
-
-- Build a `Map<user_id, submissions[]>` from the existing `useAllSubmissions()` result in `src/routes/_authenticated/admin.tsx`, and pick the max `created_at` per user for the "last mission" value.
-- Match the mission title through the already-loaded missions list (or the submission's embedded mission relation if present).
-- Dates formatted with `toLocaleDateString("en-US", ...)`; all labels in English, matching the current dark/orange styling and existing `panel` card structure.
-- Local component state for search text and status filter; no new queries or routes.
+- N'importe qui pourra s'inscrire avec une adresse email inexistante ou fausse. Ton filtre reste la validation manuelle du profil Reddit dans l'admin.
+- La réinitialisation de mot de passe par email continuerait de passer par l'expéditeur partagé (donc risque de spam) tant que le domaine d'envoi `taskreddit.com` n'est pas configuré. Ça reste faisable plus tard.
+- C'est réversible en une manip si tu veux réactiver la vérification.
