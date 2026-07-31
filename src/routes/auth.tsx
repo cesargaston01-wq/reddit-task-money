@@ -39,6 +39,19 @@ const signupSchema = z.object({
     .regex(/^https?:\/\/(www\.)?reddit\.com\/user\/[A-Za-z0-9_-]+\/?$/, "e.g. https://reddit.com/user/username"),
 });
 
+function normalizeRedditUrl(raw: string): string {
+  const trimmed = raw.trim();
+  if (!trimmed) return trimmed;
+
+  if (/^https?:\/\//i.test(trimmed)) {
+    return trimmed.replace(/\/$/, "");
+  }
+
+  const username = trimmed.startsWith("@") ? trimmed.slice(1).trim() : trimmed;
+  if (!username) return trimmed;
+  return `https://reddit.com/user/${username}`;
+}
+
 
 function AuthPage() {
   const navigate = useNavigate();
