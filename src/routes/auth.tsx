@@ -175,8 +175,10 @@ function AuthPage() {
                 Create my account
               </Button>
               <p className="text-center text-xs text-muted-foreground">
-                Your account stays pending until it's manually reviewed.
+                You'll receive a confirmation email. Your account stays pending until it's manually
+                reviewed.
               </p>
+
             </form>
           </TabsContent>
 
