@@ -42,21 +42,24 @@ function DiscoverPage() {
   return (
     <div className="min-h-screen">
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
-          <Link to="/" className="font-display text-lg font-bold tracking-tight">
+        <div className="mx-auto grid h-16 max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:px-5">
+          <Link to="/" className="truncate font-display text-base font-bold tracking-tight sm:text-lg">
             Karma<span className="text-primary">Work</span>
           </Link>
-          <div className="flex items-center gap-2">
-            <Button asChild variant="ghost" size="sm">
+          <div className="flex shrink-0 items-center gap-2">
+            <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
               <Link to="/discover">Discover paid tasks</Link>
             </Button>
-            <Button asChild size="sm">
+            <Button asChild size="sm" className="px-3">
               <Link to={user ? "/opportunities/posts" : "/auth"}>
-                {user ? "Go to dashboard" : "Start earning money"}<ArrowRight className="ml-1 h-4 w-4" />
+                <span className="sm:hidden">{user ? "Dashboard" : "Get started"}</span>
+                <span className="hidden sm:inline">{user ? "Go to dashboard" : "Start earning money"}</span>
+                <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </Button>
           </div>
         </div>
+
       </header>
 
       <main className="mx-auto max-w-4xl px-5 py-14">

@@ -75,27 +75,30 @@ function Landing() {
   return (
     <div className="min-h-screen">
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
-          <Link to="/" className="flex items-center gap-2 font-display text-lg font-bold tracking-tight">
-            <img src={redditLogo.url} alt="Reddit logo" className="h-7 w-7" width={28} height={28} />
-            <span>
+        <div className="mx-auto grid h-16 max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:px-5">
+          <Link to="/" className="flex min-w-0 items-center gap-2 font-display text-base font-bold tracking-tight sm:text-lg">
+            <img src={redditLogo.url} alt="Reddit logo" className="h-7 w-7 shrink-0" width={28} height={28} />
+            <span className="truncate">
               Karma<span className="text-primary">Work</span>
             </span>
           </Link>
-          <div className="flex items-center gap-1 sm:gap-2">
-            <Button asChild variant="ghost" size="sm">
+          <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+            <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
               <Link to="/discover">Discover paid tasks</Link>
             </Button>
-            <Button variant="ghost" size="sm" disabled title="Coming soon" className="hidden sm:inline-flex">
+            <Button variant="ghost" size="sm" disabled title="Coming soon" className="hidden md:inline-flex">
               Post a listing
             </Button>
-            <Button asChild size="sm">
+            <Button asChild size="sm" className="px-3">
               <Link to={user ? "/opportunities/posts" : "/auth"}>
-                {user ? "Go to dashboard" : "Start earning money"}<ArrowRight className="ml-1 h-4 w-4" />
+                <span className="sm:hidden">{user ? "Dashboard" : "Get started"}</span>
+                <span className="hidden sm:inline">{user ? "Go to dashboard" : "Start earning money"}</span>
+                <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </Button>
           </div>
         </div>
+
       </header>
 
       <main>
@@ -147,19 +150,20 @@ function Landing() {
               <img
                 src={redditLogo.url}
                 alt="Reddit mascot"
-                className="relative mx-auto w-56 drop-shadow-[0_25px_60px_rgba(255,69,0,0.35)] md:w-72"
+                className="relative mx-auto w-40 drop-shadow-[0_25px_60px_rgba(255,69,0,0.35)] sm:w-56 md:w-72"
                 width={288}
                 height={288}
               />
-              <div className="relative mt-8 grid gap-4 sm:grid-cols-2">
-                <div className="panel elevated p-5 text-left">
+              <div className="relative mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4">
+                <div className="panel elevated p-4 text-left sm:p-5">
+
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <Sparkles className="h-4 w-4 text-primary" /> Post mission
                   </div>
                   <div className="mt-2 font-display text-3xl font-bold">$5</div>
                   <p className="mt-1 text-xs text-muted-foreground">per approved post</p>
                 </div>
-                <div className="panel elevated p-5 text-left">
+                <div className="panel elevated p-4 text-left sm:p-5">
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <MessageSquare className="h-4 w-4 text-primary" /> Comment mission
                   </div>
