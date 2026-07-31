@@ -118,26 +118,8 @@ function AuthPage() {
           </TabsList>
 
           <TabsContent value="signup" className="mt-6">
-            {pendingEmail && (
-              <div className="mb-5 rounded-lg border border-primary/40 bg-primary/10 p-4 text-sm">
-                <p className="font-medium">Confirm your email address</p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  We sent a confirmation link to <span className="text-foreground">{pendingEmail}</span>.
-                  Click it to activate your account, then sign in. Check your spam folder if you
-                  don't see it.
-                </p>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="mt-3"
-                  disabled={loading}
-                  onClick={resendConfirmation}
-                >
-                  Resend confirmation email
-                </Button>
-              </div>
-            )}
+            <></>
+
             <form onSubmit={handleSignup} className="space-y-4">
 
               <div className="space-y-2">
