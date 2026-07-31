@@ -21,7 +21,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useSession } from "@/lib/data";
-import redditLogo from "@/assets/reddit-logo.png.asset.json";
+import redditLogoUrl from "@/assets/reddit-logo.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -77,7 +77,7 @@ function Landing() {
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="mx-auto grid h-16 max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:px-5">
           <Link to="/" className="flex min-w-0 items-center gap-2 font-display text-base font-bold tracking-tight sm:text-lg">
-            <img src={redditLogo.url} alt="Reddit logo" className="h-7 w-7 shrink-0" width={28} height={28} />
+            <img src={redditLogoUrl} alt="Reddit logo" className="h-7 w-7 shrink-0" width={28} height={28} />
             <span className="truncate">
               Task<span className="text-primary">Reddit</span>
             </span>
@@ -148,7 +148,7 @@ function Landing() {
                 className="absolute inset-0 m-auto h-64 w-64 rounded-full bg-primary/30 blur-[90px]"
               />
               <img
-                src={redditLogo.url}
+                src={redditLogoUrl}
                 alt="Reddit mascot"
                 className="relative mx-auto w-40 drop-shadow-[0_25px_60px_rgba(255,69,0,0.35)] sm:w-56 md:w-72"
                 width={288}
@@ -301,7 +301,7 @@ function Landing() {
 
       <footer className="border-t border-border/60 py-8">
         <div className="mx-auto flex max-w-6xl items-center gap-2 px-5 text-xs text-muted-foreground">
-          <img src={redditLogo.url} alt="" className="h-4 w-4 opacity-80" width={16} height={16} />
+          <img src={redditLogoUrl} alt="" className="h-4 w-4 opacity-80" width={16} height={16} />
           © {new Date().getFullYear()} TaskReddit — Paid Reddit missions.
         </div>
       </footer>

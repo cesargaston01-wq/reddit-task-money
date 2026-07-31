@@ -1,4 +1,4 @@
-import redditLogo from "@/assets/reddit-logo.png.asset.json";
+import redditLogoUrl from "@/assets/reddit-logo.png";
 
 const orbits = [
   {
@@ -73,7 +73,7 @@ export default function OrbitingReddit({ className = "" }: { className?: string 
                     }}
                   >
                     <img
-                      src={redditLogo.url}
+                      src={redditLogoUrl}
                       alt=""
                       className={`${orbit.icon} opacity-90`}
                       loading="lazy"
