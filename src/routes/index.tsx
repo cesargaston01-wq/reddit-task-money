@@ -282,10 +282,12 @@ function Landing() {
       </main>
 
       <footer className="border-t border-border/60 py-8">
-        <div className="mx-auto max-w-6xl px-5 text-xs text-muted-foreground">
+        <div className="mx-auto flex max-w-6xl items-center gap-2 px-5 text-xs text-muted-foreground">
+          <img src={redditLogo.url} alt="" className="h-4 w-4 opacity-80" width={16} height={16} />
           © {new Date().getFullYear()} KarmaWork — Paid Reddit missions.
         </div>
       </footer>
+
     </div>
   );
 }
