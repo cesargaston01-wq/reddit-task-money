@@ -9,6 +9,8 @@ import {
   Wallet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import HowItWorks from "@/components/ui/how-it-works";
+
 import {
   Accordion,
   AccordionContent,
@@ -165,18 +167,21 @@ function Landing() {
         </section>
 
 
-        <section className="mx-auto max-w-6xl px-5 py-20">
-          <h2 className="text-2xl font-bold md:text-3xl">How it works</h2>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {steps.map((s) => (
-              <div key={s.n} className="panel p-6">
-                <span className="font-display text-sm font-bold text-primary">{s.n}</span>
-                <h3 className="mt-3 text-lg font-semibold">{s.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{s.text}</p>
-              </div>
-            ))}
+        <section className="py-20">
+          <div className="mx-auto max-w-6xl px-5">
+            <h2 className="text-2xl font-bold md:text-3xl">How it works</h2>
+          </div>
+          <div className="mt-10">
+            <HowItWorks
+              features={steps.map((s, i) => ({
+                title: s.title,
+                description: s.text,
+                colorTheme: (["orange", "blue", "purple"] as const)[i % 3],
+              }))}
+            />
           </div>
         </section>
+
 
         <section className="border-y border-border/60 bg-surface/30">
           <div className="mx-auto max-w-6xl px-5 py-20">
