@@ -70,7 +70,8 @@ function Landing() {
     <div className="min-h-screen">
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
-          <Link to="/" className="font-display text-lg font-bold tracking-tight">
+          <Link to="/" className="flex items-center gap-2 font-display text-lg font-bold tracking-tight">
+            <img src={redditLogo.url} alt="Reddit logo" className="h-7 w-7" width={28} height={28} />
             Karma<span className="text-primary">Work</span>
           </Link>
           <div className="flex items-center gap-1 sm:gap-2">
@@ -90,48 +91,76 @@ function Landing() {
       </header>
 
       <main>
-        <section className="hero-surface border-b border-border/60">
-          <div className="mx-auto max-w-6xl px-5 py-24 text-center md:py-32">
-            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-3 py-1 text-xs text-muted-foreground">
-              <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-              Missions paid in crypto, no admin delays
-            </span>
-            <h1 className="mx-auto mt-6 max-w-3xl text-4xl font-bold leading-[1.05] md:text-6xl">
-              Earn money with your Reddit account
-            </h1>
-            <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground md:text-lg">
-              Publish posts and comments in relevant communities. Clear missions, exact
-              instructions, a fixed payout.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Button asChild size="lg">
-                <Link to={user ? "/opportunities/posts" : "/auth"}>
-                  {user ? "Go to dashboard" : "Start earning money"}<ArrowRight className="ml-1 h-4 w-4" />
-                </Link>
-              </Button>
-              <Button variant="outline" size="lg" disabled title="Coming soon">
-                Post a listing
-              </Button>
+        <section className="hero-surface relative overflow-hidden border-b border-border/60">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-primary/20 blur-[140px]"
+          />
+          <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-5 py-20 md:grid-cols-2 md:py-28">
+            <div className="text-center md:text-left">
+              <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-3 py-1 text-xs text-muted-foreground">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
+                Missions paid in crypto, no admin delays
+              </span>
+              <h1 className="mt-6 text-4xl font-bold leading-[1.05] md:text-6xl">
+                Earn money with your <span className="text-primary">Reddit</span> account
+              </h1>
+              <p className="mt-5 max-w-xl text-base text-muted-foreground md:text-lg">
+                Publish posts and comments in relevant communities. Clear missions, exact
+                instructions, a fixed payout.
+              </p>
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-3 md:justify-start">
+                <Button asChild size="lg">
+                  <Link to={user ? "/opportunities/posts" : "/auth"}>
+                    {user ? "Go to dashboard" : "Start earning money"}<ArrowRight className="ml-1 h-4 w-4" />
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" size="lg">
+                  <Link to="/discover">Discover paid tasks</Link>
+                </Button>
+              </div>
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-muted-foreground md:justify-start">
+                <span className="inline-flex items-center gap-1.5">
+                  <ShieldCheck className="h-3.5 w-3.5 text-primary" /> Manual review under 48h
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <Wallet className="h-3.5 w-3.5 text-primary" /> Crypto payouts
+                </span>
+              </div>
             </div>
 
-            <div className="mx-auto mt-16 grid max-w-3xl gap-4 sm:grid-cols-2">
-              <div className="panel elevated p-6 text-left">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Sparkles className="h-4 w-4 text-primary" /> Post mission
+            <div className="relative mx-auto w-full max-w-md">
+              <div
+                aria-hidden
+                className="absolute inset-0 m-auto h-64 w-64 rounded-full bg-primary/30 blur-[90px]"
+              />
+              <img
+                src={redditLogo.url}
+                alt="Reddit mascot"
+                className="relative mx-auto w-56 drop-shadow-[0_25px_60px_rgba(255,69,0,0.35)] md:w-72"
+                width={288}
+                height={288}
+              />
+              <div className="relative mt-8 grid gap-4 sm:grid-cols-2">
+                <div className="panel elevated p-5 text-left">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Sparkles className="h-4 w-4 text-primary" /> Post mission
+                  </div>
+                  <div className="mt-2 font-display text-3xl font-bold">$5</div>
+                  <p className="mt-1 text-xs text-muted-foreground">per approved post</p>
                 </div>
-                <div className="mt-3 font-display text-4xl font-bold">$5</div>
-                <p className="mt-1 text-sm text-muted-foreground">per approved post</p>
-              </div>
-              <div className="panel elevated p-6 text-left">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <MessageSquare className="h-4 w-4 text-primary" /> Comment mission
+                <div className="panel elevated p-5 text-left">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <MessageSquare className="h-4 w-4 text-primary" /> Comment mission
+                  </div>
+                  <div className="mt-2 font-display text-3xl font-bold">$3</div>
+                  <p className="mt-1 text-xs text-muted-foreground">per approved comment</p>
                 </div>
-                <div className="mt-3 font-display text-4xl font-bold">$3</div>
-                <p className="mt-1 text-sm text-muted-foreground">per approved comment</p>
               </div>
             </div>
           </div>
         </section>
+
 
         <section className="mx-auto max-w-6xl px-5 py-20">
           <h2 className="text-2xl font-bold md:text-3xl">How it works</h2>
