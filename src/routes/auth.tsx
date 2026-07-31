@@ -40,7 +40,7 @@ const signupSchema = z.object({
 function AuthPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [pendingEmail, setPendingEmail] = useState<string | null>(null);
+  
   const { data: user, isLoading: isRestoringSession } = useSession();
 
 
