@@ -4,7 +4,6 @@ import type { Tables } from "@/integrations/supabase/types";
 import {
   reserveMission,
   releaseMission,
-  submitMissionLink,
 } from "@/lib/missions.functions";
 
 
@@ -150,7 +149,30 @@ export function useSubmitMission() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ mission, url }: { mission: Mission; url: string }) => {
-      await submitMissionLink({ data: { missionId: mission.id, url } });
+      const submittedUrl = url.trim();
+      if (!/^https?:\/\/(www\.|old\.|new\.)?reddit\.com\/.+/i.test(submittedUrl)) {
+        throw new Error("Enter a valid Reddit link.");
+      }
+
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      if (userError || !userData.user) {
+        throw new Error("Sign in again before submitting your link.");
+      }
+
+      const { error } = await supabase.from("submissions").insert({
+        mission_id: mission.id,
+        user_id: userData.user.id,
+        submitted_url: submittedUrl,
+        amount: mission.payout,
+      });
+
+      if (error?.code === "23505") {
+        throw new Error("This mission was just taken by another member.");
+      }
+      if (error?.code === "42501") {
+        throw new Error("Your reservation expired. Take the mission again to submit your link.");
+      }
+      if (error) throw new Error(error.message);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["missions"] });
