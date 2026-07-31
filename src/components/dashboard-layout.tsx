@@ -68,7 +68,7 @@ export function DashboardLayout({
 
         <div className="flex h-16 items-center px-5">
           <Link to="/" className="font-display text-base font-bold">
-            Karma<span className="text-primary">Work</span>
+            Task<span className="text-primary">Reddit</span>
           </Link>
         </div>
         <nav className="space-y-1 px-3">
@@ -106,7 +106,7 @@ export function DashboardLayout({
           <Button variant="ghost" size="icon" onClick={() => setOpen((v) => !v)}>
             <Menu className="h-5 w-5" />
           </Button>
-          <span className="font-display font-bold">KarmaWork</span>
+          <span className="font-display font-bold">TaskReddit</span>
         </header>
         <main className="flex-1 px-5 py-8 md:px-10">
           <div className="mx-auto max-w-5xl">

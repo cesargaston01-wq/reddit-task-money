@@ -4,8 +4,7 @@ import { OpportunityList } from "@/components/opportunity-list";
 
 export const Route = createFileRoute("/_authenticated/opportunities/comments")({
   head: () => ({
-    meta: [
-      { title: "Comment opportunities — KarmaWork" },
+	"Comment opportunities — TaskReddit" },
       { name: "description", content: "Paid Reddit comment missions rewarded $3 each." },
     ],
   }),

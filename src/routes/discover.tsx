@@ -44,7 +44,7 @@ function DiscoverPage() {
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="mx-auto grid h-16 max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:px-5">
           <Link to="/" className="truncate font-display text-base font-bold tracking-tight sm:text-lg">
-            Karma<span className="text-primary">Work</span>
+            Task<span className="text-primary">Reddit</span>
           </Link>
           <div className="flex shrink-0 items-center gap-2">
             <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
@@ -104,7 +104,7 @@ function DiscoverPage() {
 
       <footer className="border-t border-border/60 py-8">
         <div className="mx-auto max-w-6xl px-5 text-xs text-muted-foreground">
-          © {new Date().getFullYear()} KarmaWork — Paid Reddit missions.
+          © {new Date().getFullYear()} TaskReddit — Paid Reddit missions.
         </div>
       </footer>
     </div>

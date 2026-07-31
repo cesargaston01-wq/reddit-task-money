@@ -12,12 +12,12 @@ import { useSession } from "@/lib/data";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in — KarmaWork" },
+      { title: "Sign in — TaskReddit" },
       {
         name: "description",
         content: "Sign in or create your Reddit worker account to access paid missions.",
       },
-      { property: "og:title", content: "Sign in — KarmaWork" },
+      { property: "og:title", content: "Sign in — TaskReddit" },
       { property: "og:description", content: "Access your Reddit missions dashboard." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -107,7 +107,7 @@ function AuthPage() {
   return (
     <div className="hero-surface flex min-h-screen flex-col items-center justify-center px-5 py-12">
       <Link to="/" className="mb-8 font-display text-lg font-bold">
-        Karma<span className="text-primary">Work</span>
+        Task<span className="text-primary">Reddit</span>
       </Link>
 
       <div className="panel elevated w-full max-w-md p-6">
