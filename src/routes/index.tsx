@@ -25,26 +25,65 @@ import {
 import { useSession } from "@/lib/data";
 import redditLogoUrl from "@/assets/reddit-logo.png";
 
+const SITE_URL = "https://reddit-task-money.lovable.app";
+
+const faqs = [
+  {
+    q: "Who publishes the missions?",
+    a: "For now, every mission is published by the TaskReddit team. Opening it up to companies will come in a future version.",
+  },
+  {
+    q: "When do I get paid?",
+    a: "After your publication is reviewed and has been online for at least 3 hours. The payment is then sent to your crypto wallet.",
+  },
+  {
+    q: "Can I delete my publication?",
+    a: "No. Publications must stay online. Deleting a post after being paid results in your future missions being refused.",
+  },
+  {
+    q: "What happens if my account is rejected?",
+    a: "You get the reason in your dashboard. You can re-apply with an account that meets the requirements.",
+  },
+  {
+    q: "Can several people do the same mission?",
+    a: "No. As soon as a mission is submitted, it automatically disappears for everyone else.",
+  },
+];
+
+const HOME_TITLE = "Get paid for Reddit posts & comments — TaskReddit";
+const HOME_DESCRIPTION =
+  "TaskReddit pays $5 per approved Reddit post and $3 per approved comment. Verified accounts pick missions and get paid in crypto.";
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "TaskReddit — Monetize your Reddit account" },
-      {
-        name: "description",
-        content:
-          "Earn money with your Reddit account: publish posts and comments in relevant communities. get paid for each Task",
-      },
-      { property: "og:title", content: "TaskReddit — Monetize your Reddit account" },
-      {
-        property: "og:description",
-        content: "Earn money with your Reddit account: publish posts and comments in relevant communities. get paid for each Task",
-      },
+      { title: HOME_TITLE },
+      { name: "description", content: HOME_DESCRIPTION },
+      { property: "og:title", content: HOME_TITLE },
+      { property: "og:description", content: HOME_DESCRIPTION },
+      { property: "og:url", content: `${SITE_URL}/` },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+    ],
+    links: [{ rel: "canonical", href: `${SITE_URL}/` }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqs.map((f) => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: { "@type": "Answer", text: f.a },
+          })),
+        }),
+      },
     ],
   }),
   component: Landing,
 });
+
 
 const steps = [
   {
