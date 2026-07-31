@@ -1,10 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
-import {
-  reserveMission,
-  releaseMission,
-} from "@/lib/missions.functions";
 
 
 export type Profile = Tables<"profiles">;
@@ -184,7 +180,30 @@ export function useSubmitMission() {
 export function useReserveMission() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (missionId: string) => reserveMission({ data: { missionId } }),
+    mutationFn: async (missionId: string) => {
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      if (userError || !userData.user) {
+        throw new Error("Sign in again before taking a mission.");
+      }
+
+      const now = new Date();
+      const reservedUntil = new Date(now.getTime() + 10 * 60_000).toISOString();
+      const { data, error } = await supabase
+        .from("missions")
+        .update({ reserved_by: userData.user.id, reserved_until: reservedUntil })
+        .eq("id", missionId)
+        .eq("is_active", true)
+        .eq("is_locked", false)
+        .or(
+          `reserved_until.is.null,reserved_until.lt.${now.toISOString()},reserved_by.eq.${userData.user.id}`,
+        )
+        .select("id, reserved_until")
+        .maybeSingle();
+
+      if (error) throw new Error(error.message);
+      if (!data) throw new Error("This mission was just reserved by another member.");
+      return { reservedUntil: data.reserved_until };
+    },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["missions"] }),
   });
 }
@@ -192,7 +211,24 @@ export function useReserveMission() {
 export function useReleaseMission() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (missionId: string) => releaseMission({ data: { missionId } }),
+    mutationFn: async (missionId: string) => {
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      if (userError || !userData.user) {
+        throw new Error("Sign in again before releasing a mission.");
+      }
+
+      const { data, error } = await supabase
+        .from("missions")
+        .update({ reserved_by: null, reserved_until: null })
+        .eq("id", missionId)
+        .eq("reserved_by", userData.user.id)
+        .select("id")
+        .maybeSingle();
+
+      if (error) throw new Error(error.message);
+      if (!data) throw new Error("This reservation is no longer active.");
+      return { ok: true };
+    },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["missions"] }),
   });
 }
