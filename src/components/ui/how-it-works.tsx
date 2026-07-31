@@ -157,20 +157,19 @@ export default function HowItWorks({ features, className, stepPositions }: HowIt
             {data.length > 1 && (
               <svg
                 className="pointer-events-none absolute inset-0 hidden h-full w-full md:block"
-                viewBox="0 0 1140 1130"
+                viewBox={`0 0 1140 ${height}`}
                 fill="none"
                 preserveAspectRatio="none"
                 aria-hidden="true"
               >
                 {(() => {
-                  const pathD = data.reduce((acc, _, index) => {
-                    if (index >= data.length - 1) return acc;
-                    if (index === 0) return "M 290 150 C 500 150, 550 270, 710 270";
-                    if (index === 1) return acc + " C 850 270, 500 350, 290 450";
-                    if (index === 2) return acc + " C 290 600, 550 720, 750 720";
-                    if (index === 3) return acc + " C 950 720, 500 800, 290 850";
-                    return acc;
-                  }, "");
+                  const segments = [
+                    "M 511 95 C 580 95, 570 215, 629 215",
+                    "M 629 300 C 560 340, 580 440, 511 500",
+                    "M 511 545 C 600 545, 620 665, 700 665",
+                    "M 700 750 C 600 790, 600 870, 511 900",
+                  ];
+                  const pathD = segments.slice(0, data.length - 1).join(" ");
                   return (
                     <m.path
                       d={pathD}
@@ -188,6 +187,7 @@ export default function HowItWorks({ features, className, stepPositions }: HowIt
                 })()}
               </svg>
             )}
+
 
             {data.map((step, index) => {
               const position = positions[index % positions.length];
