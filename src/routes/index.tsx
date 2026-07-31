@@ -163,7 +163,7 @@ function Landing() {
                   <div className="mt-2 font-display text-3xl font-bold">$5</div>
                   <p className="mt-1 text-xs text-muted-foreground">per approved post</p>
                 </div>
-                <div className="panel elevated p-5 text-left">
+                <div className="panel elevated p-4 text-left sm:p-5">
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <MessageSquare className="h-4 w-4 text-primary" /> Comment mission
                   </div>
