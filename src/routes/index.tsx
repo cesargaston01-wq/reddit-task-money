@@ -294,28 +294,8 @@ function Landing() {
           <div className="mx-auto max-w-3xl px-5 py-20">
             <h2 className="text-2xl font-bold md:text-3xl">Frequently asked questions</h2>
             <Accordion type="single" collapsible className="mt-6">
-              {[
-                {
-                  q: "Who publishes the missions?",
-                  a: "For now, every mission is published by the TaskReddit team. Opening it up to companies will come in a future version.",
-                },
-                {
-                  q: "When do I get paid?",
-                  a: "After your publication is reviewed and has been online for at least 3 hours. The payment is then sent to your crypto wallet.",
-                },
-                {
-                  q: "Can I delete my publication?",
-                  a: "No. Publications must stay online. Deleting a post after being paid results in your future missions being refused.",
-                },
-                {
-                  q: "What happens if my account is rejected?",
-                  a: "You get the reason in your dashboard. You can re-apply with an account that meets the requirements.",
-                },
-                {
-                  q: "Can several people do the same mission?",
-                  a: "No. As soon as a mission is submitted, it automatically disappears for everyone else.",
-                },
-              ].map((item, i) => (
+              {faqs.map((item, i) => (
+
                 <AccordionItem key={item.q} value={`item-${i}`}>
                   <AccordionTrigger className="text-left text-base">{item.q}</AccordionTrigger>
                   <AccordionContent className="text-sm text-muted-foreground">
