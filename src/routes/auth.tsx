@@ -20,9 +20,12 @@ export const Route = createFileRoute("/auth")({
       { property: "og:title", content: "Sign in — TaskReddit" },
       { property: "og:description", content: "Access your Reddit missions dashboard." },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://reddit-task-money.lovable.app/auth" },
       { name: "twitter:card", content: "summary" },
     ],
+    links: [{ rel: "canonical", href: "https://reddit-task-money.lovable.app/auth" }],
   }),
+
   component: AuthPage,
 });
 
