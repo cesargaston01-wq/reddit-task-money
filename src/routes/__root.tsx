@@ -106,7 +106,32 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://reddit-task-money.lovable.app/#organization",
+              name: "TaskReddit",
+              url: "https://reddit-task-money.lovable.app/",
+              email: "cesar@skilfut.com",
+            },
+            {
+              "@type": "WebSite",
+              "@id": "https://reddit-task-money.lovable.app/#website",
+              name: "TaskReddit",
+              url: "https://reddit-task-money.lovable.app/",
+              publisher: { "@id": "https://reddit-task-money.lovable.app/#organization" },
+            },
+          ],
+        }),
+      },
+    ],
   }),
+
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
