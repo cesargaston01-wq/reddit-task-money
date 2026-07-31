@@ -151,11 +151,11 @@ function AuthPage() {
                 <Input id="s-pass" name="password" type="password" required minLength={8} maxLength={72} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="s-reddit">Link to your Reddit profile</Label>
+                <Label htmlFor="s-reddit">Link to your Reddit profile or @username</Label>
                 <Input
                   id="s-reddit"
                   name="reddit_profile_url"
-                  placeholder="https://reddit.com/user/username"
+                  placeholder="https://reddit.com/user/username or @username"
                   required
                   maxLength={255}
                 />
