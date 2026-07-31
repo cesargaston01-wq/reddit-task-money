@@ -10,13 +10,13 @@ export const Route = createFileRoute("/discover")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Discover paid tasks — KarmaWork" },
+      { title: "Discover paid tasks — TaskReddit" },
       {
         name: "description",
         content:
           "Browse every available Reddit mission for free: paid posts at $5 and comments at $3, with full read-only instructions.",
       },
-      { property: "og:title", content: "Discover paid tasks — KarmaWork" },
+      { property: "og:title", content: "Discover paid tasks — TaskReddit" },
       {
         property: "og:description",
         content: "All open Reddit opportunities: $5 per post, $3 per comment.",
@@ -44,7 +44,7 @@ function DiscoverPage() {
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="mx-auto grid h-16 max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:px-5">
           <Link to="/" className="truncate font-display text-base font-bold tracking-tight sm:text-lg">
-            Karma<span className="text-primary">Work</span>
+            Task<span className="text-primary">Reddit</span>
           </Link>
           <div className="flex shrink-0 items-center gap-2">
             <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
@@ -104,7 +104,7 @@ function DiscoverPage() {
 
       <footer className="border-t border-border/60 py-8">
         <div className="mx-auto max-w-6xl px-5 text-xs text-muted-foreground">
-          © {new Date().getFullYear()} KarmaWork — Paid Reddit missions.
+          © {new Date().getFullYear()} TaskReddit — Paid Reddit missions.
         </div>
       </footer>
     </div>

@@ -23,7 +23,7 @@ import {
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
-      { title: "Administration — KarmaWork" },
+      { title: "Administration — TaskReddit" },
       { name: "description", content: "Manage missions, submissions and Reddit accounts." },
     ],
   }),
