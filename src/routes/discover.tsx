@@ -10,13 +10,13 @@ export const Route = createFileRoute("/discover")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "Discover paid tasks — KarmaWork" },
+      { title: "Discover paid tasks — TaskReddit" },
       {
         name: "description",
         content:
           "Browse every available Reddit mission for free: paid posts at $5 and comments at $3, with full read-only instructions.",
       },
-      { property: "og:title", content: "Discover paid tasks — KarmaWork" },
+      { property: "og:title", content: "Discover paid tasks — TaskReddit" },
       {
         property: "og:description",
         content: "All open Reddit opportunities: $5 per post, $3 per comment.",

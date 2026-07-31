@@ -7,7 +7,7 @@ import { useMySubmissions } from "@/lib/data";
 export const Route = createFileRoute("/_authenticated/history")({
   head: () => ({
     meta: [
-      { title: "My missions — KarmaWork" },
+      { title: "My missions — TaskReddit" },
       { name: "description", content: "Track the status of every Reddit mission you submitted." },
     ],
   }),

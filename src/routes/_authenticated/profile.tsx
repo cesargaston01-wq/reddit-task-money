@@ -14,7 +14,7 @@ import { useMySubmissions, useProfile } from "@/lib/data";
 export const Route = createFileRoute("/_authenticated/profile")({
   head: () => ({
     meta: [
-      { title: "Profile — KarmaWork" },
+      { title: "Profile — TaskReddit" },
       { name: "description", content: "Your crypto wallet, your Reddit profile and your earnings." },
     ],
   }),

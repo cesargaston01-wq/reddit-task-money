@@ -26,13 +26,13 @@ import redditLogo from "@/assets/reddit-logo.png.asset.json";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "KarmaWork — Monetize your Reddit account" },
+      { title: "TaskReddit — Monetize your Reddit account" },
       {
         name: "description",
         content:
           "Earn money with your Reddit account: publish posts ($5) and comments ($3) in relevant communities. Paid in crypto.",
       },
-      { property: "og:title", content: "KarmaWork — Monetize your Reddit account" },
+      { property: "og:title", content: "TaskReddit — Monetize your Reddit account" },
       {
         property: "og:description",
         content: "Earn money with your Reddit account: publish posts ($5) and comments ($3) in relevant communities. Paid in crypto.",
@@ -79,7 +79,7 @@ function Landing() {
           <Link to="/" className="flex min-w-0 items-center gap-2 font-display text-base font-bold tracking-tight sm:text-lg">
             <img src={redditLogo.url} alt="Reddit logo" className="h-7 w-7 shrink-0" width={28} height={28} />
             <span className="truncate">
-              Karma<span className="text-primary">Work</span>
+              Task<span className="text-primary">Reddit</span>
             </span>
           </Link>
           <div className="flex shrink-0 items-center gap-1 sm:gap-2">
@@ -256,7 +256,7 @@ function Landing() {
               {[
                 {
                   q: "Who publishes the missions?",
-                  a: "For now, every mission is published by the KarmaWork team. Opening it up to companies will come in a future version.",
+                  a: "For now, every mission is published by the TaskReddit team. Opening it up to companies will come in a future version.",
                 },
                 {
                   q: "When do I get paid?",
@@ -302,7 +302,7 @@ function Landing() {
       <footer className="border-t border-border/60 py-8">
         <div className="mx-auto flex max-w-6xl items-center gap-2 px-5 text-xs text-muted-foreground">
           <img src={redditLogo.url} alt="" className="h-4 w-4 opacity-80" width={16} height={16} />
-          © {new Date().getFullYear()} KarmaWork — Paid Reddit missions.
+          © {new Date().getFullYear()} TaskReddit — Paid Reddit missions.
         </div>
       </footer>
 
