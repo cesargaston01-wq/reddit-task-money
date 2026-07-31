@@ -150,12 +150,13 @@ function Landing() {
               <img
                 src={redditLogo.url}
                 alt="Reddit mascot"
-                className="relative mx-auto w-56 drop-shadow-[0_25px_60px_rgba(255,69,0,0.35)] md:w-72"
+                className="relative mx-auto w-40 drop-shadow-[0_25px_60px_rgba(255,69,0,0.35)] sm:w-56 md:w-72"
                 width={288}
                 height={288}
               />
-              <div className="relative mt-8 grid gap-4 sm:grid-cols-2">
-                <div className="panel elevated p-5 text-left">
+              <div className="relative mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4">
+                <div className="panel elevated p-4 text-left sm:p-5">
+
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <Sparkles className="h-4 w-4 text-primary" /> Post mission
                   </div>
