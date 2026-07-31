@@ -90,23 +90,10 @@ function AuthPage() {
 
     setLoading(false);
     if (error) return toast.error(error.message);
-    if (!data.session) {
-      setPendingEmail(parsed.data.email);
-      toast.success("Account created — check your inbox to confirm your email.");
-      return;
-    }
     toast.success("Account created. Your Reddit profile is being reviewed.");
     navigate({ to: "/opportunities/posts" });
   }
 
-  async function resendConfirmation() {
-    if (!pendingEmail) return;
-    setLoading(true);
-    const { error } = await supabase.auth.resend({ type: "signup", email: pendingEmail });
-    setLoading(false);
-    if (error) return toast.error(error.message);
-    toast.success("Confirmation email sent again.");
-  }
 
 
   if (isRestoringSession || user) {
