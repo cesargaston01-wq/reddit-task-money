@@ -10,6 +10,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import HowItWorks from "@/components/ui/how-it-works";
+import OrbitingReddit from "@/components/ui/orbiting-reddit";
+
 
 import {
   Accordion,
@@ -101,8 +103,10 @@ function Landing() {
             aria-hidden
             className="pointer-events-none absolute -top-40 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-primary/20 blur-[140px]"
           />
+          <OrbitingReddit className="hidden opacity-30 md:block" />
           <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-5 py-20 md:grid-cols-2 md:py-28">
             <div className="text-center md:text-left">
+
               <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-3 py-1 text-xs text-muted-foreground">
                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
                 Missions paid in crypto, no admin delays
