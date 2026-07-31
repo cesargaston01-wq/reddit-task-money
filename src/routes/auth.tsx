@@ -40,7 +40,9 @@ const signupSchema = z.object({
 function AuthPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [pendingEmail, setPendingEmail] = useState<string | null>(null);
   const { data: user, isLoading: isRestoringSession } = useSession();
+
 
   useEffect(() => {
     if (user) navigate({ to: "/opportunities/posts", replace: true });
@@ -89,12 +91,23 @@ function AuthPage() {
     setLoading(false);
     if (error) return toast.error(error.message);
     if (!data.session) {
-      toast.success("Account created. Confirm your email, then sign in.");
+      setPendingEmail(parsed.data.email);
+      toast.success("Account created — check your inbox to confirm your email.");
       return;
     }
     toast.success("Account created. Your Reddit profile is being reviewed.");
     navigate({ to: "/opportunities/posts" });
   }
+
+  async function resendConfirmation() {
+    if (!pendingEmail) return;
+    setLoading(true);
+    const { error } = await supabase.auth.resend({ type: "signup", email: pendingEmail });
+    setLoading(false);
+    if (error) return toast.error(error.message);
+    toast.success("Confirmation email sent again.");
+  }
+
 
   if (isRestoringSession || user) {
     return (
