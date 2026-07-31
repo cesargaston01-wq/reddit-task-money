@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import HowItWorks from "@/components/ui/how-it-works";
 import OrbitingReddit from "@/components/ui/orbiting-reddit";
+import { BoldStats } from "@/components/ui/stats-bold";
 
 
 import {
@@ -241,6 +242,8 @@ function Landing() {
             </div>
           </div>
         </section>
+
+        <BoldStats />
 
         <section className="border-y border-border/60 bg-surface/30">
           <div className="mx-auto max-w-3xl px-5 py-20">
