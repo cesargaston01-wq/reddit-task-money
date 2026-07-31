@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import HowItWorks from "@/components/ui/how-it-works";
 import OrbitingReddit from "@/components/ui/orbiting-reddit";
+import { BoldStats } from "@/components/ui/stats-bold";
 
 
 import {
