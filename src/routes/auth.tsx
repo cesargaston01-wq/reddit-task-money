@@ -80,10 +80,11 @@ function AuthPage() {
   async function handleSignup(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
+    const redditUrl = normalizeRedditUrl(String(fd.get("reddit_profile_url") ?? ""));
     const parsed = signupSchema.safeParse({
       email: fd.get("email"),
       password: fd.get("password"),
-      reddit_profile_url: fd.get("reddit_profile_url"),
+      reddit_profile_url: redditUrl,
     });
     if (!parsed.success) return toast.error(parsed.error.issues[0].message);
 
