@@ -76,11 +76,11 @@ function AuthPage() {
       parsed.data.email.split("@")[0];
 
     setLoading(true);
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email: parsed.data.email,
       password: parsed.data.password,
       options: {
-        emailRedirectTo: window.location.origin,
+
         data: {
           full_name: redditUsername,
           reddit_profile_url: parsed.data.reddit_profile_url,
