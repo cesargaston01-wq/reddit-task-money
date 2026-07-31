@@ -243,6 +243,8 @@ function Landing() {
           </div>
         </section>
 
+        <BoldStats />
+
         <section className="border-y border-border/60 bg-surface/30">
           <div className="mx-auto max-w-3xl px-5 py-20">
             <h2 className="text-2xl font-bold md:text-3xl">Frequently asked questions</h2>
