@@ -52,12 +52,20 @@ export function DashboardLayout({
 
   return (
     <div className="flex min-h-screen w-full">
+      {open ? (
+        <div
+          className="fixed inset-0 z-30 bg-background/70 backdrop-blur-sm md:hidden"
+          onClick={() => setOpen(false)}
+          aria-hidden
+        />
+      ) : null}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 w-64 shrink-0 border-r border-sidebar-border bg-sidebar transition-transform md:translate-x-0",
+          "fixed inset-y-0 left-0 z-40 w-64 max-w-[80vw] shrink-0 border-r border-sidebar-border bg-sidebar transition-transform md:translate-x-0",
           open ? "translate-x-0" : "-translate-x-full",
         )}
       >
+
         <div className="flex h-16 items-center px-5">
           <Link to="/" className="font-display text-base font-bold">
             Karma<span className="text-primary">Work</span>
