@@ -103,7 +103,7 @@ export function DashboardLayout({
 
       <div className="flex min-w-0 flex-1 flex-col md:pl-64">
         <header className="flex h-16 items-center gap-3 border-b border-border px-5 md:hidden">
-          <Button variant="ghost" size="icon" onClick={() => setOpen((v) => !v)}>
+          <Button variant="ghost" size="icon" aria-label="Toggle navigation menu" aria-expanded={open} onClick={() => setOpen((v) => !v)}>
             <Menu className="h-5 w-5" />
           </Button>
           <span className="font-display font-bold">TaskReddit</span>

@@ -20,9 +20,12 @@ export const Route = createFileRoute("/auth")({
       { property: "og:title", content: "Sign in — TaskReddit" },
       { property: "og:description", content: "Access your Reddit missions dashboard." },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://reddit-task-money.lovable.app/auth" },
       { name: "twitter:card", content: "summary" },
     ],
+    links: [{ rel: "canonical", href: "https://reddit-task-money.lovable.app/auth" }],
   }),
+
   component: AuthPage,
 });
 
@@ -110,7 +113,10 @@ function AuthPage() {
         Task<span className="text-primary">Reddit</span>
       </Link>
 
+      <h1 className="mb-6 text-center text-2xl font-bold">Access your TaskReddit account</h1>
+
       <div className="panel elevated w-full max-w-md p-6">
+
         <Tabs defaultValue="signup">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="signup">Sign up</TabsTrigger>

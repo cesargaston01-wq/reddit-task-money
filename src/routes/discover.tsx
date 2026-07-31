@@ -22,9 +22,12 @@ export const Route = createFileRoute("/discover")({
         content: "All open Reddit opportunities: $5 per post, $3 per comment.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://reddit-task-money.lovable.app/discover" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
+    links: [{ rel: "canonical", href: "https://reddit-task-money.lovable.app/discover" }],
   }),
+
   component: DiscoverPage,
 });
 

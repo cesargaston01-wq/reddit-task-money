@@ -12,3 +12,9 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /history
+Disallow: /profile
+Disallow: /opportunities/
+
+Sitemap: https://reddit-task-money.lovable.app/sitemap.xml
