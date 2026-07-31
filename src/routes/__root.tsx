@@ -82,16 +82,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "TaskReddit — Monetize your Reddit account" },
       {
         name: "description",
-        content: "Earn money with your Reddit account: publish posts ($5) and comments ($3) in relevant communities. Paid in crypto.",
+        content: "Earn money with your Reddit account: publish posts and comments in relevant communities. get paid for each Task",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:title", content: "TaskReddit — Monetize your Reddit account" },
       { name: "twitter:title", content: "TaskReddit — Monetize your Reddit account" },
-      { property: "og:description", content: "Earn money with your Reddit account: publish posts ($5) and comments ($3) in relevant communities. Paid in crypto." },
-      { name: "twitter:description", content: "Earn money with your Reddit account: publish posts ($5) and comments ($3) in relevant communities. Paid in crypto." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/f35b9d5f-fd85-4d80-90b7-ea27b020d06f/id-preview-ca73fc0e--5b72e116-738f-4e52-9abc-1d0bf77410fa.lovable.app-1785328568146.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/f35b9d5f-fd85-4d80-90b7-ea27b020d06f/id-preview-ca73fc0e--5b72e116-738f-4e52-9abc-1d0bf77410fa.lovable.app-1785328568146.png" },
+      { property: "og:description", content: "Earn money with your Reddit account: publish posts and comments in relevant communities. get paid for each Task" },
+      { name: "twitter:description", content: "Earn money with your Reddit account: publish posts and comments in relevant communities. get paid for each Task" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/1f2098f6-0ef9-4684-9a98-d2929c31801d" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/1f2098f6-0ef9-4684-9a98-d2929c31801d" },
     ],
     links: [
       {

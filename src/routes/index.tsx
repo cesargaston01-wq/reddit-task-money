@@ -30,12 +30,12 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Earn money with your Reddit account: publish posts ($5) and comments ($3) in relevant communities. Paid in crypto.",
+          "Earn money with your Reddit account: publish posts and comments in relevant communities. get paid for each Task",
       },
       { property: "og:title", content: "TaskReddit — Monetize your Reddit account" },
       {
         property: "og:description",
-        content: "Earn money with your Reddit account: publish posts ($5) and comments ($3) in relevant communities. Paid in crypto.",
+        content: "Earn money with your Reddit account: publish posts and comments in relevant communities. get paid for each Task",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
