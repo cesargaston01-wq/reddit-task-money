@@ -73,7 +73,9 @@ function Landing() {
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
           <Link to="/" className="flex items-center gap-2 font-display text-lg font-bold tracking-tight">
             <img src={redditLogo.url} alt="Reddit logo" className="h-7 w-7" width={28} height={28} />
-            Karma<span className="text-primary">Work</span>
+            <span>
+              Karma<span className="text-primary">Work</span>
+            </span>
           </Link>
           <div className="flex items-center gap-1 sm:gap-2">
             <Button asChild variant="ghost" size="sm">
