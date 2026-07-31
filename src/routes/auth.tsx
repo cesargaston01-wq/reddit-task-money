@@ -39,6 +39,19 @@ const signupSchema = z.object({
     .regex(/^https?:\/\/(www\.)?reddit\.com\/user\/[A-Za-z0-9_-]+\/?$/, "e.g. https://reddit.com/user/username"),
 });
 
+function normalizeRedditUrl(raw: string): string {
+  const trimmed = raw.trim();
+  if (!trimmed) return trimmed;
+
+  if (/^https?:\/\//i.test(trimmed)) {
+    return trimmed.replace(/\/$/, "");
+  }
+
+  const username = trimmed.startsWith("@") ? trimmed.slice(1).trim() : trimmed;
+  if (!username) return trimmed;
+  return `https://reddit.com/user/${username}`;
+}
+
 
 function AuthPage() {
   const navigate = useNavigate();
@@ -67,10 +80,11 @@ function AuthPage() {
   async function handleSignup(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
+    const redditUrl = normalizeRedditUrl(String(fd.get("reddit_profile_url") ?? ""));
     const parsed = signupSchema.safeParse({
       email: fd.get("email"),
       password: fd.get("password"),
-      reddit_profile_url: fd.get("reddit_profile_url"),
+      reddit_profile_url: redditUrl,
     });
     if (!parsed.success) return toast.error(parsed.error.issues[0].message);
 
@@ -137,11 +151,11 @@ function AuthPage() {
                 <Input id="s-pass" name="password" type="password" required minLength={8} maxLength={72} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="s-reddit">Link to your Reddit profile</Label>
+                <Label htmlFor="s-reddit">Link to your Reddit profile or @username</Label>
                 <Input
                   id="s-reddit"
                   name="reddit_profile_url"
-                  placeholder="https://reddit.com/user/username"
+                  placeholder="https://reddit.com/user/username or @username"
                   required
                   maxLength={255}
                 />
