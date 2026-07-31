@@ -113,7 +113,10 @@ function AuthPage() {
         Task<span className="text-primary">Reddit</span>
       </Link>
 
+      <h1 className="mb-6 text-center text-2xl font-bold">Access your TaskReddit account</h1>
+
       <div className="panel elevated w-full max-w-md p-6">
+
         <Tabs defaultValue="signup">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="signup">Sign up</TabsTrigger>
