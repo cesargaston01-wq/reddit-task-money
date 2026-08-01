@@ -75,7 +75,7 @@ export function useMissions(type: "post" | "comment") {
         .eq("is_active", true)
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return data as Mission[];
+      return data as unknown as Mission[];
     },
   });
 }
