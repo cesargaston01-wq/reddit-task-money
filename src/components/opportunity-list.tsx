@@ -241,22 +241,34 @@ export function MissionBrowser({
                   {type === "post" ? (
                     <>
                       <Field label="Exact title to use">
-                        <pre className="whitespace-pre-wrap font-sans">{selected.post_title}</pre>
+                        <pre className="whitespace-pre-wrap font-sans">
+                          {selected.post_title ?? LOCKED_PLACEHOLDER}
+                        </pre>
                       </Field>
                       <Field label="Full body">
-                        <pre className="whitespace-pre-wrap font-sans">{selected.post_body}</pre>
+                        <pre className="whitespace-pre-wrap font-sans">
+                          {selected.post_body ?? LOCKED_PLACEHOLDER}
+                        </pre>
                       </Field>
-                      {selected.flair ? <Field label="Flair to select">{selected.flair}</Field> : null}
+                      {selected.flair || !canSubmit ? (
+                        <Field label="Flair to select">
+                          {selected.flair ?? "Locked flair"}
+                        </Field>
+                      ) : null}
                     </>
                   ) : (
                     <Field label="Exact comment to publish">
-                      <pre className="whitespace-pre-wrap font-sans">{selected.comment_text}</pre>
+                      <pre className="whitespace-pre-wrap font-sans">
+                        {selected.comment_text ?? LOCKED_PLACEHOLDER}
+                      </pre>
                     </Field>
                   )}
 
-                  {selected.instructions ? (
+                  {selected.instructions || !canSubmit ? (
                     <Field label="Specific instructions">
-                      <pre className="whitespace-pre-wrap font-sans">{selected.instructions}</pre>
+                      <pre className="whitespace-pre-wrap font-sans">
+                        {selected.instructions ?? LOCKED_PLACEHOLDER}
+                      </pre>
                     </Field>
                   ) : null}
                 </Blurred>
