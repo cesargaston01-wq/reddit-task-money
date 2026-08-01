@@ -1,4 +1,4 @@
-import taskredditLogoAsset from "@/assets/taskreddit-logo.png.asset.json";
+const taskredditLogoAsset = { url: "/taskreddit-logo.png" };
 
 const orbits = [
   {
