@@ -23,7 +23,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useSession } from "@/lib/data";
-import taskredditLogoAsset from "@/assets/taskreddit-logo.png.asset.json";
+const taskredditLogoAsset = { url: "/taskreddit-logo.png" };
 
 const SITE_URL = "https://reddit-task-money.lovable.app";
 
