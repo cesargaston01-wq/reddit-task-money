@@ -73,7 +73,7 @@ export default function OrbitingReddit({ className = "" }: { className?: string 
                     }}
                   >
                     <img
-                      src={redditLogoUrl}
+                      src={taskredditLogoAsset.url}
                       alt=""
                       className={`${orbit.icon} opacity-90`}
                       loading="lazy"
