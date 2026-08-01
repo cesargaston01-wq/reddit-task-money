@@ -73,6 +73,7 @@ export function useMissions(type: "post" | "comment") {
         .select(columns)
         .eq("type", type)
         .eq("is_active", true)
+        .eq("is_locked", false)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data as unknown as Mission[];
