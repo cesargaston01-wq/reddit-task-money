@@ -64,9 +64,13 @@ export function useMissions(type: "post" | "comment") {
     queryKey: ["missions", type],
     refetchInterval: 30_000,
     queryFn: async () => {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const columns = sessionData.session
+        ? "*"
+        : "id,type,title,subreddit,community_url,payout,post_title,post_body,flair,instructions,target_post_url,comment_text,is_active,is_locked,created_at,reserved_until";
       const { data, error } = await supabase
         .from("missions")
-        .select("*")
+        .select(columns)
         .eq("type", type)
         .eq("is_active", true)
         .order("created_at", { ascending: false });
