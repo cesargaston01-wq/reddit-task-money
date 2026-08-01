@@ -118,7 +118,7 @@ function Landing() {
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
         <div className="mx-auto grid h-16 max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:px-5">
           <Link to="/" className="flex min-w-0 items-center gap-2 font-display text-base font-bold tracking-tight sm:text-lg">
-            <img src={taskredditLogoAsset.url} alt="Reddit logo" className="h-7 w-7 shrink-0" width={28} height={28} />
+            <img src={taskredditLogoAsset.url} alt="TaskReddit logo" className="h-7 w-7 shrink-0" width={28} height={28} />
             <span className="truncate">
               Task<span className="text-primary">Reddit</span>
             </span>
@@ -190,7 +190,7 @@ function Landing() {
               />
               <img
                 src={taskredditLogoAsset.url}
-                alt="Reddit mascot"
+                alt="TaskReddit mascot"
                 className="relative mx-auto w-40 drop-shadow-[0_25px_60px_rgba(255,69,0,0.35)] sm:w-56 md:w-72"
                 width={288}
                 height={288}
