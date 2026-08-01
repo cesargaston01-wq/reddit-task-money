@@ -1,0 +1,2 @@
+DROP TRIGGER IF EXISTS protect_worker_mission_updates_before_update ON public.missions;
+DROP TRIGGER IF EXISTS sync_mission_locked_after_submission_change ON public.submissions;
