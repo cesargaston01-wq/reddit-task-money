@@ -67,7 +67,7 @@ export function useMissions(type: "post" | "comment") {
       const { data: sessionData } = await supabase.auth.getSession();
       const columns = sessionData.session
         ? "*"
-        : "id,type,title,subreddit,community_url,payout,post_title,post_body,flair,instructions,target_post_url,comment_text,is_active,is_locked,created_at,reserved_until";
+        : "id,type,title,subreddit,community_url,payout,is_active,is_locked,created_at,reserved_until";
       const { data, error } = await supabase
         .from("missions")
         .select(columns)
