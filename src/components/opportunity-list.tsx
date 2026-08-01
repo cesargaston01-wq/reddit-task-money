@@ -24,6 +24,9 @@ import {
   type Mission,
 } from "@/lib/data";
 
+const LOCKED_PLACEHOLDER =
+  "Locked content. Sign in with a verified account to view the full mission brief.";
+
 
 function PendingState({ status, reason }: { status?: string; reason?: string | null }) {
   if (status === "rejected") {
