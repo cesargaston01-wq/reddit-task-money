@@ -1,4 +1,4 @@
-import redditLogoUrl from "@/assets/reddit-logo.png";
+import taskredditLogoAsset from "@/assets/taskreddit-logo.png.asset.json";
 
 const orbits = [
   {
