@@ -32,7 +32,7 @@ export const BoldStats = () => {
     <section className="border-y border-border/60 bg-surface/30">
       <div className="mx-auto max-w-6xl px-5 py-20">
         <div className="flex flex-col gap-3 text-center">
-          <h2 className="text-2xl font-bold md:text-3xl">Built for Reddit creators</h2>
+          <h2 className="text-2xl font-bold md:text-3xl">By the numbers</h2>
           <p className="mx-auto max-w-xl text-sm text-muted-foreground">
             A growing marketplace where real accounts get paid for real engagement.
           </p>
