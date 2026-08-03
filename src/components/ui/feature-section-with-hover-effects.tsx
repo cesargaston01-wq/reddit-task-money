@@ -3,70 +3,47 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 import {
-  IconBrandReddit,
-  IconCalendar,
   IconCoin,
-  IconEyeCheck,
-  IconLock,
-  IconMessageCircle,
-  IconRosetteDiscountCheck,
+  IconRocket,
+  IconUsers,
   IconWallet,
 } from "@tabler/icons-react";
 
 interface Feature {
-  title: string;
+  value: string;
+  label: string;
   description: string;
   icon: React.ReactNode;
 }
 
 const FEATURES: Feature[] = [
   {
-    title: "Built for Reddit creators",
+    value: "300+",
+    label: "Missions published monthly",
     description:
-      "Every mission is designed around real Reddit communities. Post or comment where it actually makes sense.",
-    icon: <IconBrandReddit className="h-6 w-6" />,
+      "New opportunities are added every week across targeted communities.",
+    icon: <IconRocket className="h-6 w-6" />,
   },
   {
-    title: "Fixed payouts",
+    value: "$25K+",
+    label: "Already paid out",
     description:
-      "No negotiation, no surprises. $5 for every approved post and $3 for every approved comment.",
-    icon: <IconCoin className="h-6 w-6" />,
-  },
-  {
-    title: "Daily account protection",
-    description:
-      "Automatic caps keep your account safe: 1 post and 3 comments per day, per Reddit profile.",
-    icon: <IconCalendar className="h-6 w-6" />,
-  },
-  {
-    title: "10-minute reservation lock",
-    description:
-      "When you take a mission, it is reserved for you alone. No one else can claim it while you work.",
-    icon: <IconLock className="h-6 w-6" />,
-  },
-  {
-    title: "Manual quality, fair validation",
-    description:
-      "Our team checks every submission. Once approved and online for 3 hours, your payout is queued.",
-    icon: <IconEyeCheck className="h-6 w-6" />,
-  },
-  {
-    title: "USDC on Ethereum",
-    description:
-      "Add your ERC-20 wallet in your profile. Payments are sent manually in USDC on the Ethereum blockchain.",
+      "Manually sent in crypto to verified contributors around the world.",
     icon: <IconWallet className="h-6 w-6" />,
   },
   {
-    title: "Verified-only access",
+    value: "500+",
+    label: "Reddit accounts earning daily",
     description:
-      "Only accepted accounts can take missions. We review age, karma and history to protect the platform.",
-    icon: <IconRosetteDiscountCheck className="h-6 w-6" />,
+      "Active users monetizing their accounts with posts and comments.",
+    icon: <IconUsers className="h-6 w-6" />,
   },
   {
-    title: "Clear instructions only",
+    value: "$5 / $3",
+    label: "Fixed payout per mission",
     description:
-      "Follow the mission text and community flair exactly. Edited or off-topic submissions are rejected.",
-    icon: <IconMessageCircle className="h-6 w-6" />,
+      "Transparent pricing: $5 per approved post, $3 per approved comment.",
+    icon: <IconCoin className="h-6 w-6" />,
   },
 ];
 
@@ -86,8 +63,9 @@ export function FeaturesSectionWithHoverEffects({
     >
       {FEATURES.map((feature, index) => (
         <Feature
-          key={feature.title}
-          title={feature.title}
+          key={feature.label}
+          value={feature.value}
+          label={feature.label}
           description={feature.description}
           icon={feature.icon}
           index={index}
@@ -100,7 +78,8 @@ export function FeaturesSectionWithHoverEffects({
 }
 
 function Feature({
-  title,
+  value,
+  label,
   description,
   icon,
   index,
@@ -132,27 +111,20 @@ function Feature({
       >
         {icon}
       </div>
-      <h3 className="mt-4 text-base font-semibold leading-snug">{title}</h3>
+      <div className="mt-4 font-display text-4xl font-bold tracking-tight text-foreground">
+        {value}
+      </div>
+      <h3 className="mt-1 text-base font-semibold leading-snug">{label}</h3>
       <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
         {description}
       </p>
 
-      {index < 4 && (
-        <div
-          className={cn(
-            "absolute -bottom-px -right-px h-24 w-24 rounded-full bg-primary/10 blur-2xl transition-opacity duration-300",
-            isHovered ? "opacity-100" : "opacity-0",
-          )}
-        />
-      )}
-      {index >= 4 && (
-        <div
-          className={cn(
-            "absolute -top-px -left-px h-24 w-24 rounded-full bg-primary/10 blur-2xl transition-opacity duration-300",
-            isHovered ? "opacity-100" : "opacity-0",
-          )}
-        />
-      )}
+      <div
+        className={cn(
+          "absolute -bottom-px -right-px h-24 w-24 rounded-full bg-primary/10 blur-2xl transition-opacity duration-300",
+          isHovered ? "opacity-100" : "opacity-0",
+        )}
+      />
     </div>
   );
 }
