@@ -191,6 +191,13 @@ export function useSubmitMission() {
       if (error?.code === "42501") {
         throw new Error("Your reservation expired. Take the mission again to submit your link.");
       }
+      if (error?.message?.includes("Daily limit reached")) {
+        const limit = DAILY_LIMITS[mission.type as "post" | "comment"];
+        throw new Error(
+          `Daily limit reached: ${limit} ${mission.type} mission${limit > 1 ? "s" : ""} per day and per account. Come back tomorrow.`,
+        );
+      }
+
       if (error) throw new Error(error.message);
     },
     onSuccess: () => {
