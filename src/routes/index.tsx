@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowRight,
-  BadgeCheck,
   Clock,
   Mail,
   MessageSquare,
@@ -253,41 +252,6 @@ function Landing() {
                   <p className="mt-1 text-sm text-muted-foreground">{c.text}</p>
                 </div>
               ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="mx-auto max-w-6xl px-5 py-20">
-          <div className="grid gap-10 md:grid-cols-2">
-            <div>
-              <h2 className="text-2xl font-bold md:text-3xl">How much can you earn?</h2>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                Earnings depend on how many missions are available and how fast you are. A mission
-                is locked as soon as it's submitted: first come, first served.
-              </p>
-              <ul className="mt-6 space-y-3 text-sm">
-                {[
-                  "5 post missions per week → $25",
-                  "10 comments per week → $30",
-                  "No cap: it all depends on the open missions",
-                ].map((line) => (
-                  <li key={line} className="flex items-start gap-3">
-                    <BadgeCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                    <span className="text-muted-foreground">{line}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="panel elevated p-8">
-              <Wallet className="h-6 w-6 text-primary" />
-              <h3 className="mt-4 text-xl font-semibold">Crypto payments</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                Add your wallet from your profile page. Once a mission is approved (publication kept
-                online for at least 3 hours), the payment is sent manually to your address.
-              </p>
-              <div className="mt-6 rounded-lg border border-border bg-background/60 p-4 text-xs text-muted-foreground">
-                By participating, you agree not to delete your publications after being paid.
-              </div>
             </div>
           </div>
         </section>
