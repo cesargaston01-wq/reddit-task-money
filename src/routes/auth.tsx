@@ -6,8 +6,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { PasswordInput } from "@/components/password-input";
+import { setRememberSession } from "@/lib/remember-session";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSession } from "@/lib/data";
+
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -56,7 +60,8 @@ function normalizeRedditUrl(raw: string): string {
 function AuthPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  
+  const [remember, setRemember] = useState(true);
+
   const { data: user, isLoading: isRestoringSession } = useSession();
 
 
@@ -74,8 +79,10 @@ function AuthPage() {
     });
     setLoading(false);
     if (error) return toast.error(error.message);
+    setRememberSession(remember);
     navigate({ to: "/opportunities/posts" });
   }
+
 
   async function handleSignup(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -107,8 +114,10 @@ function AuthPage() {
 
     setLoading(false);
     if (error) return toast.error(error.message);
+    setRememberSession(true);
     toast.success("Account created. Your Reddit profile is being reviewed.");
     navigate({ to: "/opportunities/posts" });
+
   }
 
 
@@ -148,8 +157,9 @@ function AuthPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="s-pass">Password</Label>
-                <Input id="s-pass" name="password" type="password" required minLength={8} maxLength={72} />
+                <PasswordInput id="s-pass" name="password" required minLength={8} maxLength={72} />
               </div>
+
               <div className="space-y-2">
                 <Label htmlFor="s-reddit">Link to your Reddit profile or @username</Label>
                 <Input
@@ -179,11 +189,22 @@ function AuthPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="l-pass">Password</Label>
-                <Input id="l-pass" name="password" type="password" required />
+                <PasswordInput id="l-pass" name="password" required />
+              </div>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="remember"
+                  checked={remember}
+                  onCheckedChange={(v) => setRemember(v === true)}
+                />
+                <Label htmlFor="remember" className="text-sm font-normal text-muted-foreground">
+                  Remember me
+                </Label>
               </div>
               <Button type="submit" className="w-full" disabled={loading}>
                 Sign in
               </Button>
+
             </form>
           </TabsContent>
         </Tabs>
