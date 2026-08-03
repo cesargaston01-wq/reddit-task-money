@@ -114,8 +114,10 @@ function AuthPage() {
 
     setLoading(false);
     if (error) return toast.error(error.message);
+    setRememberSession(true);
     toast.success("Account created. Your Reddit profile is being reviewed.");
     navigate({ to: "/opportunities/posts" });
+
   }
 
 
