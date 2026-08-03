@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { FeaturesSectionWithHoverEffects } from "@/components/ui/feature-section-with-hover-effects";
 import HowItWorks from "@/components/ui/how-it-works";
 import OrbitingReddit from "@/components/ui/orbiting-reddit";
 import { BoldStats } from "@/components/ui/stats-bold";
@@ -254,6 +255,16 @@ function Landing() {
               ))}
             </div>
           </div>
+        </section>
+
+        <section className="mx-auto max-w-6xl px-5 py-20">
+          <div className="flex flex-col gap-2 text-center">
+            <h2 className="text-2xl font-bold md:text-3xl">Built for Reddit creators</h2>
+            <p className="mx-auto max-w-xl text-sm text-muted-foreground">
+              Everything you need to turn your Reddit account into a reliable side income.
+            </p>
+          </div>
+          <FeaturesSectionWithHoverEffects />
         </section>
 
         <BoldStats />
