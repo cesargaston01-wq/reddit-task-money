@@ -15,6 +15,8 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
+  DAILY_LIMITS,
+  useDailyQuota,
   useMissions,
   useProfile,
   useReleaseMission,
@@ -23,6 +25,7 @@ import {
   useSubmitMission,
   type Mission,
 } from "@/lib/data";
+
 
 const LOCKED_PLACEHOLDER =
   "Locked content. Sign in with a verified account to view the full mission brief.";
