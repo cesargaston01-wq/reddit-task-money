@@ -6,9 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { PasswordInput } from "@/components/password-input";
-import { setRememberSession } from "@/lib/remember-session";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSession } from "@/lib/data";
 
@@ -60,7 +58,6 @@ function normalizeRedditUrl(raw: string): string {
 function AuthPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [remember, setRemember] = useState(true);
 
   const { data: user, isLoading: isRestoringSession } = useSession();
 
@@ -79,7 +76,6 @@ function AuthPage() {
     });
     setLoading(false);
     if (error) return toast.error(error.message);
-    setRememberSession(remember);
     navigate({ to: "/opportunities/posts" });
   }
 
@@ -114,7 +110,6 @@ function AuthPage() {
 
     setLoading(false);
     if (error) return toast.error(error.message);
-    setRememberSession(true);
     toast.success("Account created. Your Reddit profile is being reviewed.");
     navigate({ to: "/opportunities/posts" });
 
@@ -191,16 +186,9 @@ function AuthPage() {
                 <Label htmlFor="l-pass">Password</Label>
                 <PasswordInput id="l-pass" name="password" required />
               </div>
-              <div className="flex items-center gap-2">
-                <Checkbox
-                  id="remember"
-                  checked={remember}
-                  onCheckedChange={(v) => setRemember(v === true)}
-                />
-                <Label htmlFor="remember" className="text-sm font-normal text-muted-foreground">
-                  Remember me
-                </Label>
-              </div>
+              <p className="text-xs text-muted-foreground">
+                You'll stay signed in on this device until you sign out.
+              </p>
               <Button type="submit" className="w-full" disabled={loading}>
                 Sign in
               </Button>
