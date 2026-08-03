@@ -97,7 +97,10 @@ export function MissionBrowser({
   const submit = useSubmitMission();
   const reserve = useReserveMission();
   const release = useReleaseMission();
+  const quota = useDailyQuota(type);
+  const quotaReached = canSubmit && quota.reached;
   const [selectedId, setSelectedId] = useState<string | null>(null);
+
   const [url, setUrl] = useState("");
   const now = useNow(true);
 
