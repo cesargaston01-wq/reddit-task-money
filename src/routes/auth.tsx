@@ -189,11 +189,22 @@ function AuthPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="l-pass">Password</Label>
-                <Input id="l-pass" name="password" type="password" required />
+                <PasswordInput id="l-pass" name="password" required />
+              </div>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="remember"
+                  checked={remember}
+                  onCheckedChange={(v) => setRemember(v === true)}
+                />
+                <Label htmlFor="remember" className="text-sm font-normal text-muted-foreground">
+                  Remember me
+                </Label>
               </div>
               <Button type="submit" className="w-full" disabled={loading}>
                 Sign in
               </Button>
+
             </form>
           </TabsContent>
         </Tabs>
