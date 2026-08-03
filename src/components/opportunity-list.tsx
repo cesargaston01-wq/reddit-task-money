@@ -369,6 +369,19 @@ export function MissionBrowser({
                         Release the mission
                       </Button>
                     </div>
+                  ) : quotaReached ? (
+                    <div className="space-y-3 rounded-xl border border-warning/40 bg-warning/10 p-4">
+                      <p className="flex items-start gap-2 text-xs leading-relaxed text-warning">
+                        <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                        Daily limit reached — {DAILY_LIMITS[type]} {type} mission
+                        {DAILY_LIMITS[type] > 1 ? "s" : ""} per day and per account. This protects
+                        your Reddit account. Come back tomorrow to take a new one.
+                      </p>
+                      <Button className="w-full" disabled>
+                        <Lock className="mr-2 h-4 w-4" />
+                        Daily limit reached
+                      </Button>
+                    </div>
                   ) : (
                     <div className="space-y-3">
                       <p className="flex items-start gap-2 text-xs text-muted-foreground">
@@ -387,6 +400,7 @@ export function MissionBrowser({
                       </Button>
                     </div>
                   )
+
                 ) : (
                   <div className="space-y-3">
                     <p className="text-xs text-muted-foreground">
