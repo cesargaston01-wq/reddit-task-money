@@ -105,9 +105,8 @@ const steps = [
 ];
 
 const criteria = [
-  { icon: Clock, title: "3 months old", text: "The account must be at least 3 months old." },
-  { icon: Sparkles, title: "100+ karma", text: "Combined post or comment karma." },
-  
+  { icon: Calendar, title: "3 months old", text: "The account must be at least 3 months old." },
+  { icon: Zap, title: "100+ karma", text: "Combined post or comment karma." },
   { icon: ShieldCheck, title: "Quality account", text: "Natural history, no spam and no bans." },
 ];
 
