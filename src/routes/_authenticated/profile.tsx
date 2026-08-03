@@ -89,15 +89,21 @@ function ProfilePage() {
               </a>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="wallet">Crypto wallet</Label>
+              <Label htmlFor="wallet">Payout wallet — USDC on Ethereum</Label>
               <div className="flex flex-col gap-2 sm:flex-row">
-                <Input id="wallet" value={wallet} onChange={(e) => setWallet(e.target.value)} maxLength={120} />
+                <Input
+                  id="wallet"
+                  value={wallet}
+                  onChange={(e) => setWallet(e.target.value)}
+                  maxLength={120}
+                  placeholder="0x..."
+                />
                 <Button onClick={save} disabled={saving || wallet === profile.wallet_address}>
                   Save
                 </Button>
               </div>
               <p className="text-xs text-muted-foreground">
-                Only the wallet can be edited. Payments are sent manually in crypto.
+                Payments are sent manually in USDC on the Ethereum blockchain. Make sure this address supports ERC-20 tokens.
               </p>
             </div>
           </div>
