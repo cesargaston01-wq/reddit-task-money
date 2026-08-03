@@ -171,7 +171,28 @@ export function MissionBrowser({
 
   return (
     <>
+      {canSubmit ? (
+        <div
+          className={`mb-3 flex items-start gap-2 rounded-lg border p-3 text-xs ${
+            quotaReached
+              ? "border-warning/50 bg-warning/10 text-warning"
+              : "border-border bg-background/60 text-muted-foreground"
+          }`}
+        >
+          <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+          <span>
+            {quotaReached
+              ? `Daily limit reached: ${DAILY_LIMITS[type]} ${type} mission${
+                  DAILY_LIMITS[type] > 1 ? "s" : ""
+                } per day and per account. Come back tomorrow.`
+              : `Account safety limit: ${DAILY_LIMITS[type]} ${type} mission${
+                  DAILY_LIMITS[type] > 1 ? "s" : ""
+                } per day — ${quota.remaining} left today.`}
+          </span>
+        </div>
+      ) : null}
       <div className="grid gap-3">
+
         {missions.map((m) => {
           const mine = heldBy(m);
           return (
