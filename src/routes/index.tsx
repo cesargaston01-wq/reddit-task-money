@@ -237,22 +237,49 @@ function Landing() {
         </section>
 
 
-        <section className="border-y border-border/60 bg-surface/30">
-          <div className="mx-auto max-w-6xl px-5 py-20">
-            <div className="flex flex-col gap-2">
-              <h2 className="text-2xl font-bold md:text-3xl">Quality requirements</h2>
+        <section className="relative overflow-hidden border-y border-border/60 bg-surface/30 py-20">
+          <div className="pointer-events-none absolute -top-24 -left-24 h-64 w-64 rounded-full bg-primary/10 blur-[100px]" aria-hidden />
+          <div className="pointer-events-none absolute -bottom-24 -right-24 h-64 w-64 rounded-full bg-primary/5 blur-[80px]" aria-hidden />
+
+          <div className="relative mx-auto max-w-3xl px-5">
+            <div className="flex flex-col items-center gap-3 text-center">
+              <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-surface/60 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-primary">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary/75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
+                </span>
+                Security Standard
+              </div>
+              <h2 className="text-3xl font-bold tracking-tight md:text-4xl">
+                Quality <span className="text-primary">requirements</span>
+              </h2>
               <p className="max-w-xl text-sm text-muted-foreground">
                 Every account is reviewed manually before getting access to missions.
               </p>
             </div>
-            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+
+            <div className="mt-10 space-y-4">
               {criteria.map((c) => (
-                <div key={c.title} className="panel p-6">
-                  <c.icon className="h-5 w-5 text-primary" />
-                  <h3 className="mt-4 text-base font-semibold">{c.title}</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">{c.text}</p>
+                <div
+                  key={c.title}
+                  className="group relative flex items-center gap-4 rounded-2xl border border-border/60 bg-gradient-to-br from-white/5 to-transparent p-4 backdrop-blur-sm transition-all duration-500 hover:border-primary/50 sm:gap-5 sm:p-5"
+                >
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 transition-transform duration-300 group-hover:scale-110">
+                    <c.icon className="h-6 w-6 text-primary" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-base font-semibold text-foreground">{c.title}</h3>
+                    <p className="text-sm text-muted-foreground">{c.text}</p>
+                  </div>
+                  <div className="ml-auto opacity-20 transition-opacity duration-300 group-hover:opacity-100">
+                    <div className="h-2 w-2 rounded-full bg-primary" />
+                  </div>
                 </div>
               ))}
+            </div>
+
+            <div className="mt-8 flex justify-center">
+              <div className="h-px w-12 bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
             </div>
           </div>
         </section>
