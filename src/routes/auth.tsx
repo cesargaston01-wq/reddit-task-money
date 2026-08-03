@@ -157,8 +157,9 @@ function AuthPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="s-pass">Password</Label>
-                <Input id="s-pass" name="password" type="password" required minLength={8} maxLength={72} />
+                <PasswordInput id="s-pass" name="password" required minLength={8} maxLength={72} />
               </div>
+
               <div className="space-y-2">
                 <Label htmlFor="s-reddit">Link to your Reddit profile or @username</Label>
                 <Input
