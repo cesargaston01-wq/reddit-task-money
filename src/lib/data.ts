@@ -113,7 +113,25 @@ export function useMySubmissions() {
   });
 }
 
+export const DAILY_LIMITS: Record<"post" | "comment", number> = { post: 1, comment: 3 };
+
+/** How many missions of a given type the member already submitted today (rejected ones don't count). */
+export function useDailyQuota(type: "post" | "comment") {
+  const { data, isLoading } = useMySubmissions();
+  const limit = DAILY_LIMITS[type];
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
+  const used = (data ?? []).filter(
+    (s) =>
+      s.missions?.type === type &&
+      s.status !== "rejected" &&
+      new Date(s.created_at).getTime() >= startOfDay.getTime(),
+  ).length;
+  return { used, limit, remaining: Math.max(0, limit - used), reached: used >= limit, isLoading };
+}
+
 export function useAllSubmissions() {
+
   return useQuery({
     queryKey: ["submissions", "all"],
     queryFn: async () => {
@@ -173,6 +191,13 @@ export function useSubmitMission() {
       if (error?.code === "42501") {
         throw new Error("Your reservation expired. Take the mission again to submit your link.");
       }
+      if (error?.message?.includes("Daily limit reached")) {
+        const limit = DAILY_LIMITS[mission.type as "post" | "comment"];
+        throw new Error(
+          `Daily limit reached: ${limit} ${mission.type} mission${limit > 1 ? "s" : ""} per day and per account. Come back tomorrow.`,
+        );
+      }
+
       if (error) throw new Error(error.message);
     },
     onSuccess: () => {

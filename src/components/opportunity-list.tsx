@@ -15,6 +15,8 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
+  DAILY_LIMITS,
+  useDailyQuota,
   useMissions,
   useProfile,
   useReleaseMission,
@@ -23,6 +25,7 @@ import {
   useSubmitMission,
   type Mission,
 } from "@/lib/data";
+
 
 const LOCKED_PLACEHOLDER =
   "Locked content. Sign in with a verified account to view the full mission brief.";
@@ -94,7 +97,10 @@ export function MissionBrowser({
   const submit = useSubmitMission();
   const reserve = useReserveMission();
   const release = useReleaseMission();
+  const quota = useDailyQuota(type);
+  const quotaReached = canSubmit && quota.reached;
   const [selectedId, setSelectedId] = useState<string | null>(null);
+
   const [url, setUrl] = useState("");
   const now = useNow(true);
 
@@ -165,7 +171,28 @@ export function MissionBrowser({
 
   return (
     <>
+      {canSubmit ? (
+        <div
+          className={`mb-3 flex items-start gap-2 rounded-lg border p-3 text-xs ${
+            quotaReached
+              ? "border-warning/50 bg-warning/10 text-warning"
+              : "border-border bg-background/60 text-muted-foreground"
+          }`}
+        >
+          <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+          <span>
+            {quotaReached
+              ? `Daily limit reached: ${DAILY_LIMITS[type]} ${type} mission${
+                  DAILY_LIMITS[type] > 1 ? "s" : ""
+                } per day and per account. Come back tomorrow.`
+              : `Account safety limit: ${DAILY_LIMITS[type]} ${type} mission${
+                  DAILY_LIMITS[type] > 1 ? "s" : ""
+                } per day — ${quota.remaining} left today.`}
+          </span>
+        </div>
+      ) : null}
       <div className="grid gap-3">
+
         {missions.map((m) => {
           const mine = heldBy(m);
           return (
@@ -342,6 +369,19 @@ export function MissionBrowser({
                         Release the mission
                       </Button>
                     </div>
+                  ) : quotaReached ? (
+                    <div className="space-y-3 rounded-xl border border-warning/40 bg-warning/10 p-4">
+                      <p className="flex items-start gap-2 text-xs leading-relaxed text-warning">
+                        <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                        Daily limit reached — {DAILY_LIMITS[type]} {type} mission
+                        {DAILY_LIMITS[type] > 1 ? "s" : ""} per day and per account. This protects
+                        your Reddit account. Come back tomorrow to take a new one.
+                      </p>
+                      <Button className="w-full" disabled>
+                        <Lock className="mr-2 h-4 w-4" />
+                        Daily limit reached
+                      </Button>
+                    </div>
                   ) : (
                     <div className="space-y-3">
                       <p className="flex items-start gap-2 text-xs text-muted-foreground">
@@ -360,6 +400,7 @@ export function MissionBrowser({
                       </Button>
                     </div>
                   )
+
                 ) : (
                   <div className="space-y-3">
                     <p className="text-xs text-muted-foreground">
