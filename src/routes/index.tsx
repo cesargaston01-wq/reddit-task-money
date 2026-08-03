@@ -264,10 +264,8 @@ function Landing() {
               Everything you need to turn your Reddit account into a reliable side income.
             </p>
           </div>
-          <FeaturesSectionWithHoverEffects />
-        </section>
-
-        <BoldStats />
+        <FeaturesSectionWithHoverEffects />
+      </section>
 
         <section className="border-y border-border/60 bg-surface/30">
           <div className="mx-auto max-w-3xl px-5 py-20">
