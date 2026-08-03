@@ -159,15 +159,12 @@ function RootComponent() {
   const router = useRouter();
 
   useEffect(() => {
-    // "Remember me" off: drop the session when the browser was closed.
-    if (isStaleEphemeralSession()) {
-      clearRememberSession();
-      void supabase.auth.signOut();
-    }
+    // Keep users signed in: drop any legacy "ephemeral session" marker that
+    // used to force a sign-out on a new browser/tab session.
+    clearLegacyEphemeralSession();
 
     const { data } = supabase.auth.onAuthStateChange((event) => {
       if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
-      if (event === "SIGNED_OUT") clearRememberSession();
       router.invalidate();
       if (event !== "SIGNED_OUT") queryClient.invalidateQueries();
     });
