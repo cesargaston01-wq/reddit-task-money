@@ -6,8 +6,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { PasswordInput } from "@/components/password-input";
+import { setRememberSession } from "@/lib/remember-session";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSession } from "@/lib/data";
+
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
