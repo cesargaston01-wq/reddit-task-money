@@ -60,7 +60,8 @@ function normalizeRedditUrl(raw: string): string {
 function AuthPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  
+  const [remember, setRemember] = useState(true);
+
   const { data: user, isLoading: isRestoringSession } = useSession();
 
 
@@ -78,8 +79,10 @@ function AuthPage() {
     });
     setLoading(false);
     if (error) return toast.error(error.message);
+    setRememberSession(remember);
     navigate({ to: "/opportunities/posts" });
   }
+
 
   async function handleSignup(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
