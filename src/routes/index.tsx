@@ -127,9 +127,12 @@ function Landing() {
             <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
               <Link to="/discover">Discover paid tasks</Link>
             </Button>
-            <Button variant="ghost" size="sm" disabled title="Coming soon" className="hidden md:inline-flex">
-              Post a listing
+            <Button asChild variant="ghost" size="sm" className="hidden md:inline-flex">
+              <a href="mailto:cesar@skilfut.com?subject=Post%20a%20listing%20on%20TaskReddit">
+                Post a listing
+              </a>
             </Button>
+
             <Button asChild size="sm" className="px-3">
               <Link to={user ? "/opportunities/posts" : "/auth"}>
                 <span className="sm:hidden">{user ? "Dashboard" : "Get started"}</span>
