@@ -548,3 +548,37 @@ function StatusMetric({
     </div>
   );
 }
+
+type SubmissionMetricTone = "primary" | "neutral" | "warning";
+
+function SubmissionMetric({
+  icon: Icon,
+  label,
+  value,
+  detail,
+  tone,
+}: {
+  icon: ComponentType<{ className?: string }>;
+  label: string;
+  value: number;
+  detail: string;
+  tone: SubmissionMetricTone;
+}) {
+  const toneClasses: Record<SubmissionMetricTone, { icon: string; value: string; border: string }> = {
+    primary: { icon: "text-primary", value: "text-primary", border: "border-primary/30" },
+    neutral: { icon: "text-muted-foreground", value: "text-foreground", border: "border-border" },
+    warning: { icon: "text-warning", value: "text-warning", border: "border-warning/30" },
+  };
+  const colors = toneClasses[tone];
+
+  return (
+    <div className={`panel relative overflow-hidden p-4 ${colors.border}`}>
+      <div className="flex items-start justify-between gap-2">
+        <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">{label}</span>
+        <Icon className={`h-4 w-4 shrink-0 ${colors.icon}`} aria-hidden />
+      </div>
+      <div className={`mt-2 font-display text-3xl font-bold ${colors.value}`}>{value}</div>
+      <p className="mt-1 truncate text-xs text-muted-foreground">{detail}</p>
+    </div>
+  );
+}
