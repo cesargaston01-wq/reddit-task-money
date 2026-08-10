@@ -82,6 +82,7 @@ export type Database = {
           full_name: string
           id: string
           niches: string[]
+          phone_number: string
           reddit_profile_url: string
           rejection_reason: string | null
           status: Database["public"]["Enums"]["account_status"]
@@ -94,6 +95,7 @@ export type Database = {
           full_name?: string
           id: string
           niches?: string[]
+          phone_number?: string
           reddit_profile_url?: string
           rejection_reason?: string | null
           status?: Database["public"]["Enums"]["account_status"]
@@ -106,6 +108,7 @@ export type Database = {
           full_name?: string
           id?: string
           niches?: string[]
+          phone_number?: string
           reddit_profile_url?: string
           rejection_reason?: string | null
           status?: Database["public"]["Enums"]["account_status"]
