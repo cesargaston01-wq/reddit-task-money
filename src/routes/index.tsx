@@ -345,6 +345,15 @@ function Landing() {
               Discover paid tasks
             </Link>
             <a
+              href={WHOP_COMMUNITY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-foreground"
+            >
+              Whop community
+            </a>
+
+            <a
               href="mailto:cesar@skilfut.com"
               className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"
             >
