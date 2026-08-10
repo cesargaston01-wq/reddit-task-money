@@ -232,6 +232,32 @@ function ProfilePage() {
               </p>
             </div>
 
+            <div className="space-y-2">
+              <Label htmlFor="phone">WhatsApp number — optional</Label>
+              <p className="text-xs text-muted-foreground">
+                Add your number to be invited to our WhatsApp group and get an instant alert as soon as a new mission is
+                published. Optional — leave empty if you prefer email only.
+              </p>
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <Input
+                  id="phone"
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  maxLength={20}
+                  placeholder="+33 6 12 34 56 78"
+                />
+                <Button
+                  onClick={savePhone}
+                  disabled={savingPhone || phone.trim() === (profile.phone_number ?? "")}
+                >
+                  Save
+                </Button>
+              </div>
+            </div>
+
+
+
             <div className="flex items-start justify-between gap-4 rounded-lg border border-border bg-surface/40 p-4">
               <div className="min-w-0">
                 <Label htmlFor="email-notifications">Email me a daily summary of new missions</Label>
