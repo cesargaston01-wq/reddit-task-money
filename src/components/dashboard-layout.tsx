@@ -126,8 +126,19 @@ export function DashboardLayout({
             {description ? (
               <p className="mt-1 text-sm text-muted-foreground">{description}</p>
             ) : null}
+            <a
+              href={WHOP_COMMUNITY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 flex flex-wrap items-center gap-2 rounded-lg border border-primary/30 bg-primary/5 px-4 py-3 text-sm transition-colors hover:bg-primary/10"
+            >
+              <Users className="h-4 w-4 shrink-0 text-primary" />
+              <span>New missions are announced instantly in our Whop community.</span>
+              <span className="font-medium text-primary">Join now →</span>
+            </a>
             <div className="mt-8">{children}</div>
           </div>
+
         </main>
       </div>
     </div>
