@@ -127,11 +127,17 @@ function Landing() {
             <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
               <Link to="/discover">Discover paid tasks</Link>
             </Button>
+            <Button asChild variant="ghost" size="sm" className="hidden lg:inline-flex">
+              <a href={WHOP_COMMUNITY_URL} target="_blank" rel="noopener noreferrer">
+                Community
+              </a>
+            </Button>
             <Button asChild variant="ghost" size="sm" className="hidden md:inline-flex">
               <a href="mailto:cesar@skilfut.com?subject=Post%20a%20listing%20on%20TaskReddit">
                 Post a listing
               </a>
             </Button>
+
 
             <Button asChild size="sm" className="px-3">
               <Link to={user ? "/opportunities/posts" : "/auth"}>
