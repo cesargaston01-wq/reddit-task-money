@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, type ComponentType } from "react";
 import { toast } from "sonner";
 import {
   CheckCircle2,
@@ -196,11 +196,27 @@ function AdminPage() {
 
   return (
     <DashboardLayout title="Administration" description={`Total amount to pay: $${toPay.toFixed(0)}`}>
+      <section aria-label="Account overview" className="mb-7">
+        <div className="mb-3 flex items-end justify-between gap-3">
+          <div>
+            <p className="text-sm font-semibold text-foreground">Account overview</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">Registration and verification status at a glance.</p>
+          </div>
+          <span className="hidden text-xs text-muted-foreground sm:inline">Live totals</span>
+        </div>
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <StatusMetric icon={UserRound} label="Registered" value={profileStats.total} tone="neutral" />
+          <StatusMetric icon={Clock3} label="Pending review" value={profileStats.pending} tone="warning" />
+          <StatusMetric icon={CheckCircle2} label="Accepted" value={profileStats.accepted} tone="success" />
+          <StatusMetric icon={XCircle} label="Rejected" value={profileStats.rejected} tone="destructive" />
+        </div>
+      </section>
+
       <Tabs defaultValue="missions">
         <TabsList>
           <TabsTrigger value="missions">Missions</TabsTrigger>
           <TabsTrigger value="submissions">Submissions</TabsTrigger>
-          <TabsTrigger value="users">Users</TabsTrigger>
+          <TabsTrigger value="users">Users ({profileStats.total})</TabsTrigger>
         </TabsList>
 
         <TabsContent value="missions" className="mt-6 space-y-4">
@@ -449,6 +465,38 @@ function FieldArea({ label, value, onChange }: { label: string; value: string; o
     <div className="space-y-1.5">
       <Label>{label}</Label>
       <Textarea value={value} onChange={(e) => onChange(e.target.value)} rows={5} maxLength={5000} />
+    </div>
+  );
+}
+
+type MetricTone = "neutral" | "warning" | "success" | "destructive";
+
+function StatusMetric({
+  icon: Icon,
+  label,
+  value,
+  tone,
+}: {
+  icon: ComponentType<{ className?: string }>;
+  label: string;
+  value: number;
+  tone: MetricTone;
+}) {
+  const toneClasses: Record<MetricTone, { icon: string; value: string; border: string }> = {
+    neutral: { icon: "text-primary", value: "text-foreground", border: "border-border" },
+    warning: { icon: "text-warning", value: "text-warning", border: "border-warning/30" },
+    success: { icon: "text-success", value: "text-success", border: "border-success/30" },
+    destructive: { icon: "text-destructive", value: "text-destructive", border: "border-destructive/30" },
+  };
+  const colors = toneClasses[tone];
+
+  return (
+    <div className={`panel relative overflow-hidden p-4 ${colors.border}`}>
+      <div className="flex items-start justify-between gap-2">
+        <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">{label}</span>
+        <Icon className={`h-4 w-4 shrink-0 ${colors.icon}`} aria-hidden />
+      </div>
+      <div className={`mt-2 font-display text-3xl font-bold ${colors.value}`}>{value}</div>
     </div>
   );
 }
