@@ -7,11 +7,13 @@ import {
   MessageSquare,
   Shield,
   User as UserIcon,
+  Users,
   Menu,
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { WHOP_COMMUNITY_URL } from "@/lib/community";
 import { useIsAdmin, useProfile } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
@@ -93,7 +95,17 @@ export function DashboardLayout({
           })}
         </nav>
         <div className="absolute inset-x-0 bottom-0 space-y-3 border-t border-sidebar-border p-4">
+          <a
+            href={WHOP_COMMUNITY_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 rounded-lg border border-primary/40 bg-primary/10 px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-primary/20"
+          >
+            <Users className="h-4 w-4 text-primary" />
+            Join the community
+          </a>
           <div className="truncate text-xs text-muted-foreground">{profile?.email}</div>
+
           <Button variant="ghost" size="sm" className="w-full justify-start" onClick={signOut}>
             <LogOut className="mr-2 h-4 w-4" />
             Sign out
@@ -114,8 +126,19 @@ export function DashboardLayout({
             {description ? (
               <p className="mt-1 text-sm text-muted-foreground">{description}</p>
             ) : null}
+            <a
+              href={WHOP_COMMUNITY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 flex flex-wrap items-center gap-2 rounded-lg border border-primary/30 bg-primary/5 px-4 py-3 text-sm transition-colors hover:bg-primary/10"
+            >
+              <Users className="h-4 w-4 shrink-0 text-primary" />
+              <span>New missions are announced instantly in our Whop community.</span>
+              <span className="font-medium text-primary">Join now →</span>
+            </a>
             <div className="mt-8">{children}</div>
           </div>
+
         </main>
       </div>
     </div>

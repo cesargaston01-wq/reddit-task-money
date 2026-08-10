@@ -23,6 +23,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { WHOP_COMMUNITY_URL } from "@/lib/community";
 import { useSession } from "@/lib/data";
 const taskredditLogoAsset = { url: "/taskreddit-logo.png" };
 
@@ -127,11 +128,17 @@ function Landing() {
             <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
               <Link to="/discover">Discover paid tasks</Link>
             </Button>
+            <Button asChild variant="ghost" size="sm" className="hidden lg:inline-flex">
+              <a href={WHOP_COMMUNITY_URL} target="_blank" rel="noopener noreferrer">
+                Community
+              </a>
+            </Button>
             <Button asChild variant="ghost" size="sm" className="hidden md:inline-flex">
               <a href="mailto:cesar@skilfut.com?subject=Post%20a%20listing%20on%20TaskReddit">
                 Post a listing
               </a>
             </Button>
+
 
             <Button asChild size="sm" className="px-3">
               <Link to={user ? "/opportunities/posts" : "/auth"}>
@@ -176,6 +183,18 @@ function Landing() {
                   <Link to="/discover">Discover paid tasks</Link>
                 </Button>
               </div>
+              <div className="mt-6 flex justify-center md:justify-start">
+                <a
+                  href={WHOP_COMMUNITY_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-4 py-2 text-xs text-muted-foreground transition-colors hover:bg-primary/10 hover:text-foreground"
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                  New missions announced instantly in our community
+                  <span className="font-medium text-primary">Join →</span>
+                </a>
+              </div>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-muted-foreground md:justify-start">
                 <span className="inline-flex items-center gap-1.5">
                   <ShieldCheck className="h-3.5 w-3.5 text-primary" /> Manual review under 48h
@@ -184,6 +203,7 @@ function Landing() {
                   <Wallet className="h-3.5 w-3.5 text-primary" /> Crypto payouts
                 </span>
               </div>
+
             </div>
 
             <div className="relative mx-auto w-full max-w-md">
@@ -337,6 +357,15 @@ function Landing() {
             <Link to="/discover" className="transition-colors hover:text-foreground">
               Discover paid tasks
             </Link>
+            <a
+              href={WHOP_COMMUNITY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors hover:text-foreground"
+            >
+              Whop community
+            </a>
+
             <a
               href="mailto:cesar@skilfut.com"
               className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"

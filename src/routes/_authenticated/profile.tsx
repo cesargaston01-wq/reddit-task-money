@@ -8,8 +8,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
+import { WHOP_COMMUNITY_URL } from "@/lib/community";
 import { useMySubmissions, useProfile } from "@/lib/data";
+
 
 export const Route = createFileRoute("/_authenticated/profile")({
   head: () => ({
@@ -32,13 +35,33 @@ function ProfilePage() {
   const [niches, setNiches] = useState<string[]>([]);
   const [nicheInput, setNicheInput] = useState("");
   const [savingNiches, setSavingNiches] = useState(false);
+  const [emailOptIn, setEmailOptIn] = useState(true);
+  const [savingOptIn, setSavingOptIn] = useState(false);
 
   useEffect(() => {
     if (profile) {
       setWallet(profile.wallet_address);
       setNiches(profile.niches ?? []);
+      setEmailOptIn(profile.email_notifications ?? true);
     }
   }, [profile]);
+
+  async function saveEmailOptIn(next: boolean) {
+    setEmailOptIn(next);
+    setSavingOptIn(true);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ email_notifications: next })
+      .eq("id", profile!.id);
+    setSavingOptIn(false);
+    if (error) {
+      setEmailOptIn(!next);
+      return toast.error(error.message);
+    }
+    qc.invalidateQueries({ queryKey: ["profile"] });
+    toast.success(next ? "Daily summary enabled." : "Daily summary disabled.");
+  }
+
 
   const done = subs?.length ?? 0;
   const approved = subs?.filter((s) => s.status === "approved") ?? [];
@@ -189,7 +212,32 @@ function ProfilePage() {
                 Payments are sent manually in USDC on the Ethereum blockchain. Make sure this address supports ERC-20 tokens.
               </p>
             </div>
+
+            <div className="flex items-start justify-between gap-4 rounded-lg border border-border bg-surface/40 p-4">
+              <div className="min-w-0">
+                <Label htmlFor="email-notifications">Email me a daily summary of new missions</Label>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  One email per day, only when new missions were published. Instant alerts are posted in our{" "}
+                  <a
+                    href={WHOP_COMMUNITY_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    Whop community
+                  </a>
+                  .
+                </p>
+              </div>
+              <Switch
+                id="email-notifications"
+                checked={emailOptIn}
+                disabled={savingOptIn}
+                onCheckedChange={saveEmailOptIn}
+              />
+            </div>
           </div>
+
         </div>
       )}
     </DashboardLayout>
