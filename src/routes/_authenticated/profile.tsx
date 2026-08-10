@@ -37,14 +37,33 @@ function ProfilePage() {
   const [savingNiches, setSavingNiches] = useState(false);
   const [emailOptIn, setEmailOptIn] = useState(true);
   const [savingOptIn, setSavingOptIn] = useState(false);
+  const [phone, setPhone] = useState("");
+  const [savingPhone, setSavingPhone] = useState(false);
 
   useEffect(() => {
     if (profile) {
       setWallet(profile.wallet_address);
       setNiches(profile.niches ?? []);
       setEmailOptIn(profile.email_notifications ?? true);
+      setPhone(profile.phone_number ?? "");
     }
   }, [profile]);
+
+  async function savePhone() {
+    const clean = phone.trim();
+    if (clean && !/^\+?[\d\s()-]{6,20}$/.test(clean)) {
+      return toast.error("Enter a valid phone number, e.g. +33 6 12 34 56 78.");
+    }
+    setSavingPhone(true);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ phone_number: clean })
+      .eq("id", profile!.id);
+    setSavingPhone(false);
+    if (error) return toast.error(error.message);
+    qc.invalidateQueries({ queryKey: ["profile"] });
+    toast.success(clean ? "Phone number saved." : "Phone number removed.");
+  }
 
   async function saveEmailOptIn(next: boolean) {
     setEmailOptIn(next);
