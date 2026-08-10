@@ -360,8 +360,21 @@ function AdminPage() {
           {draft ? (
             <div className="space-y-4">
               <FieldInput label="Mission name" value={draft.title ?? ""} onChange={(v) => setDraft({ ...draft, title: v })} />
-              <FieldInput label="Community (without r/)" value={draft.subreddit ?? ""} onChange={(v) => setDraft({ ...draft, subreddit: v })} />
-              <FieldInput label="Community link" value={draft.community_url ?? ""} onChange={(v) => setDraft({ ...draft, community_url: v })} />
+              {draft.type === "post" ? (
+                <FieldInput
+                  label="Community link"
+                  value={draft.community_url ?? ""}
+                  onChange={(v) => setDraft({ ...draft, community_url: v })}
+                  placeholder="https://www.reddit.com/r/..."
+                />
+              ) : (
+                <FieldInput
+                  label="Reddit post link"
+                  value={draft.target_post_url ?? ""}
+                  onChange={(v) => setDraft({ ...draft, target_post_url: v })}
+                  placeholder="https://www.reddit.com/r/.../comments/..."
+                />
+              )}
               <FieldInput label="Payout ($)" type="number" value={String(draft.payout ?? "")} onChange={(v) => setDraft({ ...draft, payout: Number(v) })} />
 
               {draft.type === "post" ? (
@@ -371,10 +384,7 @@ function AdminPage() {
                   <FieldInput label="Flair" value={draft.flair ?? ""} onChange={(v) => setDraft({ ...draft, flair: v })} />
                 </>
               ) : (
-                <>
-                  <FieldInput label="Reddit post link" value={draft.target_post_url ?? ""} onChange={(v) => setDraft({ ...draft, target_post_url: v })} />
-                  <FieldArea label="Exact comment" value={draft.comment_text ?? ""} onChange={(v) => setDraft({ ...draft, comment_text: v })} />
-                </>
+                <FieldArea label="Exact comment" value={draft.comment_text ?? ""} onChange={(v) => setDraft({ ...draft, comment_text: v })} />
               )}
               <FieldArea label="Specific instructions" value={draft.instructions ?? ""} onChange={(v) => setDraft({ ...draft, instructions: v })} />
               <Button className="w-full" onClick={saveMission}>
