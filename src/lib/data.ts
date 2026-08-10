@@ -10,19 +10,27 @@ export type Submission = Tables<"submissions">;
 export const PAYOUT_POST = 5;
 export const PAYOUT_COMMENT = 3;
 
+/**
+ * Resolves the signed-in user from the persisted session first.
+ * `getSession()` reads local storage and refreshes the token when needed, so it
+ * keeps working on mobile networks where a single `getUser()` call can fail and
+ * make the app look signed out.
+ */
+export async function getCurrentUser() {
+  const { data: sessionData } = await supabase.auth.getSession();
+  if (!sessionData.session) return null;
+  return sessionData.session.user;
+}
+
 export function useSession() {
   return useQuery({
     queryKey: ["session"],
-    queryFn: async () => {
-      const { data: sessionData } = await supabase.auth.getSession();
-      if (!sessionData.session) return null;
-
-      const { data, error } = await supabase.auth.getUser();
-      if (error || !data.user) return sessionData.session.user;
-      return data.user;
-    },
+    staleTime: 30_000,
+    retry: 2,
+    queryFn: async () => await getCurrentUser(),
   });
 }
+
 
 export function useProfile() {
   return useQuery({
