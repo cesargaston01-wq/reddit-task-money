@@ -183,6 +183,18 @@ function Landing() {
                   <Link to="/discover">Discover paid tasks</Link>
                 </Button>
               </div>
+              <div className="mt-6 flex justify-center md:justify-start">
+                <a
+                  href={WHOP_COMMUNITY_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-4 py-2 text-xs text-muted-foreground transition-colors hover:bg-primary/10 hover:text-foreground"
+                >
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                  New missions announced instantly in our community
+                  <span className="font-medium text-primary">Join →</span>
+                </a>
+              </div>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-muted-foreground md:justify-start">
                 <span className="inline-flex items-center gap-1.5">
                   <ShieldCheck className="h-3.5 w-3.5 text-primary" /> Manual review under 48h
@@ -191,6 +203,7 @@ function Landing() {
                   <Wallet className="h-3.5 w-3.5 text-primary" /> Crypto payouts
                 </span>
               </div>
+
             </div>
 
             <div className="relative mx-auto w-full max-w-md">
