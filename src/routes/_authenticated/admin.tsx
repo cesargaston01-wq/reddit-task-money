@@ -274,51 +274,75 @@ function AdminPage() {
           </div>
         </TabsContent>
 
-        <TabsContent value="submissions" className="mt-6 grid gap-3">
-          {(submissions ?? []).map((s) => (
-            <div key={s.id} className="panel space-y-3 p-4">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <div className="min-w-0">
-                  <div className="truncate font-medium">{s.missions?.title ?? "Mission"}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {s.profile?.full_name} · {s.profile?.email} · ${Number(s.amount).toFixed(0)}
+        <TabsContent value="submissions" className="mt-6 space-y-4">
+          <section aria-label="Submission overview" className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+            <SubmissionMetric icon={Radio} label="Live missions" value={liveMissions.length} detail={`${liveMissions.filter((mission) => mission.type === "post").length} posts · ${liveMissions.filter((mission) => mission.type === "comment").length} comments`} tone="primary" />
+            <SubmissionMetric icon={FileText} label="Post submissions" value={submissionStats.posts} detail={`${submissionStats.approved} approved overall`} tone="neutral" />
+            <SubmissionMetric icon={MessageSquare} label="Comment submissions" value={submissionStats.comments} detail={`${submissionStats.pending} waiting for review`} tone="neutral" />
+            <SubmissionMetric icon={CircleDollarSign} label="Awaiting review" value={submissionStats.pending} detail={`${submissionStats.total} total submissions`} tone="warning" />
+          </section>
+
+          <div className="panel flex flex-col gap-3 p-3 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="text-sm font-semibold text-foreground">Submission queue</p>
+              <p className="text-xs text-muted-foreground">Review links submitted by your Reddit workers.</p>
+            </div>
+            <div className="flex gap-1 overflow-x-auto pb-0.5">
+              {(["all", "post", "comment"] as const).map((filter) => (
+                <Button key={filter} size="sm" variant={submissionTypeFilter === filter ? "default" : "outline"} className="shrink-0" onClick={() => setSubmissionTypeFilter(filter)}>
+                  {filter === "all" ? `All (${submissionStats.total})` : filter === "post" ? `Posts (${submissionStats.posts})` : `Comments (${submissionStats.comments})`}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex gap-1 overflow-x-auto pb-0.5">
+            {(["all", "pending", "approved", "rejected"] as const).map((filter) => (
+              <Button key={filter} size="sm" variant={submissionStatusFilter === filter ? "secondary" : "ghost"} className="shrink-0" onClick={() => setSubmissionStatusFilter(filter)}>
+                {filter.charAt(0).toUpperCase() + filter.slice(1)}
+                {filter !== "all" ? ` (${submissionStats[filter]})` : ` (${submissionStats.total})`}
+              </Button>
+            ))}
+          </div>
+
+          {visibleSubmissions.map((s) => (
+            <div key={s.id} className="panel space-y-3 p-4 transition-colors hover:border-primary/40">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="flex min-w-0 items-start gap-3">
+                  <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    {s.missions?.type === "post" ? <FileText className="h-4 w-4" /> : <MessageSquare className="h-4 w-4" />}
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <div className="truncate font-medium">{s.missions?.title ?? "Mission"}</div>
+                      <Badge variant="outline" className="capitalize">{s.missions?.type ?? "mission"}</Badge>
+                    </div>
+                    <div className="mt-1 truncate text-xs text-muted-foreground">
+                      {s.profile?.full_name || "Unknown worker"} · {s.profile?.email} · Submitted {new Date(s.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                    </div>
                   </div>
                 </div>
-                <Badge variant={s.status === "pending" ? "secondary" : s.status === "approved" ? "default" : "destructive"}>
-                  {s.status === "pending" ? "Pending" : s.status === "approved" ? "Approved" : "Rejected"}
-                </Badge>
+                <div className="flex items-center gap-2">
+                  <span className="font-display text-sm font-semibold text-primary">${Number(s.amount).toFixed(0)}</span>
+                  <Badge variant={s.status === "pending" ? "secondary" : s.status === "approved" ? "default" : "destructive"}>
+                    {s.status === "pending" ? "Pending" : s.status === "approved" ? "Approved" : "Rejected"}
+                  </Badge>
+                </div>
               </div>
-              <a
-                href={s.submitted_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block break-all text-xs text-primary hover:underline"
-              >
+              <a href={s.submitted_url} target="_blank" rel="noopener noreferrer" className="block break-all rounded-md border border-border bg-background/40 px-3 py-2 text-xs text-primary hover:underline">
                 {s.submitted_url}
               </a>
-              <div className="flex flex-wrap gap-2">
-                {s.status === "pending" ? (
-                  <>
-                    <Button size="sm" onClick={() => reviewSubmission(s.id, "approved")}>
-                      Approve
-                    </Button>
-                    <Button size="sm" variant="outline" onClick={() => reviewSubmission(s.id, "rejected")}>
-                      Reject
-                    </Button>
-                  </>
-                ) : null}
-                {s.status === "approved" && !s.paid ? (
-                  <Button size="sm" variant="outline" onClick={() => markPaid(s.id)}>
-                    Mark as paid
-                  </Button>
-                ) : null}
+              <div className="flex flex-wrap items-center gap-2">
+                {s.status === "pending" ? <>
+                  <Button size="sm" onClick={() => reviewSubmission(s.id, "approved")}>Approve</Button>
+                  <Button size="sm" variant="outline" onClick={() => reviewSubmission(s.id, "rejected")}>Reject</Button>
+                </> : null}
+                {s.status === "approved" && !s.paid ? <Button size="sm" variant="outline" onClick={() => markPaid(s.id)}>Mark as paid</Button> : null}
                 {s.paid ? <span className="text-xs text-success">Paid</span> : null}
               </div>
             </div>
           ))}
-          {!submissions?.length ? (
-            <div className="panel p-8 text-center text-sm text-muted-foreground">No submission yet.</div>
-          ) : null}
+          {!visibleSubmissions.length ? <div className="panel p-8 text-center text-sm text-muted-foreground">No submissions match these filters.</div> : null}
         </TabsContent>
 
         <TabsContent value="users" className="mt-6 grid gap-3">
