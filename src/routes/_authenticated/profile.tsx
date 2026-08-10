@@ -37,14 +37,33 @@ function ProfilePage() {
   const [savingNiches, setSavingNiches] = useState(false);
   const [emailOptIn, setEmailOptIn] = useState(true);
   const [savingOptIn, setSavingOptIn] = useState(false);
+  const [phone, setPhone] = useState("");
+  const [savingPhone, setSavingPhone] = useState(false);
 
   useEffect(() => {
     if (profile) {
       setWallet(profile.wallet_address);
       setNiches(profile.niches ?? []);
       setEmailOptIn(profile.email_notifications ?? true);
+      setPhone(profile.phone_number ?? "");
     }
   }, [profile]);
+
+  async function savePhone() {
+    const clean = phone.trim();
+    if (clean && !/^\+?[\d\s()-]{6,20}$/.test(clean)) {
+      return toast.error("Enter a valid phone number, e.g. +33 6 12 34 56 78.");
+    }
+    setSavingPhone(true);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ phone_number: clean })
+      .eq("id", profile!.id);
+    setSavingPhone(false);
+    if (error) return toast.error(error.message);
+    qc.invalidateQueries({ queryKey: ["profile"] });
+    toast.success(clean ? "Phone number saved." : "Phone number removed.");
+  }
 
   async function saveEmailOptIn(next: boolean) {
     setEmailOptIn(next);
@@ -212,6 +231,32 @@ function ProfilePage() {
                 Payments are sent manually in USDC on the Ethereum blockchain. Make sure this address supports ERC-20 tokens.
               </p>
             </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="phone">WhatsApp number — optional</Label>
+              <p className="text-xs text-muted-foreground">
+                Add your number to be invited to our WhatsApp group and get an instant alert as soon as a new mission is
+                published. Optional — leave empty if you prefer email only.
+              </p>
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <Input
+                  id="phone"
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  maxLength={20}
+                  placeholder="+33 6 12 34 56 78"
+                />
+                <Button
+                  onClick={savePhone}
+                  disabled={savingPhone || phone.trim() === (profile.phone_number ?? "")}
+                >
+                  Save
+                </Button>
+              </div>
+            </div>
+
+
 
             <div className="flex items-start justify-between gap-4 rounded-lg border border-border bg-surface/40 p-4">
               <div className="min-w-0">

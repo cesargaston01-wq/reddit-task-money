@@ -389,6 +389,9 @@ function AdminPage() {
                     {p.reddit_profile_url}
                   </a>
                   <div className="truncate text-xs text-muted-foreground">Wallet: {p.wallet_address || "not set"}</div>
+                  <div className="truncate text-xs text-muted-foreground">
+                    WhatsApp: {p.phone_number || "not set"}
+                  </div>
                   {p.niches?.length ? (
                     <div className="mt-2 flex flex-wrap items-center gap-1">
                       <span className="text-[10px] uppercase tracking-wide text-muted-foreground">Topics:</span>
