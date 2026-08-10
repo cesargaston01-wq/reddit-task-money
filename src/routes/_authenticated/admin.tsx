@@ -4,10 +4,14 @@ import { useState, type ComponentType } from "react";
 import { toast } from "sonner";
 import {
   CheckCircle2,
+  CircleDollarSign,
   Clock3,
+  FileText,
   Loader2,
+  MessageSquare,
   Pencil,
   Plus,
+  Radio,
   Trash2,
   UserRound,
   XCircle,
@@ -40,6 +44,8 @@ export const Route = createFileRoute("/_authenticated/admin")({
 });
 
 type Draft = Partial<Mission> & { type: "post" | "comment" };
+type SubmissionTypeFilter = "all" | "post" | "comment";
+type SubmissionStatusFilter = "all" | "pending" | "approved" | "rejected";
 
 function extractRedditSubreddit(value: string) {
   const match = value.match(/(?:^|\/)r\/([^/?#]+)/i);
@@ -55,6 +61,8 @@ function AdminPage() {
   const [draft, setDraft] = useState<Draft | null>(null);
   const [userSearch, setUserSearch] = useState("");
   const [userFilter, setUserFilter] = useState<"all" | "pending" | "accepted" | "rejected">("all");
+  const [submissionTypeFilter, setSubmissionTypeFilter] = useState<SubmissionTypeFilter>("all");
+  const [submissionStatusFilter, setSubmissionStatusFilter] = useState<SubmissionStatusFilter>("all");
 
   if (loadingRole) {
     return (
@@ -125,6 +133,21 @@ function AdminPage() {
     accepted: profiles?.filter((profile) => profile.status === "accepted").length ?? 0,
     rejected: profiles?.filter((profile) => profile.status === "rejected").length ?? 0,
   };
+
+  const liveMissions = (missions ?? []).filter((mission) => mission.is_active && !mission.is_locked);
+  const submissionStats = {
+    total: submissions?.length ?? 0,
+    posts: submissions?.filter((submission) => submission.missions?.type === "post").length ?? 0,
+    comments: submissions?.filter((submission) => submission.missions?.type === "comment").length ?? 0,
+    pending: submissions?.filter((submission) => submission.status === "pending").length ?? 0,
+    approved: submissions?.filter((submission) => submission.status === "approved").length ?? 0,
+    rejected: submissions?.filter((submission) => submission.status === "rejected").length ?? 0,
+  };
+  const visibleSubmissions = (submissions ?? []).filter((submission) => {
+    const matchesType = submissionTypeFilter === "all" || submission.missions?.type === submissionTypeFilter;
+    const matchesStatus = submissionStatusFilter === "all" || submission.status === submissionStatusFilter;
+    return matchesType && matchesStatus;
+  });
 
   async function saveMission() {
     if (!draft) return;
