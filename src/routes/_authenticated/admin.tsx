@@ -299,27 +299,28 @@ function AdminPage() {
         </TabsContent>
 
         <TabsContent value="users" className="mt-6 grid gap-3">
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="panel flex flex-col gap-3 p-3 sm:flex-row sm:items-center">
             <Input
               value={userSearch}
               onChange={(e) => setUserSearch(e.target.value)}
               placeholder="Search by name, email or Reddit profile"
-              className="max-w-xs"
+              className="max-w-none sm:max-w-xs"
             />
-            <div className="flex gap-1">
+            <div className="flex gap-1 overflow-x-auto pb-0.5">
               {(["all", "pending", "accepted", "rejected"] as const).map((f) => (
                 <Button
                   key={f}
                   size="sm"
                   variant={userFilter === f ? "default" : "outline"}
                   onClick={() => setUserFilter(f)}
+                  className="shrink-0"
                 >
-                  {f === "all" ? "All" : f.charAt(0).toUpperCase() + f.slice(1)}
+                  {f === "all" ? `All (${profileStats.total})` : f === "pending" ? `Pending (${profileStats.pending})` : f === "accepted" ? `Accepted (${profileStats.accepted})` : `Rejected (${profileStats.rejected})`}
                 </Button>
               ))}
             </div>
-            <span className="ml-auto text-xs text-muted-foreground">
-              {visibleProfiles.length} member{visibleProfiles.length > 1 ? "s" : ""}
+            <span className="text-xs text-muted-foreground sm:ml-auto">
+              Showing {visibleProfiles.length} of {profileStats.total}
             </span>
           </div>
 
