@@ -10,30 +10,38 @@ export type Submission = Tables<"submissions">;
 export const PAYOUT_POST = 5;
 export const PAYOUT_COMMENT = 3;
 
+/**
+ * Resolves the signed-in user from the persisted session first.
+ * `getSession()` reads local storage and refreshes the token when needed, so it
+ * keeps working on mobile networks where a single `getUser()` call can fail and
+ * make the app look signed out.
+ */
+export async function getCurrentUser() {
+  const { data: sessionData } = await supabase.auth.getSession();
+  if (!sessionData.session) return null;
+  return sessionData.session.user;
+}
+
 export function useSession() {
   return useQuery({
     queryKey: ["session"],
-    queryFn: async () => {
-      const { data: sessionData } = await supabase.auth.getSession();
-      if (!sessionData.session) return null;
-
-      const { data, error } = await supabase.auth.getUser();
-      if (error || !data.user) return sessionData.session.user;
-      return data.user;
-    },
+    staleTime: 30_000,
+    retry: 2,
+    queryFn: async () => await getCurrentUser(),
   });
 }
+
 
 export function useProfile() {
   return useQuery({
     queryKey: ["profile"],
     queryFn: async () => {
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) return null;
+      const user = await getCurrentUser();
+      if (!user) return null;
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
-        .eq("id", userData.user.id)
+        .eq("id", user.id)
         .maybeSingle();
       if (error) throw error;
       return data as Profile | null;
@@ -45,12 +53,12 @@ export function useIsAdmin() {
   return useQuery({
     queryKey: ["is-admin"],
     queryFn: async () => {
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) return false;
+      const user = await getCurrentUser();
+      if (!user) return false;
       const { data, error } = await supabase
         .from("user_roles")
         .select("role")
-        .eq("user_id", userData.user.id)
+        .eq("user_id", user.id)
         .eq("role", "admin")
         .maybeSingle();
       if (error) throw error;
@@ -100,12 +108,12 @@ export function useMySubmissions() {
   return useQuery({
     queryKey: ["submissions", "mine"],
     queryFn: async () => {
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) return [];
+      const user = await getCurrentUser();
+      if (!user) return [];
       const { data, error } = await supabase
         .from("submissions")
         .select("*, missions(*)")
-        .eq("user_id", userData.user.id)
+        .eq("user_id", user.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data as (Submission & { missions: Mission | null })[];
@@ -173,14 +181,14 @@ export function useSubmitMission() {
         throw new Error("Enter a valid Reddit link.");
       }
 
-      const { data: userData, error: userError } = await supabase.auth.getUser();
-      if (userError || !userData.user) {
+      const user = await getCurrentUser();
+      if (!user) {
         throw new Error("Sign in again before submitting your link.");
       }
 
       const { error } = await supabase.from("submissions").insert({
         mission_id: mission.id,
-        user_id: userData.user.id,
+        user_id: user.id,
         submitted_url: submittedUrl,
         amount: mission.payout,
       });
@@ -211,8 +219,8 @@ export function useReserveMission() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (missionId: string) => {
-      const { data: userData, error: userError } = await supabase.auth.getUser();
-      if (userError || !userData.user) {
+      const user = await getCurrentUser();
+      if (!user) {
         throw new Error("Sign in again before taking a mission.");
       }
 
@@ -220,12 +228,12 @@ export function useReserveMission() {
       const reservedUntil = new Date(now.getTime() + 10 * 60_000).toISOString();
       const { data, error } = await supabase
         .from("missions")
-        .update({ reserved_by: userData.user.id, reserved_until: reservedUntil })
+        .update({ reserved_by: user.id, reserved_until: reservedUntil })
         .eq("id", missionId)
         .eq("is_active", true)
         .eq("is_locked", false)
         .or(
-          `reserved_until.is.null,reserved_until.lt.${now.toISOString()},reserved_by.eq.${userData.user.id}`,
+          `reserved_until.is.null,reserved_until.lt.${now.toISOString()},reserved_by.eq.${user.id}`,
         )
         .select("id, reserved_until")
         .maybeSingle();
@@ -242,8 +250,8 @@ export function useReleaseMission() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (missionId: string) => {
-      const { data: userData, error: userError } = await supabase.auth.getUser();
-      if (userError || !userData.user) {
+      const user = await getCurrentUser();
+      if (!user) {
         throw new Error("Sign in again before releasing a mission.");
       }
 
@@ -251,7 +259,7 @@ export function useReleaseMission() {
         .from("missions")
         .update({ reserved_by: null, reserved_until: null })
         .eq("id", missionId)
-        .eq("reserved_by", userData.user.id)
+        .eq("reserved_by", user.id)
         .select("id")
         .maybeSingle();
 
