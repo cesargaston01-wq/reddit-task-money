@@ -1,20 +1,43 @@
-## Objectif
+# Mission notifications: daily email digest + Whop community
 
-Supprimer l'étape de confirmation par email : après inscription, l'utilisateur est connecté immédiatement et arrive directement sur les opportunités.
+Goal: every verified member gets a daily email listing the new missions published in the last 24 hours, and the Whop community (https://whop.com/taskreddit) is promoted across the app as the instant-alert channel you post to manually.
 
-## Ce qui change
+## Prerequisite: sender domain
 
-1. **Backend auth** — activer la confirmation automatique des comptes. Les emails de confirmation ne sont plus envoyés du tout, donc plus de problème de spam à l'inscription.
+App emails require a domain you own (e.g. `taskreddit.com`). No domain is set up yet, so nothing can be sent until that step is done — it takes a few minutes and DNS verification afterwards.
 
-2. **Page d'inscription (`src/routes/auth.tsx`)**
-   - Retirer l'encadré « Confirme ton adresse email » et le bouton « Resend confirmation email ».
-   - Retirer la mention « You'll receive a confirmation email » sous le formulaire ; garder « ton compte reste en attente de validation manuelle » (la revue du profil Reddit par l'admin reste inchangée).
-   - Après inscription réussie : redirection directe vers `/opportunities/posts`.
+Set up email domain
 
-3. **Rien d'autre ne bouge** : la validation manuelle des comptes Reddit dans l'admin, le statut `pending/accepted`, et l'accès aux missions restent identiques.
+## 1. Daily digest email
 
-## À savoir
+- A new email template, styled like the site (dark accents on white background), listing each new mission: type (Post / Comment), subreddit, payout, and a button back to the dashboard.
+- The email does not reveal mission instructions or post content — only what a visitor already sees publicly.
+- Sent once a day at a fixed hour to every member whose account status is `accepted`.
+- If there is no new mission in the last 24 h, no email goes out that day.
+- Footer of the email links to the Whop community for real-time alerts.
+- Unsubscribe is handled automatically by the email system.
 
-- N'importe qui pourra s'inscrire avec une adresse email inexistante ou fausse. Ton filtre reste la validation manuelle du profil Reddit dans l'admin.
-- La réinitialisation de mot de passe par email continuerait de passer par l'expéditeur partagé (donc risque de spam) tant que le domaine d'envoi `taskreddit.com` n'est pas configuré. Ça reste faisable plus tard.
-- C'est réversible en une manip si tu veux réactiver la vérification.
+## 2. Notification preference
+
+- New column on profiles: `email_notifications` (on by default).
+- A toggle in the member Profile page: "Email me a daily summary of new missions".
+- The digest only goes to members with the toggle on.
+
+## 3. Whop community integration
+
+- Button "Join the community" linking to https://whop.com/taskreddit in the header, on the landing page (near the hero / how-it-works), and in the member dashboard.
+- A small banner on the dashboard: "New missions are announced instantly in our Whop community."
+- Same link in the daily email footer.
+
+## Technical notes
+
+- New table column `profiles.email_notifications boolean not null default true`, editable by the owner only (existing profile policies cover it).
+- Server route `src/routes/api/public/hooks/mission-digest.ts`, secured with the project key, queries missions created in the last 24 h and sends one email per opted-in accepted member (one recipient per send, no bulk loop of a marketing list).
+- Scheduled with pg_cron + pg_net at a fixed daily hour (default 09:00 UTC) calling that route.
+- Uses Lovable's managed email templates; no queue or email table is created.
+
+## Not included
+
+- Per-tag targeting (everyone verified gets the digest, as chosen).
+- Instant per-mission email (daily summary only, to avoid inbox fatigue).
+- Automatic posting to Whop — you announce missions there yourself.
