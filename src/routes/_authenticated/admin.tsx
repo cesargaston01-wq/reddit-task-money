@@ -116,7 +116,9 @@ function AdminPage() {
     .filter((p) =>
       !query
         ? true
-        : `${p.full_name} ${p.email} ${p.reddit_profile_url}`.toLowerCase().includes(query),
+        : `${p.full_name} ${p.email} ${p.reddit_profile_url} ${(p.niches ?? []).join(" ")}`
+            .toLowerCase()
+            .includes(query),
     )
     .sort((a, b) => {
       const la = activity.get(a.id)?.last.created_at;
