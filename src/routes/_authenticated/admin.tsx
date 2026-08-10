@@ -109,21 +109,31 @@ function AdminPage() {
 
   async function saveMission() {
     if (!draft) return;
+
+    const communityUrl = (draft.community_url ?? "").trim();
+    const targetPostUrl = (draft.target_post_url ?? "").trim();
+    const subreddit = extractRedditSubreddit(draft.type === "post" ? communityUrl : targetPostUrl);
     const payload = {
       type: draft.type,
       title: (draft.title ?? "").trim(),
-      subreddit: (draft.subreddit ?? "").trim().replace(/^r\//, ""),
-      community_url: draft.community_url ?? "",
+      subreddit,
+      community_url: draft.type === "post" ? communityUrl : "",
       payout: Number(draft.payout ?? (draft.type === "post" ? 5 : 3)),
       post_title: draft.post_title ?? null,
       post_body: draft.post_body ?? null,
       flair: draft.flair ?? null,
       instructions: draft.instructions ?? null,
-      target_post_url: draft.target_post_url ?? null,
+      target_post_url: draft.type === "comment" ? targetPostUrl : null,
       comment_text: draft.comment_text ?? null,
       is_active: draft.is_active ?? true,
     };
-    if (!payload.title || !payload.subreddit) return toast.error("Title and community are required.");
+    if (!payload.title || !payload.subreddit) {
+      return toast.error(
+        draft.type === "post"
+          ? "Enter a valid Reddit community link."
+          : "Enter a valid Reddit post link.",
+      );
+    }
 
     const { error } = draft.id
       ? await supabase.from("missions").update(payload).eq("id", draft.id)
