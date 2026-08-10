@@ -35,13 +35,33 @@ function ProfilePage() {
   const [niches, setNiches] = useState<string[]>([]);
   const [nicheInput, setNicheInput] = useState("");
   const [savingNiches, setSavingNiches] = useState(false);
+  const [emailOptIn, setEmailOptIn] = useState(true);
+  const [savingOptIn, setSavingOptIn] = useState(false);
 
   useEffect(() => {
     if (profile) {
       setWallet(profile.wallet_address);
       setNiches(profile.niches ?? []);
+      setEmailOptIn(profile.email_notifications ?? true);
     }
   }, [profile]);
+
+  async function saveEmailOptIn(next: boolean) {
+    setEmailOptIn(next);
+    setSavingOptIn(true);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ email_notifications: next })
+      .eq("id", profile!.id);
+    setSavingOptIn(false);
+    if (error) {
+      setEmailOptIn(!next);
+      return toast.error(error.message);
+    }
+    qc.invalidateQueries({ queryKey: ["profile"] });
+    toast.success(next ? "Daily summary enabled." : "Daily summary disabled.");
+  }
+
 
   const done = subs?.length ?? 0;
   const approved = subs?.filter((s) => s.status === "approved") ?? [];
