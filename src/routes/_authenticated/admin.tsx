@@ -32,6 +32,11 @@ export const Route = createFileRoute("/_authenticated/admin")({
 
 type Draft = Partial<Mission> & { type: "post" | "comment" };
 
+function extractRedditSubreddit(value: string) {
+  const match = value.match(/(?:^|\/)r\/([^/?#]+)/i);
+  return match?.[1]?.trim().replace(/^r\//i, "") ?? "";
+}
+
 function AdminPage() {
   const { data: isAdmin, isLoading: loadingRole } = useIsAdmin();
   const qc = useQueryClient();
