@@ -8,8 +8,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
+import { WHOP_COMMUNITY_URL } from "@/lib/community";
 import { useMySubmissions, useProfile } from "@/lib/data";
+
 
 export const Route = createFileRoute("/_authenticated/profile")({
   head: () => ({
