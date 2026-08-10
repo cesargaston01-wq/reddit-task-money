@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import { DashboardLayout } from "@/components/dashboard-layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -21,21 +21,50 @@ export const Route = createFileRoute("/_authenticated/profile")({
   component: ProfilePage,
 });
 
+const MAX_NICHES = 12;
+
 function ProfilePage() {
   const { data: profile, isLoading } = useProfile();
   const { data: subs } = useMySubmissions();
   const qc = useQueryClient();
   const [wallet, setWallet] = useState("");
   const [saving, setSaving] = useState(false);
+  const [niches, setNiches] = useState<string[]>([]);
+  const [nicheInput, setNicheInput] = useState("");
+  const [savingNiches, setSavingNiches] = useState(false);
 
   useEffect(() => {
-    if (profile) setWallet(profile.wallet_address);
+    if (profile) {
+      setWallet(profile.wallet_address);
+      setNiches(profile.niches ?? []);
+    }
   }, [profile]);
 
   const done = subs?.length ?? 0;
   const approved = subs?.filter((s) => s.status === "approved") ?? [];
   const pending = subs?.filter((s) => s.status === "pending").length ?? 0;
   const earned = approved.reduce((sum, s) => sum + Number(s.amount), 0);
+
+  function addNiche(raw: string) {
+    const clean = raw.trim().replace(/\s+/g, " ").slice(0, 30);
+    if (!clean) return;
+    if (niches.length >= MAX_NICHES) return toast.error(`Maximum ${MAX_NICHES} topics.`);
+    if (niches.some((n) => n.toLowerCase() === clean.toLowerCase())) return;
+    setNiches([...niches, clean]);
+    setNicheInput("");
+  }
+
+  async function saveNiches() {
+    setSavingNiches(true);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ niches })
+      .eq("id", profile!.id);
+    setSavingNiches(false);
+    if (error) return toast.error(error.message);
+    qc.invalidateQueries({ queryKey: ["profile"] });
+    toast.success("Topics updated.");
+  }
 
   async function save() {
     const clean = wallet.trim();
@@ -50,6 +79,7 @@ function ProfilePage() {
     qc.invalidateQueries({ queryKey: ["profile"] });
     toast.success("Wallet updated.");
   }
+
 
   return (
     <DashboardLayout title="Profile" description="Your details and your earnings.">
