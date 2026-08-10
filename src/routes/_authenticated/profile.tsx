@@ -189,7 +189,32 @@ function ProfilePage() {
                 Payments are sent manually in USDC on the Ethereum blockchain. Make sure this address supports ERC-20 tokens.
               </p>
             </div>
+
+            <div className="flex items-start justify-between gap-4 rounded-lg border border-border bg-surface/40 p-4">
+              <div className="min-w-0">
+                <Label htmlFor="email-notifications">Email me a daily summary of new missions</Label>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  One email per day, only when new missions were published. Instant alerts are posted in our{" "}
+                  <a
+                    href={WHOP_COMMUNITY_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    Whop community
+                  </a>
+                  .
+                </p>
+              </div>
+              <Switch
+                id="email-notifications"
+                checked={emailOptIn}
+                disabled={savingOptIn}
+                onCheckedChange={saveEmailOptIn}
+              />
+            </div>
           </div>
+
         </div>
       )}
     </DashboardLayout>
