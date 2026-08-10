@@ -119,7 +119,12 @@ function AdminPage() {
       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     });
 
-
+  const profileStats = {
+    total: profiles?.length ?? 0,
+    pending: profiles?.filter((profile) => profile.status === "pending").length ?? 0,
+    accepted: profiles?.filter((profile) => profile.status === "accepted").length ?? 0,
+    rejected: profiles?.filter((profile) => profile.status === "rejected").length ?? 0,
+  };
 
   async function saveMission() {
     if (!draft) return;
