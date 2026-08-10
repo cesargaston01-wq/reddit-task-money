@@ -32,6 +32,11 @@ export const Route = createFileRoute("/_authenticated/admin")({
 
 type Draft = Partial<Mission> & { type: "post" | "comment" };
 
+function extractRedditSubreddit(value: string) {
+  const match = value.match(/(?:^|\/)r\/([^/?#]+)/i);
+  return match?.[1]?.trim().replace(/^r\//i, "") ?? "";
+}
+
 function AdminPage() {
   const { data: isAdmin, isLoading: loadingRole } = useIsAdmin();
   const qc = useQueryClient();
@@ -109,21 +114,31 @@ function AdminPage() {
 
   async function saveMission() {
     if (!draft) return;
+
+    const communityUrl = (draft.community_url ?? "").trim();
+    const targetPostUrl = (draft.target_post_url ?? "").trim();
+    const subreddit = extractRedditSubreddit(draft.type === "post" ? communityUrl : targetPostUrl);
     const payload = {
       type: draft.type,
       title: (draft.title ?? "").trim(),
-      subreddit: (draft.subreddit ?? "").trim().replace(/^r\//, ""),
-      community_url: draft.community_url ?? "",
+      subreddit,
+      community_url: draft.type === "post" ? communityUrl : "",
       payout: Number(draft.payout ?? (draft.type === "post" ? 5 : 3)),
       post_title: draft.post_title ?? null,
       post_body: draft.post_body ?? null,
       flair: draft.flair ?? null,
       instructions: draft.instructions ?? null,
-      target_post_url: draft.target_post_url ?? null,
+      target_post_url: draft.type === "comment" ? targetPostUrl : null,
       comment_text: draft.comment_text ?? null,
       is_active: draft.is_active ?? true,
     };
-    if (!payload.title || !payload.subreddit) return toast.error("Title and community are required.");
+    if (!payload.title || !payload.subreddit) {
+      return toast.error(
+        draft.type === "post"
+          ? "Enter a valid Reddit community link."
+          : "Enter a valid Reddit post link.",
+      );
+    }
 
     const { error } = draft.id
       ? await supabase.from("missions").update(payload).eq("id", draft.id)
@@ -350,8 +365,21 @@ function AdminPage() {
           {draft ? (
             <div className="space-y-4">
               <FieldInput label="Mission name" value={draft.title ?? ""} onChange={(v) => setDraft({ ...draft, title: v })} />
-              <FieldInput label="Community (without r/)" value={draft.subreddit ?? ""} onChange={(v) => setDraft({ ...draft, subreddit: v })} />
-              <FieldInput label="Community link" value={draft.community_url ?? ""} onChange={(v) => setDraft({ ...draft, community_url: v })} />
+              {draft.type === "post" ? (
+                <FieldInput
+                  label="Community link"
+                  value={draft.community_url ?? ""}
+                  onChange={(v) => setDraft({ ...draft, community_url: v })}
+                  placeholder="https://www.reddit.com/r/..."
+                />
+              ) : (
+                <FieldInput
+                  label="Reddit post link"
+                  value={draft.target_post_url ?? ""}
+                  onChange={(v) => setDraft({ ...draft, target_post_url: v })}
+                  placeholder="https://www.reddit.com/r/.../comments/..."
+                />
+              )}
               <FieldInput label="Payout ($)" type="number" value={String(draft.payout ?? "")} onChange={(v) => setDraft({ ...draft, payout: Number(v) })} />
 
               {draft.type === "post" ? (
@@ -361,10 +389,7 @@ function AdminPage() {
                   <FieldInput label="Flair" value={draft.flair ?? ""} onChange={(v) => setDraft({ ...draft, flair: v })} />
                 </>
               ) : (
-                <>
-                  <FieldInput label="Reddit post link" value={draft.target_post_url ?? ""} onChange={(v) => setDraft({ ...draft, target_post_url: v })} />
-                  <FieldArea label="Exact comment" value={draft.comment_text ?? ""} onChange={(v) => setDraft({ ...draft, comment_text: v })} />
-                </>
+                <FieldArea label="Exact comment" value={draft.comment_text ?? ""} onChange={(v) => setDraft({ ...draft, comment_text: v })} />
               )}
               <FieldArea label="Specific instructions" value={draft.instructions ?? ""} onChange={(v) => setDraft({ ...draft, instructions: v })} />
               <Button className="w-full" onClick={saveMission}>
@@ -383,16 +408,24 @@ function FieldInput({
   value,
   onChange,
   type = "text",
+  placeholder,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   type?: string;
+  placeholder?: string;
 }) {
   return (
     <div className="space-y-1.5">
       <Label>{label}</Label>
-      <Input type={type} value={value} onChange={(e) => onChange(e.target.value)} maxLength={300} />
+      <Input
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        maxLength={300}
+      />
     </div>
   );
 }
