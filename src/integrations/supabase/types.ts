@@ -78,6 +78,7 @@ export type Database = {
         Row: {
           created_at: string
           email: string
+          email_notifications: boolean
           full_name: string
           id: string
           niches: string[]
@@ -89,6 +90,7 @@ export type Database = {
         Insert: {
           created_at?: string
           email?: string
+          email_notifications?: boolean
           full_name?: string
           id: string
           niches?: string[]
@@ -100,6 +102,7 @@ export type Database = {
         Update: {
           created_at?: string
           email?: string
+          email_notifications?: boolean
           full_name?: string
           id?: string
           niches?: string[]
