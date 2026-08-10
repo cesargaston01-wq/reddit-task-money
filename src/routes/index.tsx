@@ -23,6 +23,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { WHOP_COMMUNITY_URL } from "@/lib/community";
 import { useSession } from "@/lib/data";
 const taskredditLogoAsset = { url: "/taskreddit-logo.png" };
 
