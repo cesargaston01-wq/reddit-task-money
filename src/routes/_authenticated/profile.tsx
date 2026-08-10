@@ -119,6 +119,59 @@ function ProfilePage() {
               </a>
             </div>
             <div className="space-y-2">
+              <Label htmlFor="niche">Where is your account most active?</Label>
+              <p className="text-xs text-muted-foreground">
+                Add your own topics — e.g. marketing, seo, B2B, apps, france, cars, cooking. Press Enter to add.
+              </p>
+              {niches.length > 0 && (
+                <div className="flex flex-wrap gap-2 pt-1">
+                  {niches.map((n) => (
+                    <Badge key={n} variant="secondary" className="gap-1 pr-1">
+                      {n}
+                      <button
+                        type="button"
+                        aria-label={`Remove ${n}`}
+                        onClick={() => setNiches(niches.filter((x) => x !== n))}
+                        className="rounded-full p-0.5 hover:bg-background/60"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+              )}
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <Input
+                  id="niche"
+                  value={nicheInput}
+                  maxLength={30}
+                  placeholder="marketing"
+                  onChange={(e) => setNicheInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === ",") {
+                      e.preventDefault();
+                      addNiche(nicheInput);
+                    } else if (e.key === "Backspace" && !nicheInput && niches.length) {
+                      setNiches(niches.slice(0, -1));
+                    }
+                  }}
+                />
+                <Button type="button" variant="secondary" onClick={() => addNiche(nicheInput)}>
+                  Add
+                </Button>
+                <Button
+                  onClick={saveNiches}
+                  disabled={
+                    savingNiches ||
+                    JSON.stringify(niches) === JSON.stringify(profile.niches ?? [])
+                  }
+                >
+                  Save
+                </Button>
+              </div>
+            </div>
+
+            <div className="space-y-2">
               <Label htmlFor="wallet">Payout wallet — USDC on Ethereum</Label>
               <div className="flex flex-col gap-2 sm:flex-row">
                 <Input
