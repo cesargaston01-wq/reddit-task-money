@@ -390,14 +390,19 @@ function AdminPage() {
                   </a>
                   <div className="truncate text-xs text-muted-foreground">Wallet: {p.wallet_address || "not set"}</div>
                   {p.niches?.length ? (
-                    <div className="mt-2 flex flex-wrap gap-1">
+                    <div className="mt-2 flex flex-wrap items-center gap-1">
+                      <span className="text-[10px] uppercase tracking-wide text-muted-foreground">Topics:</span>
                       {p.niches.map((n) => (
                         <Badge key={n} variant="secondary" className="text-[10px]">
                           {n}
                         </Badge>
                       ))}
                     </div>
-                  ) : null}
+                  ) : (
+                    <div className="mt-2 text-[10px] uppercase tracking-wide text-muted-foreground">
+                      Topics: none
+                    </div>
+                  )}
 
                   <div className="mt-2 text-xs text-muted-foreground">Joined {fmtDate(p.created_at)}</div>
                   {act ? (
