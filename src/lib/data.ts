@@ -84,10 +84,25 @@ export function useMissions(type: "post" | "comment") {
         .eq("is_locked", false)
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return data as unknown as Mission[];
+      let missions = data as unknown as Mission[];
+
+      // A member whose proof was rejected can never take that mission again.
+      const userId = sessionData.session?.user?.id;
+      if (userId && missions.length) {
+        const { data: rejected } = await supabase
+          .from("submissions")
+          .select("mission_id")
+          .eq("user_id", userId)
+          .eq("status", "rejected");
+        const blocked = new Set((rejected ?? []).map((r) => r.mission_id));
+        if (blocked.size) missions = missions.filter((m) => !blocked.has(m.id));
+      }
+
+      return missions;
     },
   });
 }
+
 
 
 export function useAllMissions() {
