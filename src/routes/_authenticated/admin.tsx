@@ -61,6 +61,7 @@ function AdminPage() {
   const [draft, setDraft] = useState<Draft | null>(null);
   const [userSearch, setUserSearch] = useState("");
   const [userFilter, setUserFilter] = useState<"all" | "pending" | "accepted" | "rejected">("all");
+  const [submittedFilter, setSubmittedFilter] = useState<"all" | "yes" | "no">("all");
   const [submissionTypeFilter, setSubmissionTypeFilter] = useState<SubmissionTypeFilter>("all");
   const [submissionStatusFilter, setSubmissionStatusFilter] = useState<SubmissionStatusFilter>("all");
 
@@ -113,6 +114,9 @@ function AdminPage() {
   const query = userSearch.trim().toLowerCase();
   const visibleProfiles = (profiles ?? [])
     .filter((p) => (userFilter === "all" ? true : p.status === userFilter))
+    .filter((p) =>
+      submittedFilter === "all" ? true : submittedFilter === "yes" ? activity.has(p.id) : !activity.has(p.id),
+    )
     .filter((p) =>
       !query
         ? true
@@ -369,6 +373,23 @@ function AdminPage() {
                 </Button>
               ))}
             </div>
+            <div className="flex gap-1 overflow-x-auto pb-0.5">
+              {(["all", "yes", "no"] as const).map((f) => (
+                <Button
+                  key={f}
+                  size="sm"
+                  variant={submittedFilter === f ? "default" : "outline"}
+                  onClick={() => setSubmittedFilter(f)}
+                  className="shrink-0"
+                >
+                  {f === "all"
+                    ? "Any activity"
+                    : f === "yes"
+                      ? `Has submitted (${(profiles ?? []).filter((p) => activity.has(p.id)).length})`
+                      : `Never submitted (${(profiles ?? []).filter((p) => !activity.has(p.id)).length})`}
+                </Button>
+              ))}
+            </div>
             <span className="text-xs text-muted-foreground sm:ml-auto">
               Showing {visibleProfiles.length} of {profileStats.total}
             </span>
@@ -433,7 +454,10 @@ function AdminPage() {
                     {act?.total ?? 0} submission{(act?.total ?? 0) > 1 ? "s" : ""}
                   </div>
                 </div>
-                <div className="flex shrink-0 items-center gap-2">
+                <div className="flex shrink-0 flex-wrap items-center gap-2">
+                  <Badge variant={act ? "default" : "outline"} className={act ? "" : "text-muted-foreground"}>
+                    {act ? `Has submitted (${act.total})` : "Never submitted"}
+                  </Badge>
                   <Badge variant={p.status === "accepted" ? "default" : p.status === "rejected" ? "destructive" : "secondary"}>
                     {p.status === "accepted" ? "Accepted" : p.status === "rejected" ? "Rejected" : "Pending"}
                   </Badge>
