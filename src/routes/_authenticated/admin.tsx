@@ -450,8 +450,7 @@ function AdminPage() {
                     <div className="text-xs text-muted-foreground">No mission yet</div>
                   )}
                   <div className="text-xs text-muted-foreground">
-                    {act?.approved ?? 0} approved · ${(act?.earned ?? 0).toFixed(2)} earned ·{" "}
-                    {act?.total ?? 0} submission{(act?.total ?? 0) > 1 ? "s" : ""}
+                    {act?.approved ?? 0} approved · ${(act?.earned ?? 0).toFixed(2)} earned
                   </div>
                 </div>
                 <div className="flex shrink-0 flex-wrap items-center gap-2">
