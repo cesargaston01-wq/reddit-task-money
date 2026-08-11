@@ -115,6 +115,9 @@ function AdminPage() {
   const visibleProfiles = (profiles ?? [])
     .filter((p) => (userFilter === "all" ? true : p.status === userFilter))
     .filter((p) =>
+      submittedFilter === "all" ? true : submittedFilter === "yes" ? activity.has(p.id) : !activity.has(p.id),
+    )
+    .filter((p) =>
       !query
         ? true
         : `${p.full_name} ${p.email} ${p.reddit_profile_url} ${(p.niches ?? []).join(" ")}`
