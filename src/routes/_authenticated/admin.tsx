@@ -61,6 +61,7 @@ function AdminPage() {
   const [draft, setDraft] = useState<Draft | null>(null);
   const [userSearch, setUserSearch] = useState("");
   const [userFilter, setUserFilter] = useState<"all" | "pending" | "accepted" | "rejected">("all");
+  const [submittedFilter, setSubmittedFilter] = useState<"all" | "yes" | "no">("all");
   const [submissionTypeFilter, setSubmissionTypeFilter] = useState<SubmissionTypeFilter>("all");
   const [submissionStatusFilter, setSubmissionStatusFilter] = useState<SubmissionStatusFilter>("all");
 
