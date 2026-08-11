@@ -454,7 +454,10 @@ function AdminPage() {
                     {act?.total ?? 0} submission{(act?.total ?? 0) > 1 ? "s" : ""}
                   </div>
                 </div>
-                <div className="flex shrink-0 items-center gap-2">
+                <div className="flex shrink-0 flex-wrap items-center gap-2">
+                  <Badge variant={act ? "default" : "outline"} className={act ? "" : "text-muted-foreground"}>
+                    {act ? `Has submitted (${act.total})` : "Never submitted"}
+                  </Badge>
                   <Badge variant={p.status === "accepted" ? "default" : p.status === "rejected" ? "destructive" : "secondary"}>
                     {p.status === "accepted" ? "Accepted" : p.status === "rejected" ? "Rejected" : "Pending"}
                   </Badge>
