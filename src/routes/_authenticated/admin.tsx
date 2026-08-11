@@ -453,19 +453,37 @@ function AdminPage() {
                     {act?.approved ?? 0} approved · ${(act?.earned ?? 0).toFixed(2)} earned
                   </div>
                 </div>
-                <div className="flex shrink-0 flex-wrap items-center gap-2">
-                  <Badge variant={act ? "default" : "outline"} className={act ? "" : "text-muted-foreground"}>
-                    {act ? `Has submitted (${act.total})` : "Never submitted"}
-                  </Badge>
-                  <Badge variant={p.status === "accepted" ? "default" : p.status === "rejected" ? "destructive" : "secondary"}>
-                    {p.status === "accepted" ? "Accepted" : p.status === "rejected" ? "Rejected" : "Pending"}
-                  </Badge>
-                  <Button size="sm" onClick={() => setAccountStatus(p.id, "accepted")}>
-                    Accept
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={() => setAccountStatus(p.id, "rejected")}>
-                    Reject
-                  </Button>
+                <div className="flex shrink-0 flex-col items-end gap-2">
+                  <div
+                    className={
+                      "flex min-w-28 flex-col items-center rounded-xl border px-4 py-2 " +
+                      (act
+                        ? "border-primary/40 bg-primary/10"
+                        : "border-border bg-background/40")
+                    }
+                    title="Number of missions submitted"
+                  >
+                    <span className="font-display text-3xl font-bold text-primary">
+                      {act?.total ?? 0}
+                    </span>
+                    <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+                      {act && act.total === 1 ? "submission" : "submissions"}
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap items-center justify-end gap-2">
+                    <Badge variant={act ? "default" : "outline"} className={act ? "" : "text-muted-foreground"}>
+                      {act ? "Active" : "Never submitted"}
+                    </Badge>
+                    <Badge variant={p.status === "accepted" ? "default" : p.status === "rejected" ? "destructive" : "secondary"}>
+                      {p.status === "accepted" ? "Accepted" : p.status === "rejected" ? "Rejected" : "Pending"}
+                    </Badge>
+                    <Button size="sm" onClick={() => setAccountStatus(p.id, "accepted")}>
+                      Accept
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={() => setAccountStatus(p.id, "rejected")}>
+                      Reject
+                    </Button>
+                  </div>
                 </div>
               </div>
             );
