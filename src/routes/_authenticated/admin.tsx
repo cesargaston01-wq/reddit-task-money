@@ -373,6 +373,23 @@ function AdminPage() {
                 </Button>
               ))}
             </div>
+            <div className="flex gap-1 overflow-x-auto pb-0.5">
+              {(["all", "yes", "no"] as const).map((f) => (
+                <Button
+                  key={f}
+                  size="sm"
+                  variant={submittedFilter === f ? "default" : "outline"}
+                  onClick={() => setSubmittedFilter(f)}
+                  className="shrink-0"
+                >
+                  {f === "all"
+                    ? "Any activity"
+                    : f === "yes"
+                      ? `Has submitted (${(profiles ?? []).filter((p) => activity.has(p.id)).length})`
+                      : `Never submitted (${(profiles ?? []).filter((p) => !activity.has(p.id)).length})`}
+                </Button>
+              ))}
+            </div>
             <span className="text-xs text-muted-foreground sm:ml-auto">
               Showing {visibleProfiles.length} of {profileStats.total}
             </span>
