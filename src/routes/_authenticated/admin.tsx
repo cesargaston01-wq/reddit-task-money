@@ -146,9 +146,10 @@ function AdminPage() {
     rejected: submissions?.filter((submission) => submission.status === "rejected").length ?? 0,
   };
   const visibleSubmissions = (submissions ?? []).filter((submission) => {
+    const notRejected = submission.status !== "rejected";
     const matchesType = submissionTypeFilter === "all" || submission.missions?.type === submissionTypeFilter;
     const matchesStatus = submissionStatusFilter === "all" || submission.status === submissionStatusFilter;
-    return matchesType && matchesStatus;
+    return notRejected && matchesType && matchesStatus;
   });
 
   async function saveMission() {
