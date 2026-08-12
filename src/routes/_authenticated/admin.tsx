@@ -530,7 +530,6 @@ function AdminPage() {
               ) : (
                 <FieldArea label="Exact comment" value={draft.comment_text ?? ""} onChange={(v) => setDraft({ ...draft, comment_text: v })} />
               )}
-              <FieldArea label="Specific instructions" value={draft.instructions ?? ""} onChange={(v) => setDraft({ ...draft, instructions: v })} />
               <Button className="w-full" onClick={saveMission}>
                 Save
               </Button>
