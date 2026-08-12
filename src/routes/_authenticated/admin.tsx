@@ -171,7 +171,6 @@ function AdminPage() {
       post_title: draft.post_title ?? null,
       post_body: draft.post_body ?? null,
       flair: draft.flair ?? null,
-      instructions: draft.instructions ?? null,
       target_post_url: draft.type === "comment" ? targetPostUrl : null,
       comment_text: draft.comment_text ?? null,
       is_active: draft.is_active ?? true,
@@ -531,7 +530,6 @@ function AdminPage() {
               ) : (
                 <FieldArea label="Exact comment" value={draft.comment_text ?? ""} onChange={(v) => setDraft({ ...draft, comment_text: v })} />
               )}
-              <FieldArea label="Specific instructions" value={draft.instructions ?? ""} onChange={(v) => setDraft({ ...draft, instructions: v })} />
               <Button className="w-full" onClick={saveMission}>
                 Save
               </Button>
