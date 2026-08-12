@@ -303,14 +303,25 @@ export function MissionBrowser({
                   ) : null}
                 </Blurred>
 
+                <div className="flex gap-3 rounded-lg border border-destructive/40 bg-destructive/10 p-3">
+                  <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
+                  <div className="text-xs leading-relaxed">
+                    <p className="font-semibold text-destructive">Do not copy-paste — write by hand</p>
+                    <p className="mt-1 text-muted-foreground">
+                      Reddit's algorithms detect copied content. Type the title, body, or comment
+                      manually instead of pasting it. Your submission will be rejected if it looks
+                      copy-pasted.
+                    </p>
+                  </div>
+                </div>
+
                 <div className="flex gap-3 rounded-lg border border-warning/40 bg-warning/10 p-3">
                   <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-warning" />
                   <div className="text-xs leading-relaxed">
                     <p className="font-semibold text-warning">Follow the instructions exactly</p>
                     <p className="mt-1 text-muted-foreground">
-                      Do not change anything in the title, body, comment, flair or instructions. Copy
-                      the content exactly as provided. Any modification means your submission will not
-                      be accepted and will not be paid.
+                      Do not change anything in the title, body, comment, flair or instructions. Any
+                      modification means your submission will not be accepted and will not be paid.
                     </p>
                   </div>
                 </div>
