@@ -13,6 +13,7 @@ import {
   Plus,
   Radio,
   Trash2,
+  Star,
   UserRound,
   XCircle,
 } from "lucide-react";
