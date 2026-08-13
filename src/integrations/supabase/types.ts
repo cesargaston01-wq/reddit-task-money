@@ -14,6 +14,35 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_favorites: {
+        Row: {
+          admin_id: string
+          created_at: string
+          id: string
+          profile_id: string
+        }
+        Insert: {
+          admin_id: string
+          created_at?: string
+          id?: string
+          profile_id: string
+        }
+        Update: {
+          admin_id?: string
+          created_at?: string
+          id?: string
+          profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_favorites_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       missions: {
         Row: {
           comment_text: string | null
