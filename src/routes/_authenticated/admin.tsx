@@ -61,10 +61,13 @@ function AdminPage() {
   const { data: missions } = useAllMissions();
   const { data: submissions } = useAllSubmissions();
   const { data: profiles } = useAllProfiles();
+  const { data: favoriteIds } = useAdminFavorites();
+  const toggleFavorite = useToggleFavorite();
   const [draft, setDraft] = useState<Draft | null>(null);
   const [userSearch, setUserSearch] = useState("");
   const [userFilter, setUserFilter] = useState<"all" | "pending" | "accepted" | "rejected">("all");
   const [submittedFilter, setSubmittedFilter] = useState<"all" | "yes" | "no">("all");
+  const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [submissionTypeFilter, setSubmissionTypeFilter] = useState<SubmissionTypeFilter>("all");
   const [submissionStatusFilter, setSubmissionStatusFilter] = useState<SubmissionStatusFilter>("all");
 
