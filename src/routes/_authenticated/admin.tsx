@@ -118,11 +118,13 @@ function AdminPage() {
   }
 
   const query = userSearch.trim().toLowerCase();
+  const favorites = new Set(favoriteIds ?? []);
   const visibleProfiles = (profiles ?? [])
     .filter((p) => (userFilter === "all" ? true : p.status === userFilter))
     .filter((p) =>
       submittedFilter === "all" ? true : submittedFilter === "yes" ? activity.has(p.id) : !activity.has(p.id),
     )
+    .filter((p) => (favoritesOnly ? favorites.has(p.id) : true))
     .filter((p) =>
       !query
         ? true
@@ -131,6 +133,9 @@ function AdminPage() {
             .includes(query),
     )
     .sort((a, b) => {
+      const fa = favorites.has(a.id) ? 1 : 0;
+      const fb = favorites.has(b.id) ? 1 : 0;
+      if (fa !== fb) return fb - fa;
       const la = activity.get(a.id)?.last.created_at;
       const lb = activity.get(b.id)?.last.created_at;
       if (la && lb) return new Date(lb).getTime() - new Date(la).getTime();
