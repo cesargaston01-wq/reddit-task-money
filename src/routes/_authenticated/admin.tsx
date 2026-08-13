@@ -13,6 +13,7 @@ import {
   Plus,
   Radio,
   Trash2,
+  Star,
   UserRound,
   XCircle,
 } from "lucide-react";
@@ -26,10 +27,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import {
+  useAdminFavorites,
   useAllMissions,
   useAllProfiles,
   useAllSubmissions,
   useIsAdmin,
+  useToggleFavorite,
   type Mission,
 } from "@/lib/data";
 
@@ -58,10 +61,13 @@ function AdminPage() {
   const { data: missions } = useAllMissions();
   const { data: submissions } = useAllSubmissions();
   const { data: profiles } = useAllProfiles();
+  const { data: favoriteIds } = useAdminFavorites();
+  const toggleFavorite = useToggleFavorite();
   const [draft, setDraft] = useState<Draft | null>(null);
   const [userSearch, setUserSearch] = useState("");
   const [userFilter, setUserFilter] = useState<"all" | "pending" | "accepted" | "rejected">("all");
   const [submittedFilter, setSubmittedFilter] = useState<"all" | "yes" | "no">("all");
+  const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [submissionTypeFilter, setSubmissionTypeFilter] = useState<SubmissionTypeFilter>("all");
   const [submissionStatusFilter, setSubmissionStatusFilter] = useState<SubmissionStatusFilter>("all");
 
@@ -112,11 +118,13 @@ function AdminPage() {
   }
 
   const query = userSearch.trim().toLowerCase();
+  const favorites = new Set(favoriteIds ?? []);
   const visibleProfiles = (profiles ?? [])
     .filter((p) => (userFilter === "all" ? true : p.status === userFilter))
     .filter((p) =>
       submittedFilter === "all" ? true : submittedFilter === "yes" ? activity.has(p.id) : !activity.has(p.id),
     )
+    .filter((p) => (favoritesOnly ? favorites.has(p.id) : true))
     .filter((p) =>
       !query
         ? true
@@ -125,6 +133,9 @@ function AdminPage() {
             .includes(query),
     )
     .sort((a, b) => {
+      const fa = favorites.has(a.id) ? 1 : 0;
+      const fb = favorites.has(b.id) ? 1 : 0;
+      if (fa !== fb) return fb - fa;
       const la = activity.get(a.id)?.last.created_at;
       const lb = activity.get(b.id)?.last.created_at;
       if (la && lb) return new Date(lb).getTime() - new Date(la).getTime();
@@ -389,6 +400,15 @@ function AdminPage() {
                 </Button>
               ))}
             </div>
+            <Button
+              size="sm"
+              variant={favoritesOnly ? "default" : "outline"}
+              onClick={() => setFavoritesOnly((v) => !v)}
+              className="shrink-0 gap-1"
+            >
+              <Star className={"h-3.5 w-3.5 " + (favoritesOnly ? "fill-current" : "")} />
+              Favorites ({favorites.size})
+            </Button>
             <span className="text-xs text-muted-foreground sm:ml-auto">
               Showing {visibleProfiles.length} of {profileStats.total}
             </span>
@@ -396,10 +416,22 @@ function AdminPage() {
 
           {visibleProfiles.map((p) => {
             const act = activity.get(p.id);
+            const isFav = favorites.has(p.id);
             return (
               <div key={p.id} className="panel flex flex-wrap items-center justify-between gap-3 p-4">
                 <div className="min-w-0">
-                  <div className="truncate font-medium">{p.full_name || "—"}</div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      aria-label={isFav ? "Remove from favorites" : "Add to favorites"}
+                      title={isFav ? "Remove from favorites" : "Add to favorites"}
+                      onClick={() => toggleFavorite.mutate({ profileId: p.id, favorite: !isFav })}
+                      className="shrink-0 text-muted-foreground transition-colors hover:text-primary"
+                    >
+                      <Star className={"h-4 w-4 " + (isFav ? "fill-primary text-primary" : "")} />
+                    </button>
+                    <div className="truncate font-medium">{p.full_name || "—"}</div>
+                  </div>
                   <div className="truncate text-xs text-muted-foreground">{p.email}</div>
                   <a
                     href={p.reddit_profile_url}

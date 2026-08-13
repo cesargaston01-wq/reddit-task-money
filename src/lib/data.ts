@@ -187,6 +187,47 @@ export function useAllProfiles() {
   });
 }
 
+/** Profiles the current admin starred. */
+export function useAdminFavorites() {
+  return useQuery({
+    queryKey: ["admin-favorites"],
+    queryFn: async () => {
+      const user = await getCurrentUser();
+      if (!user) return [] as string[];
+      const { data, error } = await supabase
+        .from("admin_favorites")
+        .select("profile_id")
+        .eq("admin_id", user.id);
+      if (error) throw error;
+      return (data ?? []).map((row) => row.profile_id);
+    },
+  });
+}
+
+export function useToggleFavorite() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ profileId, favorite }: { profileId: string; favorite: boolean }) => {
+      const user = await getCurrentUser();
+      if (!user) throw new Error("Sign in again.");
+      if (favorite) {
+        const { error } = await supabase
+          .from("admin_favorites")
+          .insert({ admin_id: user.id, profile_id: profileId });
+        if (error && error.code !== "23505") throw new Error(error.message);
+      } else {
+        const { error } = await supabase
+          .from("admin_favorites")
+          .delete()
+          .eq("admin_id", user.id)
+          .eq("profile_id", profileId);
+        if (error) throw new Error(error.message);
+      }
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-favorites"] }),
+  });
+}
+
 export function useSubmitMission() {
   const qc = useQueryClient();
   return useMutation({
