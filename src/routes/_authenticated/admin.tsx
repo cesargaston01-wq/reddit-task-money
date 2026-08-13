@@ -400,6 +400,15 @@ function AdminPage() {
                 </Button>
               ))}
             </div>
+            <Button
+              size="sm"
+              variant={favoritesOnly ? "default" : "outline"}
+              onClick={() => setFavoritesOnly((v) => !v)}
+              className="shrink-0 gap-1"
+            >
+              <Star className={"h-3.5 w-3.5 " + (favoritesOnly ? "fill-current" : "")} />
+              Favorites ({favorites.size})
+            </Button>
             <span className="text-xs text-muted-foreground sm:ml-auto">
               Showing {visibleProfiles.length} of {profileStats.total}
             </span>
@@ -407,10 +416,22 @@ function AdminPage() {
 
           {visibleProfiles.map((p) => {
             const act = activity.get(p.id);
+            const isFav = favorites.has(p.id);
             return (
               <div key={p.id} className="panel flex flex-wrap items-center justify-between gap-3 p-4">
                 <div className="min-w-0">
-                  <div className="truncate font-medium">{p.full_name || "—"}</div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      aria-label={isFav ? "Remove from favorites" : "Add to favorites"}
+                      title={isFav ? "Remove from favorites" : "Add to favorites"}
+                      onClick={() => toggleFavorite.mutate({ profileId: p.id, favorite: !isFav })}
+                      className="shrink-0 text-muted-foreground transition-colors hover:text-primary"
+                    >
+                      <Star className={"h-4 w-4 " + (isFav ? "fill-primary text-primary" : "")} />
+                    </button>
+                    <div className="truncate font-medium">{p.full_name || "—"}</div>
+                  </div>
                   <div className="truncate text-xs text-muted-foreground">{p.email}</div>
                   <a
                     href={p.reddit_profile_url}
