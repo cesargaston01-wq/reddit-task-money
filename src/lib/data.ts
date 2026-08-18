@@ -136,7 +136,7 @@ export function useMySubmissions() {
   });
 }
 
-export const DAILY_LIMITS: Record<"post" | "comment", number> = { post: 1, comment: 3 };
+export const DAILY_LIMITS: Record<"post" | "comment", number> = { post: 1, comment: 1 };
 
 /** How many missions of a given type the member already submitted today (rejected ones don't count). */
 export function useDailyQuota(type: "post" | "comment") {
