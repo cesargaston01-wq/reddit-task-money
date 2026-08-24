@@ -190,6 +190,13 @@ export type Database = {
             referencedRelation: "missions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "submissions_mission_id_fkey"
+            columns: ["mission_id"]
+            isOneToOne: false
+            referencedRelation: "public_missions"
+            referencedColumns: ["id"]
+          },
         ]
       }
       user_roles: {
@@ -212,7 +219,45 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_missions: {
+        Row: {
+          community_url: string | null
+          created_at: string | null
+          id: string | null
+          is_active: boolean | null
+          is_locked: boolean | null
+          payout: number | null
+          reserved_until: string | null
+          subreddit: string | null
+          title: string | null
+          type: Database["public"]["Enums"]["mission_type"] | null
+        }
+        Insert: {
+          community_url?: string | null
+          created_at?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          is_locked?: boolean | null
+          payout?: number | null
+          reserved_until?: string | null
+          subreddit?: string | null
+          title?: string | null
+          type?: Database["public"]["Enums"]["mission_type"] | null
+        }
+        Update: {
+          community_url?: string | null
+          created_at?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          is_locked?: boolean | null
+          payout?: number | null
+          reserved_until?: string | null
+          subreddit?: string | null
+          title?: string | null
+          type?: Database["public"]["Enums"]["mission_type"] | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {
@@ -223,21 +268,6 @@ export type Database = {
         Returns: boolean
       }
       is_accepted: { Args: { _user_id: string }; Returns: boolean }
-      list_public_missions: {
-        Args: never
-        Returns: {
-          community_url: string
-          created_at: string
-          id: string
-          is_active: boolean
-          is_locked: boolean
-          payout: number
-          reserved_until: string
-          subreddit: string
-          title: string
-          type: Database["public"]["Enums"]["mission_type"]
-        }[]
-      }
     }
     Enums: {
       account_status: "pending" | "accepted" | "rejected"
