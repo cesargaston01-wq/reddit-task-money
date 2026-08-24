@@ -70,6 +70,8 @@ function AdminPage() {
   const [favoritesOnly, setFavoritesOnly] = useState(false);
   const [submissionTypeFilter, setSubmissionTypeFilter] = useState<SubmissionTypeFilter>("all");
   const [submissionStatusFilter, setSubmissionStatusFilter] = useState<SubmissionStatusFilter>("all");
+  const [missionFilter, setMissionFilter] = useState<"live" | "all">("live");
+
 
   if (loadingRole) {
     return (
@@ -267,29 +269,43 @@ function AdminPage() {
             <Button size="sm" variant="outline" onClick={() => setDraft({ type: "comment", payout: 3 })}>
               <Plus className="mr-1 h-4 w-4" /> Comment mission
             </Button>
+            <Button size="sm" variant={missionFilter === "live" ? "default" : "outline"} onClick={() => setMissionFilter("live")}>
+              Live only ({liveMissions.length})
+            </Button>
+            <Button size="sm" variant={missionFilter === "all" ? "default" : "outline"} onClick={() => setMissionFilter("all")}>
+              All ({missions?.length ?? 0})
+            </Button>
           </div>
           <div className="grid gap-3">
-            {(missions ?? []).map((m) => (
-              <div key={m.id} className="panel flex items-center justify-between gap-3 p-4">
-                <div className="min-w-0">
-                  <div className="truncate font-medium">{m.title}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {m.type === "post" ? "Post" : "Comment"} · r/{m.subreddit} · $
-                    {Number(m.payout).toFixed(0)} {m.is_active ? "" : "· inactive"}
+            {(missions ?? [])
+              .filter((m) => (missionFilter === "live" ? m.is_active && !m.is_locked : true))
+              .map((m) => (
+                <div key={m.id} className="panel flex items-center justify-between gap-3 p-4">
+                  <div className="min-w-0">
+                    <div className="truncate font-medium">{m.title}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {m.type === "post" ? "Post" : "Comment"} · r/{m.subreddit} · $
+                      {Number(m.payout).toFixed(0)} {m.is_active ? "" : "· inactive"} {m.is_locked ? "· locked" : ""}
+                    </div>
+                  </div>
+                  <div className="flex shrink-0 gap-1">
+                    <Button size="icon" variant="ghost" onClick={() => setDraft(m as Draft)}>
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button size="icon" variant="ghost" onClick={() => removeMission(m.id)}>
+                      <Trash2 className="h-4 w-4 text-destructive" />
+                    </Button>
                   </div>
                 </div>
-                <div className="flex shrink-0 gap-1">
-                  <Button size="icon" variant="ghost" onClick={() => setDraft(m as Draft)}>
-                    <Pencil className="h-4 w-4" />
-                  </Button>
-                  <Button size="icon" variant="ghost" onClick={() => removeMission(m.id)}>
-                    <Trash2 className="h-4 w-4 text-destructive" />
-                  </Button>
-                </div>
-              </div>
-            ))}
+              ))}
           </div>
+          {!((missions ?? []).filter((m) => (missionFilter === "live" ? m.is_active && !m.is_locked : true)).length) ? (
+            <div className="panel p-8 text-center text-sm text-muted-foreground">
+              {missionFilter === "live" ? "No live missions." : "No missions yet."}
+            </div>
+          ) : null}
         </TabsContent>
+
 
         <TabsContent value="submissions" className="mt-6 space-y-4">
           <section aria-label="Submission overview" className="grid grid-cols-2 gap-3 lg:grid-cols-4">
