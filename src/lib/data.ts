@@ -73,18 +73,17 @@ export function useMissions(type: "post" | "comment") {
     refetchInterval: 30_000,
     queryFn: async () => {
       const { data: sessionData } = await supabase.auth.getSession();
-      const columns = sessionData.session
-        ? "*"
-        : "id,type,title,subreddit,community_url,payout,is_active,is_locked,created_at,reserved_until";
+      const source = sessionData.session ? "missions" : "public_missions";
       const { data, error } = await supabase
-        .from("missions")
-        .select(columns)
+        .from(source as "missions")
+        .select("*")
         .eq("type", type)
         .eq("is_active", true)
         .eq("is_locked", false)
         .order("created_at", { ascending: false });
       if (error) throw error;
       let missions = data as unknown as Mission[];
+
 
       // A member whose proof was rejected can never take that mission again.
       const userId = sessionData.session?.user?.id;
