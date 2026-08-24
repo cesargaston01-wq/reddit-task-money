@@ -190,6 +190,13 @@ export type Database = {
             referencedRelation: "missions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "submissions_mission_id_fkey"
+            columns: ["mission_id"]
+            isOneToOne: false
+            referencedRelation: "public_missions"
+            referencedColumns: ["id"]
+          },
         ]
       }
       user_roles: {
@@ -212,7 +219,45 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_missions: {
+        Row: {
+          community_url: string | null
+          created_at: string | null
+          id: string | null
+          is_active: boolean | null
+          is_locked: boolean | null
+          payout: number | null
+          reserved_until: string | null
+          subreddit: string | null
+          title: string | null
+          type: Database["public"]["Enums"]["mission_type"] | null
+        }
+        Insert: {
+          community_url?: string | null
+          created_at?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          is_locked?: boolean | null
+          payout?: number | null
+          reserved_until?: string | null
+          subreddit?: string | null
+          title?: string | null
+          type?: Database["public"]["Enums"]["mission_type"] | null
+        }
+        Update: {
+          community_url?: string | null
+          created_at?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          is_locked?: boolean | null
+          payout?: number | null
+          reserved_until?: string | null
+          subreddit?: string | null
+          title?: string | null
+          type?: Database["public"]["Enums"]["mission_type"] | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {
