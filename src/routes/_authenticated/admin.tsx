@@ -535,7 +535,16 @@ function AdminPage() {
                     <Button size="sm" variant="outline" onClick={() => setAccountStatus(p.id, "rejected")}>
                       Reject
                     </Button>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => setPendingDelete({ id: p.id, label: p.full_name || p.email || "this member" })}
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                      Delete
+                    </Button>
                   </div>
+
                 </div>
               </div>
             );
