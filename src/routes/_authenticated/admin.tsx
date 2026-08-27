@@ -31,10 +31,12 @@ import {
   useAllMissions,
   useAllProfiles,
   useAllSubmissions,
+  useDeleteMember,
   useIsAdmin,
   useToggleFavorite,
   type Mission,
 } from "@/lib/data";
+
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
