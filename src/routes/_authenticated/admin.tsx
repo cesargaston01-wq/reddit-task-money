@@ -31,10 +31,12 @@ import {
   useAllMissions,
   useAllProfiles,
   useAllSubmissions,
+  useDeleteMember,
   useIsAdmin,
   useToggleFavorite,
   type Mission,
 } from "@/lib/data";
+
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
@@ -63,7 +65,10 @@ function AdminPage() {
   const { data: profiles } = useAllProfiles();
   const { data: favoriteIds } = useAdminFavorites();
   const toggleFavorite = useToggleFavorite();
+  const deleteMember = useDeleteMember();
+  const [pendingDelete, setPendingDelete] = useState<{ id: string; label: string } | null>(null);
   const [draft, setDraft] = useState<Draft | null>(null);
+
   const [userSearch, setUserSearch] = useState("");
   const [userFilter, setUserFilter] = useState<"all" | "pending" | "accepted" | "rejected">("all");
   const [submittedFilter, setSubmittedFilter] = useState<"all" | "yes" | "no">("all");
@@ -530,7 +535,16 @@ function AdminPage() {
                     <Button size="sm" variant="outline" onClick={() => setAccountStatus(p.id, "rejected")}>
                       Reject
                     </Button>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => setPendingDelete({ id: p.id, label: p.full_name || p.email || "this member" })}
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                      Delete
+                    </Button>
                   </div>
+
                 </div>
               </div>
             );
@@ -541,6 +555,42 @@ function AdminPage() {
         </TabsContent>
 
       </Tabs>
+
+      <Dialog open={!!pendingDelete} onOpenChange={(o) => !o && setPendingDelete(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Delete this account?</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-muted-foreground">
+            {pendingDelete?.label} will be permanently removed, along with their submissions and history. This
+            cannot be undone.
+          </p>
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={() => setPendingDelete(null)}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              disabled={deleteMember.isPending}
+              onClick={() => {
+                if (!pendingDelete) return;
+                deleteMember.mutate(pendingDelete.id, {
+                  onSuccess: () => {
+                    toast.success("Account deleted.");
+                    setPendingDelete(null);
+                  },
+                  onError: (e) => toast.error(e instanceof Error ? e.message : "Deletion failed."),
+                });
+              }}
+            >
+              {deleteMember.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+              Delete permanently
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+
 
       <Dialog open={!!draft} onOpenChange={(o) => !o && setDraft(null)}>
         <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-lg">
