@@ -327,9 +327,26 @@ export function useReleaseMission() {
 }
 
 
+/** Admin: permanently delete a member account. */
+export function useDeleteMember() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (userId: string) => {
+      const { deleteMemberAccount } = await import("@/lib/admin.functions");
+      return await deleteMemberAccount({ data: { userId } });
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["profiles"] });
+      qc.invalidateQueries({ queryKey: ["submissions"] });
+      qc.invalidateQueries({ queryKey: ["admin-favorites"] });
+    },
+  });
+}
+
 export function useInvalidateAll() {
   const qc = useQueryClient();
   return () => {
     qc.invalidateQueries();
   };
 }
+
