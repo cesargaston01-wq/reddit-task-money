@@ -332,8 +332,21 @@ export function useDeleteMember() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (userId: string) => {
-      const { deleteMemberAccount } = await import("@/lib/admin.functions");
-      return await deleteMemberAccount({ data: { userId } });
+      const user = await getCurrentUser();
+      if (!user) throw new Error("Your session has expired. Please sign in again.");
+      if (user.id === userId) throw new Error("You cannot delete your own account.");
+
+      // The database policy and trigger independently verify that the caller is
+      // an administrator before permanently deleting the target Auth account.
+      // Keeping this operation on the authenticated browser client avoids a
+      // dependency on server-only environment variables.
+      const { error } = await supabase.from("member_deletion_requests").insert({
+        requested_by: user.id,
+        target_user_id: userId,
+      });
+
+      if (error) throw new Error(error.message);
+      return { ok: true };
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["profiles"] });
