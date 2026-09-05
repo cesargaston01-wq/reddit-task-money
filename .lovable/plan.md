@@ -1,37 +1,54 @@
-# Vérification d'email à l'inscription (avec Resend)
+# Plan : migration vers le self-hosting avec Supabase
 
-Objectif : après l'inscription, l'utilisateur doit confirmer son adresse email avant d'accéder aux missions. Les emails sont envoyés via Resend, depuis taskreddit.com.
+## Objectif
+Héberger TaskReddit en dehors de Lovable Cloud, sur ton propre compte Supabase + une plateforme de déploiement (Vercel, Netlify, Cloudflare Pages, etc.).
 
-## Ce qui change pour un nouvel inscrit
-
-1. Il crée son compte (email + mot de passe + profil Reddit).
-2. Il reçoit un email TaskReddit « Confirm your email » avec un bouton.
-3. Tant qu'il n'a pas cliqué, il voit un écran « Check your inbox » avec un bouton « Resend email ».
-4. Après le clic, il arrive sur les opportunités ; son compte reste ensuite en attente de validation manuelle, comme aujourd'hui.
-
-Les comptes existants ne sont pas impactés : ils restent connectés et considérés comme vérifiés.
+## Avertissement
+Déconnecter Lovable Cloud est **irréversible** et supprime la base, l’auth et le stockage actuels. On commence par exporter les données avant toute coupure.
 
 ## Étapes
 
-1. **Connecter Resend** via la carte de connexion dans le chat (tu choisis ou crées la connexion avec ta clé Resend).
-2. **Vérifier taskreddit.com dans Resend** (enregistrements DNS SPF/DKIM chez ton hébergeur DNS). Tant que ce n'est pas fait, Resend ne délivre qu'à l'adresse du propriétaire du compte.
-3. **Créer l'email de confirmation** aux couleurs de TaskReddit : logo, accent orange #FF4500, texte en anglais, bouton « Confirm my email ».
-4. **Brancher l'envoi** : à l'inscription, le backend génère le lien de confirmation officiel et l'envoie par Resend ; ajout d'un renvoi manuel limité (anti-spam).
-5. **Activer la confirmation obligatoire** en dernier, une fois un email de test bien reçu.
+### 1. Exporter les données de Lovable Cloud
+- Aller dans **Cloud → Advanced settings → Export data** dans Lovable.
+- Récupérer l’export complet (schema + données).
+- Conserver une copie locale sécurisée.
 
-## Détails techniques
+### 2. Créer le nouveau projet Supabase
+- Créer un projet dans ton compte Supabase.
+- Noter l’URL et la clé publique (anon key).
+- Configurer l’authentification (Google OAuth, email confirmation, etc.) selon les besoins actuels.
 
-- Connexion Resend via `standard_connectors--connect` (connector `resend`) ; appels par le gateway Lovable (`https://connector-gateway.lovable.dev/resend/emails`) avec `LOVABLE_API_KEY` + `RESEND_API_KEY`. Aucune clé en clair dans le code.
-- `supabase--configure_auth` : `auto_confirm_email` → `false`.
-- Nouveau `src/lib/auth-email.functions.ts` (`createServerFn`) :
-  - handler public appelé après `signUp` et pour le renvoi ;
-  - import dynamique de `@/integrations/supabase/client.server` dans le handler, puis `supabaseAdmin.auth.admin.generateLink({ type: 'signup', email, options: { redirectTo: 'https://reddit-task-money.lovable.app/auth' } })` ;
-  - rendu HTML de l'email (template inline, fond blanc, accent orange) et POST vers le gateway Resend avec `from: 'TaskReddit <noreply@taskreddit.com>'` ;
-  - garde anti-abus : ne rien envoyer si l'utilisateur est déjà confirmé, throttle par email (dernier envoi < 60 s → refus silencieux) ;
-  - surface l'erreur du provider (status + body) en cas d'échec.
-- `src/routes/auth.tsx` : après `signUp`, si `data.session` est nul → écran « Check your inbox » avec bouton « Resend email » ; sur `signInWithPassword`, gérer `email_not_confirmed` avec un message dédié + renvoi.
-- Aucun changement de base de données : `handle_new_user` s'exécute déjà à la création du compte, et le statut `pending` reste la validation manuelle.
+### 3. Migrer le schema et les données
+- Appliquer le schema exporté dans le nouveau projet Supabase.
+- Réappliquer manuellement les éléments non inclus dans l’export si nécessaire (politiques RLS, triggers, fonctions, grants).
+- Importer les données des tables `profiles`, `missions`, `submissions`, `user_roles`, `admin_favorites`, etc.
 
-## Point d'attention
+### 4. Configurer les variables d’environnement
+Le code utilise les variables suivantes :
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_PUBLISHABLE_KEY`
+- `SUPABASE_URL`
+- `SUPABASE_PUBLISHABLE_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
 
-Avant que taskreddit.com soit vérifié dans Resend, les envois échoueront pour les autres destinataires. On active donc la confirmation obligatoire seulement après un test d'envoi réussi, pour ne pas bloquer les inscriptions entre-temps.
+Dans le nouvel hébergeur, définir ces variables avec les valeurs du nouveau projet Supabase.
+
+### 5. Adapter le code si nécessaire
+- `src/integrations/supabase/client.ts` est auto-généré : ne pas le modifier, juste fournir les bonnes variables d’env.
+- Vérifier `src/start.ts` et les middlewares d’authentification.
+- Réinstaller les dépendances (`bun install`) et tester le build (`bun run build`).
+
+### 6. Déployer
+- Pousser le repo sur GitHub.
+- Connecter le repo à Vercel/Netlify/Cloudflare Pages.
+- Configurer les variables d’environnement dans l’interface de déploiement.
+- Déployer et vérifier les routes publiques + authentifiées.
+
+### 7. Couper Lovable Cloud (dernier)
+- Une fois l’app déployée et testée, déconnecter Lovable Cloud depuis **Cloud → Advanced → Disconnect**.
+- Mettre à jour le domaine personnalisé (`taskreddit.com`) pour pointer vers le nouvel hébergement.
+
+## Questions en suspens
+- Quelle plateforme de déploiement veux-tu utiliser ? (Vercel est la plus simple avec TanStack Start.)
+- Veux-tu conserver le domaine `taskreddit.com` ?
+- Veux-tu que je t’aide à exporter les tables clés en CSV dès maintenant, en parallèle de la préparation ?
