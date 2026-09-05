@@ -43,6 +43,27 @@ export type Database = {
           },
         ]
       }
+      member_deletion_requests: {
+        Row: {
+          created_at: string
+          id: string
+          requested_by: string
+          target_user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          requested_by?: string
+          target_user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          requested_by?: string
+          target_user_id?: string
+        }
+        Relationships: []
+      }
       missions: {
         Row: {
           comment_text: string | null
