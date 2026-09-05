@@ -148,6 +148,18 @@ function AuthPage() {
     toast.success("Confirmation email resent. Check your inbox.");
   }
 
+  async function handleForgotPassword() {
+    const email = window.prompt("Enter your email to receive a reset link:");
+    if (!email) return;
+    setLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo: `${window.location.origin}/auth/confirm`,
+    });
+    setLoading(false);
+    if (error) return toast.error(error.message);
+    toast.success("Password reset email sent. Check your inbox.");
+  }
+
   if (isRestoringSession || user) {
     return (
       <div className="hero-surface flex min-h-screen items-center justify-center px-5">
