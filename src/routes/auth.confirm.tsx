@@ -8,6 +8,8 @@ export const Route = createFileRoute("/auth/confirm")({
   component: ConfirmPage,
 });
 
+type OtpType = "signup" | "recovery" | "email_change" | "invite" | "magiclink" | "reauthentication";
+
 function ConfirmPage() {
   const navigate = useNavigate();
   const [status, setStatus] = useState<"verifying" | "success" | "error">("verifying");
@@ -15,24 +17,19 @@ function ConfirmPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const token_hash = params.get("token_hash");
-    const type = params.get("type") as
-      | "signup"
-      | "recovery"
-      | "email_change"
-      | "invite"
-      | "magiclink"
-      | "reauthentication"
-      | null;
+    const rawType = params.get("type");
     const next = params.get("next") || "/opportunities/posts";
 
-    if (!token_hash || !type) {
+    if (!token_hash || !rawType) {
       setStatus("error");
       toast.error("Invalid confirmation link.");
       return;
     }
 
-    async function verify() {
-      const { error } = await supabase.auth.verifyOtp({ token_hash, type });
+    const type = rawType as OtpType;
+
+    async function verify(tokenHash: string, otpType: OtpType, redirectTo: string) {
+      const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: otpType });
       if (error) {
         setStatus("error");
         toast.error(error.message);
@@ -43,14 +40,14 @@ function ConfirmPage() {
       setStatus("success");
       toast.success("Email confirmed!");
 
-      if (type === "recovery") {
+      if (otpType === "recovery") {
         setTimeout(() => navigate({ to: "/auth/reset-password" }), 500);
       } else {
-        setTimeout(() => navigate({ to: next as any }), 500);
+        setTimeout(() => navigate({ to: redirectTo as any }), 500);
       }
     }
 
-    verify();
+    verify(token_hash, type, next);
   }, [navigate]);
 
   return (
