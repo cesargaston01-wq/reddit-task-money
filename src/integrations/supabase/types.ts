@@ -43,6 +43,27 @@ export type Database = {
           },
         ]
       }
+      member_deletion_requests: {
+        Row: {
+          created_at: string
+          id: string
+          requested_by: string
+          target_user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          requested_by?: string
+          target_user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          requested_by?: string
+          target_user_id?: string
+        }
+        Relationships: []
+      }
       missions: {
         Row: {
           comment_text: string | null
@@ -260,10 +281,6 @@ export type Database = {
       }
     }
     Functions: {
-      delete_member_account: {
-        Args: { _target_user_id: string }
-        Returns: undefined
-      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
