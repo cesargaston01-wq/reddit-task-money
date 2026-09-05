@@ -43,7 +43,7 @@ function ConfirmPage() {
       if (otpType === "recovery") {
         setTimeout(() => navigate({ to: "/auth/reset-password" }), 500);
       } else {
-        setTimeout(() => navigate({ to: redirectTo as any }), 500);
+        setTimeout(() => navigate({ to: redirectTo }), 500);
       }
     }
 
