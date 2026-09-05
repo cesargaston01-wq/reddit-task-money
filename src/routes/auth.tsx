@@ -10,7 +10,6 @@ import { PasswordInput } from "@/components/password-input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSession } from "@/lib/data";
 
-
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
@@ -38,7 +37,10 @@ const signupSchema = z.object({
     .string()
     .trim()
     .max(255)
-    .regex(/^https?:\/\/(www\.)?reddit\.com\/user\/[A-Za-z0-9_-]+\/?$/, "e.g. https://reddit.com/user/username"),
+    .regex(
+      /^https?:\/\/(www\.)?reddit\.com\/user\/[A-Za-z0-9_-]+\/?$/,
+      "e.g. https://reddit.com/user/username",
+    ),
 });
 
 function normalizeRedditUrl(raw: string): string {
@@ -54,7 +56,6 @@ function normalizeRedditUrl(raw: string): string {
   return `https://reddit.com/user/${username}`;
 }
 
-
 function AuthPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -63,7 +64,6 @@ function AuthPage() {
   const [pendingEmail, setPendingEmail] = useState("");
 
   const { data: user, isLoading: isRestoringSession } = useSession();
-
 
   useEffect(() => {
     if (user) navigate({ to: "/opportunities/posts", replace: true });
@@ -95,7 +95,6 @@ function AuthPage() {
     }
     navigate({ to: "/opportunities/posts" });
   }
-
 
   async function handleSignup(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -149,8 +148,6 @@ function AuthPage() {
     toast.success("Confirmation email resent. Check your inbox.");
   }
 
-
-
   if (isRestoringSession || user) {
     return (
       <div className="hero-surface flex min-h-screen items-center justify-center px-5">
@@ -168,10 +165,16 @@ function AuthPage() {
         <div className="panel elevated w-full max-w-md p-6 text-center">
           <h1 className="mb-4 text-xl font-bold">Confirm your email</h1>
           <p className="mb-4 text-sm text-muted-foreground">
-            We sent a confirmation link to <strong className="text-foreground">{confirmEmail}</strong>.
-            Click it to activate your account.
+            We sent a confirmation link to{" "}
+            <strong className="text-foreground">{confirmEmail}</strong>. Click it to activate your
+            account.
           </p>
-          <Button onClick={resendConfirmation} disabled={loading} variant="outline" className="w-full">
+          <Button
+            onClick={resendConfirmation}
+            disabled={loading}
+            variant="outline"
+            className="w-full"
+          >
             Resend confirmation email
           </Button>
           <p className="mt-4 text-xs text-muted-foreground">
@@ -198,7 +201,6 @@ function AuthPage() {
       <h1 className="mb-6 text-center text-2xl font-bold">Access your TaskReddit account</h1>
 
       <div className="panel elevated w-full max-w-md p-6">
-
         <Tabs defaultValue="signup">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="signup">Sign up</TabsTrigger>
@@ -206,10 +208,7 @@ function AuthPage() {
           </TabsList>
 
           <TabsContent value="signup" className="mt-6">
-            
-
             <form onSubmit={handleSignup} className="space-y-4">
-
               <div className="space-y-2">
                 <Label htmlFor="s-email">Email</Label>
                 <Input id="s-email" name="email" type="email" required maxLength={255} />
@@ -235,8 +234,6 @@ function AuthPage() {
               <p className="text-center text-xs text-muted-foreground">
                 Your account stays pending until it's manually reviewed.
               </p>
-
-
             </form>
           </TabsContent>
 
@@ -244,7 +241,13 @@ function AuthPage() {
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="l-email">Email</Label>
-                <Input id="l-email" name="email" type="email" required defaultValue={pendingEmail} />
+                <Input
+                  id="l-email"
+                  name="email"
+                  type="email"
+                  required
+                  defaultValue={pendingEmail}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="l-pass">Password</Label>
@@ -256,7 +259,6 @@ function AuthPage() {
               <Button type="submit" className="w-full" disabled={loading}>
                 Sign in
               </Button>
-
             </form>
           </TabsContent>
         </Tabs>

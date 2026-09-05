@@ -61,7 +61,9 @@ function ConfirmPage() {
           </div>
         )}
         {status === "success" && <p className="text-green-400">Confirmed! Redirecting you...</p>}
-        {status === "error" && <p className="text-destructive">This link is invalid or has expired.</p>}
+        {status === "error" && (
+          <p className="text-destructive">This link is invalid or has expired.</p>
+        )}
       </div>
     </div>
   );
