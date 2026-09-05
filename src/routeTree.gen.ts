@@ -14,9 +14,12 @@ import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthResetPasswordRouteImport } from './routes/auth.reset-password'
+import { Route as AuthConfirmRouteImport } from './routes/auth.confirm'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as ApiPublicAuthEmailRouteImport } from './routes/api/public/auth-email'
 import { Route as AuthenticatedOpportunitiesPostsRouteImport } from './routes/_authenticated/opportunities.posts'
 import { Route as AuthenticatedOpportunitiesCommentsRouteImport } from './routes/_authenticated/opportunities.comments'
 
@@ -44,6 +47,16 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthConfirmRoute = AuthConfirmRouteImport.update({
+  id: '/confirm',
+  path: '/confirm',
+  getParentRoute: () => AuthRoute,
+} as any)
 const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -58,6 +71,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const ApiPublicAuthEmailRoute = ApiPublicAuthEmailRouteImport.update({
+  id: '/api/public/auth-email',
+  path: '/api/public/auth-email',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedOpportunitiesPostsRoute =
   AuthenticatedOpportunitiesPostsRouteImport.update({
@@ -74,38 +92,47 @@ const AuthenticatedOpportunitiesCommentsRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/discover': typeof DiscoverRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/history': typeof AuthenticatedHistoryRoute
   '/profile': typeof AuthenticatedProfileRoute
+  '/auth/confirm': typeof AuthConfirmRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
   '/opportunities/comments': typeof AuthenticatedOpportunitiesCommentsRoute
   '/opportunities/posts': typeof AuthenticatedOpportunitiesPostsRoute
+  '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/discover': typeof DiscoverRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/history': typeof AuthenticatedHistoryRoute
   '/profile': typeof AuthenticatedProfileRoute
+  '/auth/confirm': typeof AuthConfirmRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
   '/opportunities/comments': typeof AuthenticatedOpportunitiesCommentsRoute
   '/opportunities/posts': typeof AuthenticatedOpportunitiesPostsRoute
+  '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/auth': typeof AuthRoute
+  '/auth': typeof AuthRouteWithChildren
   '/discover': typeof DiscoverRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/history': typeof AuthenticatedHistoryRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
+  '/auth/confirm': typeof AuthConfirmRoute
+  '/auth/reset-password': typeof AuthResetPasswordRoute
   '/_authenticated/opportunities/comments': typeof AuthenticatedOpportunitiesCommentsRoute
   '/_authenticated/opportunities/posts': typeof AuthenticatedOpportunitiesPostsRoute
+  '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -117,8 +144,11 @@ export interface FileRouteTypes {
     | '/admin'
     | '/history'
     | '/profile'
+    | '/auth/confirm'
+    | '/auth/reset-password'
     | '/opportunities/comments'
     | '/opportunities/posts'
+    | '/api/public/auth-email'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -128,8 +158,11 @@ export interface FileRouteTypes {
     | '/admin'
     | '/history'
     | '/profile'
+    | '/auth/confirm'
+    | '/auth/reset-password'
     | '/opportunities/comments'
     | '/opportunities/posts'
+    | '/api/public/auth-email'
   id:
     | '__root__'
     | '/'
@@ -140,16 +173,20 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/history'
     | '/_authenticated/profile'
+    | '/auth/confirm'
+    | '/auth/reset-password'
     | '/_authenticated/opportunities/comments'
     | '/_authenticated/opportunities/posts'
+    | '/api/public/auth-email'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthRoute: typeof AuthRoute
+  AuthRoute: typeof AuthRouteWithChildren
   DiscoverRoute: typeof DiscoverRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ApiPublicAuthEmailRoute: typeof ApiPublicAuthEmailRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -189,6 +226,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/reset-password': {
+      id: '/auth/reset-password'
+      path: '/reset-password'
+      fullPath: '/auth/reset-password'
+      preLoaderRoute: typeof AuthResetPasswordRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/confirm': {
+      id: '/auth/confirm'
+      path: '/confirm'
+      fullPath: '/auth/confirm'
+      preLoaderRoute: typeof AuthConfirmRouteImport
+      parentRoute: typeof AuthRoute
+    }
     '/_authenticated/profile': {
       id: '/_authenticated/profile'
       path: '/profile'
@@ -209,6 +260,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin'
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/public/auth-email': {
+      id: '/api/public/auth-email'
+      path: '/api/public/auth-email'
+      fullPath: '/api/public/auth-email'
+      preLoaderRoute: typeof ApiPublicAuthEmailRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/opportunities/posts': {
       id: '/_authenticated/opportunities/posts'
@@ -247,12 +305,25 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface AuthRouteChildren {
+  AuthConfirmRoute: typeof AuthConfirmRoute
+  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthConfirmRoute: AuthConfirmRoute,
+  AuthResetPasswordRoute: AuthResetPasswordRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  AuthRoute: AuthRoute,
+  AuthRoute: AuthRouteWithChildren,
   DiscoverRoute: DiscoverRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ApiPublicAuthEmailRoute: ApiPublicAuthEmailRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

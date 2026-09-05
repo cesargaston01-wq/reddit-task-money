@@ -10,7 +10,6 @@ import { PasswordInput } from "@/components/password-input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSession } from "@/lib/data";
 
-
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
@@ -38,7 +37,10 @@ const signupSchema = z.object({
     .string()
     .trim()
     .max(255)
-    .regex(/^https?:\/\/(www\.)?reddit\.com\/user\/[A-Za-z0-9_-]+\/?$/, "e.g. https://reddit.com/user/username"),
+    .regex(
+      /^https?:\/\/(www\.)?reddit\.com\/user\/[A-Za-z0-9_-]+\/?$/,
+      "e.g. https://reddit.com/user/username",
+    ),
 });
 
 function normalizeRedditUrl(raw: string): string {
@@ -54,13 +56,14 @@ function normalizeRedditUrl(raw: string): string {
   return `https://reddit.com/user/${username}`;
 }
 
-
 function AuthPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [confirmEmail, setConfirmEmail] = useState("");
+  const [showConfirmMessage, setShowConfirmMessage] = useState(false);
+  const [pendingEmail, setPendingEmail] = useState("");
 
   const { data: user, isLoading: isRestoringSession } = useSession();
-
 
   useEffect(() => {
     if (user) navigate({ to: "/opportunities/posts", replace: true });
@@ -69,16 +72,29 @@ function AuthPage() {
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
+    const email = String(fd.get("email") ?? "").trim();
+    setPendingEmail(email);
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({
-      email: String(fd.get("email") ?? "").trim(),
+      email,
       password: String(fd.get("password") ?? ""),
     });
     setLoading(false);
-    if (error) return toast.error(error.message);
+    if (error) {
+      const message = error.message.toLowerCase();
+      if (
+        message.includes("email not confirmed") ||
+        error.code === "email_not_confirmed" ||
+        message.includes("not confirmed")
+      ) {
+        setConfirmEmail(email);
+        setShowConfirmMessage(true);
+        return;
+      }
+      return toast.error(error.message);
+    }
     navigate({ to: "/opportunities/posts" });
   }
-
 
   async function handleSignup(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -96,11 +112,10 @@ function AuthPage() {
       parsed.data.email.split("@")[0];
 
     setLoading(true);
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email: parsed.data.email,
       password: parsed.data.password,
       options: {
-
         data: {
           full_name: redditUsername,
           reddit_profile_url: parsed.data.reddit_profile_url,
@@ -110,17 +125,81 @@ function AuthPage() {
 
     setLoading(false);
     if (error) return toast.error(error.message);
+
+    if (!data.session) {
+      setConfirmEmail(parsed.data.email);
+      setShowConfirmMessage(true);
+      return;
+    }
+
     toast.success("Account created. Your Reddit profile is being reviewed.");
     navigate({ to: "/opportunities/posts" });
-
   }
 
+  async function resendConfirmation() {
+    if (!confirmEmail) return;
+    setLoading(true);
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email: confirmEmail,
+    });
+    setLoading(false);
+    if (error) return toast.error(error.message);
+    toast.success("Confirmation email resent. Check your inbox.");
+  }
 
+  async function handleForgotPassword() {
+    const email = window.prompt("Enter your email to receive a reset link:");
+    if (!email) return;
+    setLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo: `${window.location.origin}/auth/confirm`,
+    });
+    setLoading(false);
+    if (error) return toast.error(error.message);
+    toast.success("Password reset email sent. Check your inbox.");
+  }
 
   if (isRestoringSession || user) {
     return (
       <div className="hero-surface flex min-h-screen items-center justify-center px-5">
         <p className="text-sm text-muted-foreground">Restoring your session…</p>
+      </div>
+    );
+  }
+
+  if (showConfirmMessage) {
+    return (
+      <div className="hero-surface flex min-h-screen flex-col items-center justify-center px-5 py-12">
+        <Link to="/" className="mb-8 font-display text-lg font-bold">
+          Task<span className="text-primary">Reddit</span>
+        </Link>
+        <div className="panel elevated w-full max-w-md p-6 text-center">
+          <h1 className="mb-4 text-xl font-bold">Confirm your email</h1>
+          <p className="mb-4 text-sm text-muted-foreground">
+            We sent a confirmation link to{" "}
+            <strong className="text-foreground">{confirmEmail}</strong>. Click it to activate your
+            account.
+          </p>
+          <Button
+            onClick={resendConfirmation}
+            disabled={loading}
+            variant="outline"
+            className="w-full"
+          >
+            Resend confirmation email
+          </Button>
+          <p className="mt-4 text-xs text-muted-foreground">
+            Already confirmed?{" "}
+            <button
+              type="button"
+              onClick={() => setShowConfirmMessage(false)}
+              className="underline hover:text-foreground"
+            >
+              Back to sign in
+            </button>
+          </p>
+        </div>
       </div>
     );
   }
@@ -134,7 +213,6 @@ function AuthPage() {
       <h1 className="mb-6 text-center text-2xl font-bold">Access your TaskReddit account</h1>
 
       <div className="panel elevated w-full max-w-md p-6">
-
         <Tabs defaultValue="signup">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="signup">Sign up</TabsTrigger>
@@ -142,10 +220,7 @@ function AuthPage() {
           </TabsList>
 
           <TabsContent value="signup" className="mt-6">
-            
-
             <form onSubmit={handleSignup} className="space-y-4">
-
               <div className="space-y-2">
                 <Label htmlFor="s-email">Email</Label>
                 <Input id="s-email" name="email" type="email" required maxLength={255} />
@@ -171,8 +246,6 @@ function AuthPage() {
               <p className="text-center text-xs text-muted-foreground">
                 Your account stays pending until it's manually reviewed.
               </p>
-
-
             </form>
           </TabsContent>
 
@@ -180,19 +253,33 @@ function AuthPage() {
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="l-email">Email</Label>
-                <Input id="l-email" name="email" type="email" required />
+                <Input
+                  id="l-email"
+                  name="email"
+                  type="email"
+                  required
+                  defaultValue={pendingEmail}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="l-pass">Password</Label>
                 <PasswordInput id="l-pass" name="password" required />
               </div>
+              <p className="text-right text-xs">
+                <button
+                  type="button"
+                  onClick={handleForgotPassword}
+                  className="text-muted-foreground underline hover:text-foreground"
+                >
+                  Forgot password?
+                </button>
+              </p>
               <p className="text-xs text-muted-foreground">
                 You'll stay signed in on this device until you sign out.
               </p>
               <Button type="submit" className="w-full" disabled={loading}>
                 Sign in
               </Button>
-
             </form>
           </TabsContent>
         </Tabs>
