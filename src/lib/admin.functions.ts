@@ -27,9 +27,25 @@ const requireAdminFunctionAuth = createMiddleware({ type: "function" }).server(
     const userId = data?.claims?.sub;
 
     if (error || !userId) throw new Error("Your session has expired. Please sign in again.");
-    return next({ context: { supabase, userId } });
+    return next({ context: { supabase, supabaseUrl, userId } });
   },
 );
+
+function createPrivilegedFetch(serviceKey: string): typeof fetch {
+  return (input, init) => {
+    const headers = new Headers(
+      typeof Request !== "undefined" && input instanceof Request ? input.headers : undefined,
+    );
+    if (init?.headers) {
+      new Headers(init.headers).forEach((value, key) => headers.set(key, value));
+    }
+    if (headers.get("Authorization") === `Bearer ${serviceKey}`) {
+      headers.delete("Authorization");
+    }
+    headers.set("apikey", serviceKey);
+    return fetch(input, { ...init, headers });
+  };
+}
 
 /** Permanently deletes a member account (admins only). */
 export const deleteMemberAccount = createServerFn({ method: "POST" })
@@ -46,7 +62,14 @@ export const deleteMemberAccount = createServerFn({ method: "POST" })
     if (!role) throw new Error("Admins only.");
     if (data.userId === context.userId) throw new Error("You cannot delete your own account.");
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!serviceKey) {
+      throw new Error("The administrative Cloud connection is unavailable. Please try again.");
+    }
+    const supabaseAdmin = createClient<Database>(context.supabaseUrl, serviceKey, {
+      global: { fetch: createPrivilegedFetch(serviceKey) },
+      auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
+    });
 
     const { data: targetRole } = await supabaseAdmin
       .from("user_roles")
