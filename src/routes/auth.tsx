@@ -253,6 +253,15 @@ function AuthPage() {
                 <Label htmlFor="l-pass">Password</Label>
                 <PasswordInput id="l-pass" name="password" required />
               </div>
+              <p className="text-right text-xs">
+                <button
+                  type="button"
+                  onClick={handleForgotPassword}
+                  className="text-muted-foreground underline hover:text-foreground"
+                >
+                  Forgot password?
+                </button>
+              </p>
               <p className="text-xs text-muted-foreground">
                 You'll stay signed in on this device until you sign out.
               </p>
