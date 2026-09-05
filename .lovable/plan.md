@@ -1,54 +1,40 @@
-# Plan : migration vers le self-hosting avec Supabase
+# Email verification with Resend
 
-## Objectif
-Héberger TaskReddit en dehors de Lovable Cloud, sur ton propre compte Supabase + une plateforme de déploiement (Vercel, Netlify, Cloudflare Pages, etc.).
+## Current state
+- You have a Resend account and a verified sender domain there.
+- The Lovable project does not have an email domain configured yet.
+- The Resend connector is not linked to this project.
+- Email signups are currently auto-confirmed, so no verification email is sent.
 
-## Avertissement
-Déconnecter Lovable Cloud est **irréversible** et supprime la base, l’auth et le stockage actuels. On commence par exporter les données avant toute coupure.
+## Goal
+Send branded verification emails from your own domain via Resend when a user signs up, and require email confirmation before they can use the account.
 
-## Étapes
+## Steps
 
-### 1. Exporter les données de Lovable Cloud
-- Aller dans **Cloud → Advanced settings → Export data** dans Lovable.
-- Récupérer l’export complet (schema + données).
-- Conserver une copie locale sécurisée.
+### 1. Link Resend to the project
+- Connect the Resend connector in Lovable so the app can send emails through your Resend account.
+- This creates the server-side credentials the app needs.
 
-### 2. Créer le nouveau projet Supabase
-- Créer un projet dans ton compte Supabase.
-- Noter l’URL et la clé publique (anon key).
-- Configurer l’authentification (Google OAuth, email confirmation, etc.) selon les besoins actuels.
+### 2. Configure the sender domain in Lovable
+- Register the same domain you verified in Resend inside the project email settings.
+- This tells Lovable which domain emails should be sent from.
 
-### 3. Migrer le schema et les données
-- Appliquer le schema exporté dans le nouveau projet Supabase.
-- Réappliquer manuellement les éléments non inclus dans l’export si nécessaire (politiques RLS, triggers, fonctions, grants).
-- Importer les données des tables `profiles`, `missions`, `submissions`, `user_roles`, `admin_favorites`, etc.
+### 3. Scaffold auth email templates
+- Generate the authentication email templates (signup confirmation, password reset, magic link, email change).
+- Style them to match TaskReddit (dark premium look, orange accent, logo).
+- Deploy the associated edge function so the templates are used.
 
-### 4. Configurer les variables d’environnement
-Le code utilise les variables suivantes :
-- `VITE_SUPABASE_URL`
-- `VITE_SUPABASE_PUBLISHABLE_KEY`
-- `SUPABASE_URL`
-- `SUPABASE_PUBLISHABLE_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY`
+### 4. Require email confirmation
+- Disable auto-confirm email signups so every new user must click the verification link.
+- Update the signup flow UI to explain that a confirmation email is on its way.
+- Show a "Resend confirmation email" option on the sign-in page when needed.
 
-Dans le nouvel hébergeur, définir ces variables avec les valeurs du nouveau projet Supabase.
+### 5. Test end-to-end
+- Sign up with a test email, receive the Resend email, click the link, and confirm the account is activated.
 
-### 5. Adapter le code si nécessaire
-- `src/integrations/supabase/client.ts` est auto-généré : ne pas le modifier, juste fournir les bonnes variables d’env.
-- Vérifier `src/start.ts` et les middlewares d’authentification.
-- Réinstaller les dépendances (`bun install`) et tester le build (`bun run build`).
+## Not included
+- Marketing newsletters or daily digests (this plan covers auth verification emails only).
+- Custom SMTP or another provider (Resend only).
 
-### 6. Déployer
-- Pousser le repo sur GitHub.
-- Connecter le repo à Vercel/Netlify/Cloudflare Pages.
-- Configurer les variables d’environnement dans l’interface de déploiement.
-- Déployer et vérifier les routes publiques + authentifiées.
-
-### 7. Couper Lovable Cloud (dernier)
-- Une fois l’app déployée et testée, déconnecter Lovable Cloud depuis **Cloud → Advanced → Disconnect**.
-- Mettre à jour le domaine personnalisé (`taskreddit.com`) pour pointer vers le nouvel hébergement.
-
-## Questions en suspens
-- Quelle plateforme de déploiement veux-tu utiliser ? (Vercel est la plus simple avec TanStack Start.)
-- Veux-tu conserver le domaine `taskreddit.com` ?
-- Veux-tu que je t’aide à exporter les tables clés en CSV dès maintenant, en parallèle de la préparation ?
+## Open question
+Do you want to keep the current "sign up and land on the dashboard" behavior for now, or should email confirmation become mandatory immediately?
