@@ -123,11 +123,48 @@ async function accountExistsAndNeedsConfirmation(
   return false;
 }
 
+async function findAccountByEmail(
+  supabaseAdmin: Awaited<typeof import("@/integrations/supabase/client.server")>["supabaseAdmin"],
+  email: string,
+) {
+  const normalizedEmail = email.toLowerCase();
+
+  for (let page = 1; page <= 10; page += 1) {
+    const { data, error } = await supabaseAdmin.auth.admin.listUsers({ page, perPage: 1000 });
+    if (error) throw error;
+    const account = data.users.find((user) => user.email?.toLowerCase() === normalizedEmail);
+    if (account) return account;
+    if (data.users.length < 1000) return null;
+  }
+
+  return null;
+}
+
 export const signUpWithResend = createServerFn({ method: "POST" })
   .inputValidator((input) => signupSchema.parse(input))
   .handler(async ({ data }) => {
     try {
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const existingAccount = await findAccountByEmail(supabaseAdmin, data.email);
+      if (existingAccount?.email_confirmed_at) {
+        return {
+          ok: false,
+          message: "An account already exists with this email. Try signing in instead.",
+        };
+      }
+
+      // A previous email-delivery failure can leave an unusable, unconfirmed account behind.
+      // Remove it before retrying so the user can complete signup normally.
+      if (existingAccount) {
+        const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(
+          existingAccount.id,
+        );
+        if (deleteError) {
+          console.error("Unconfirmed account cleanup failed:", deleteError.message);
+          return { ok: false, message: "We could not restart your signup. Please try again." };
+        }
+      }
+
       const redditUsername =
         data.redditProfileUrl.replace(/\/+$/, "").split("/").pop() ?? "Reddit user";
       const { data: linkData, error } = await supabaseAdmin.auth.admin.generateLink({
@@ -162,7 +199,6 @@ export const signUpWithResend = createServerFn({ method: "POST" })
         return { ok: false, message: "We could not create your account. Please try again." };
       }
 
-
       if (!linkData.properties.hashed_token) {
         console.error("Signup link generation failed: missing token");
         return { ok: false, message: "We could not create your account. Please try again." };
@@ -175,6 +211,11 @@ export const signUpWithResend = createServerFn({ method: "POST" })
       );
       const sent = await sendWithResend(data.email, "signup", actionUrl);
       if (!sent) {
+        const createdUserId = linkData.user.id;
+        const { error: rollbackError } = await supabaseAdmin.auth.admin.deleteUser(createdUserId);
+        if (rollbackError) {
+          console.error("Failed signup cleanup failed:", rollbackError.message);
+        }
         return {
           ok: false,
           message: "We could not send the confirmation email. Please try again.",
