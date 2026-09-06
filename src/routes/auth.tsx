@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
@@ -9,6 +10,11 @@ import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/password-input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSession } from "@/lib/data";
+import {
+  requestPasswordResetWithResend,
+  resendConfirmationWithResend,
+  signUpWithResend,
+} from "@/lib/auth-email.functions";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -58,6 +64,9 @@ function normalizeRedditUrl(raw: string): string {
 
 function AuthPage() {
   const navigate = useNavigate();
+  const signUp = useServerFn(signUpWithResend);
+  const resendConfirmation = useServerFn(resendConfirmationWithResend);
+  const requestPasswordReset = useServerFn(requestPasswordResetWithResend);
   const [loading, setLoading] = useState(false);
   const [confirmEmail, setConfirmEmail] = useState("");
   const [showConfirmMessage, setShowConfirmMessage] = useState(false);
@@ -112,52 +121,51 @@ function AuthPage() {
       parsed.data.email.split("@")[0];
 
     setLoading(true);
-    const { data, error } = await supabase.auth.signUp({
-      email: parsed.data.email,
-      password: parsed.data.password,
-      options: {
+    try {
+      const result = await signUp({
         data: {
-          full_name: redditUsername,
-          reddit_profile_url: parsed.data.reddit_profile_url,
+          email: parsed.data.email,
+          password: parsed.data.password,
+          redditProfileUrl: parsed.data.reddit_profile_url,
         },
-      },
-    });
-
-    setLoading(false);
-    if (error) return toast.error(error.message);
-
-    if (!data.session) {
+      });
+      if (!result.ok) return toast.error(result.message);
       setConfirmEmail(parsed.data.email);
       setShowConfirmMessage(true);
-      return;
+    } catch {
+      toast.error("We could not create your account. Please try again.");
+    } finally {
+      setLoading(false);
     }
-
-    toast.success("Account created. Your Reddit profile is being reviewed.");
-    navigate({ to: "/opportunities/posts" });
   }
 
-  async function resendConfirmation() {
+  async function handleResendConfirmation() {
     if (!confirmEmail) return;
     setLoading(true);
-    const { error } = await supabase.auth.resend({
-      type: "signup",
-      email: confirmEmail,
-    });
-    setLoading(false);
-    if (error) return toast.error(error.message);
-    toast.success("Confirmation email resent. Check your inbox.");
+    try {
+      await resendConfirmation({ data: { email: confirmEmail } });
+      toast.success("If this account still needs confirmation, a new email has been sent.");
+    } catch {
+      toast.error("We could not send the confirmation email. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function handleForgotPassword() {
     const email = window.prompt("Enter your email to receive a reset link:");
     if (!email) return;
+    const parsedEmail = z.string().trim().email().max(255).safeParse(email);
+    if (!parsedEmail.success) return toast.error("Enter a valid email address.");
     setLoading(true);
-    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-      redirectTo: `${window.location.origin}/auth/confirm`,
-    });
-    setLoading(false);
-    if (error) return toast.error(error.message);
-    toast.success("Password reset email sent. Check your inbox.");
+    try {
+      await requestPasswordReset({ data: { email: parsedEmail.data } });
+      toast.success("If an account exists for this email, a reset link has been sent.");
+    } catch {
+      toast.error("We could not process this request. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   if (isRestoringSession || user) {
@@ -182,7 +190,7 @@ function AuthPage() {
             account.
           </p>
           <Button
-            onClick={resendConfirmation}
+            onClick={handleResendConfirmation}
             disabled={loading}
             variant="outline"
             className="w-full"
