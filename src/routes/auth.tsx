@@ -81,6 +81,10 @@ function AuthPage() {
   const [signupError, setSignupError] = useState("");
 
   const { data: user, isLoading: isRestoringSession } = useSession();
+  const signup = useServerFn(signupWithResend);
+  const resendConfirm = useServerFn(resendConfirmationEmail);
+  const sendReset = useServerFn(sendPasswordResetEmail);
+
 
   useEffect(() => {
     if (user) navigate({ to: "/opportunities/posts", replace: true });
