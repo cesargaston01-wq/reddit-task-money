@@ -8,7 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/password-input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useServerFn } from "@tanstack/react-start";
 import { useSession } from "@/lib/data";
+import {
+  resendConfirmationEmail,
+  sendPasswordResetEmail,
+  signupWithResend,
+} from "@/lib/auth.functions";
+
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
