@@ -126,41 +126,59 @@ async function accountExistsAndNeedsConfirmation(
 export const signUpWithResend = createServerFn({ method: "POST" })
   .inputValidator((input) => signupSchema.parse(input))
   .handler(async ({ data }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const redditUsername =
-      data.redditProfileUrl.replace(/\/+$/, "").split("/").pop() ?? "Reddit user";
-    const { data: linkData, error } = await supabaseAdmin.auth.admin.generateLink({
-      type: "signup",
-      email: data.email,
-      password: data.password,
-      options: {
-        data: {
-          full_name: redditUsername,
-          reddit_profile_url: data.redditProfileUrl,
+    try {
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const redditUsername =
+        data.redditProfileUrl.replace(/\/+$/, "").split("/").pop() ?? "Reddit user";
+      const { data: linkData, error } = await supabaseAdmin.auth.admin.generateLink({
+        type: "signup",
+        email: data.email,
+        password: data.password,
+        options: {
+          data: {
+            full_name: redditUsername,
+            reddit_profile_url: data.redditProfileUrl,
+          },
+          redirectTo: `${SITE_URL}/opportunities/posts`,
         },
-        redirectTo: `${SITE_URL}/opportunities/posts`,
-      },
-    });
+      });
 
-    if (error || !linkData.properties.hashed_token) {
-      console.error("Signup link generation failed:", error?.message ?? "missing token");
+      if (error) {
+        console.error("Signup link generation failed:", error.message);
+        const message = error.message.toLowerCase();
+        if (message.includes("already") || message.includes("registered")) {
+          return {
+            ok: false,
+            message: "An account already exists with this email. Try signing in instead.",
+          };
+        }
+        return { ok: false, message: "We could not create your account. Please try again." };
+      }
+
+      if (!linkData.properties.hashed_token) {
+        console.error("Signup link generation failed: missing token");
+        return { ok: false, message: "We could not create your account. Please try again." };
+      }
+
+      const actionUrl = confirmationUrl(
+        linkData.properties.hashed_token,
+        "signup",
+        "/opportunities/posts",
+      );
+      const sent = await sendWithResend(data.email, "signup", actionUrl);
+      if (!sent) {
+        return {
+          ok: false,
+          message: "We could not send the confirmation email. Please try again.",
+        };
+      }
       return { ok: true };
+    } catch (err) {
+      console.error("Signup failed:", err instanceof Error ? err.message : String(err));
+      return { ok: false, message: "We could not create your account. Please try again." };
     }
-
-    const actionUrl = confirmationUrl(
-      linkData.properties.hashed_token,
-      "signup",
-      "/opportunities/posts",
-    );
-    const sent = await sendWithResend(data.email, "signup", actionUrl);
-    if (!sent) {
-      return {
-        ok: false,
-        message: "We could not send the confirmation email. Please try again.",
-      };
-    }
-    return { ok: true };
   });
+
 
 export const resendConfirmationWithResend = createServerFn({ method: "POST" })
   .inputValidator((input) => emailOnlySchema.parse(input))
