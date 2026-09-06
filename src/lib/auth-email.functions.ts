@@ -147,8 +147,23 @@ async function findAccountByEmail(
 }
 
 export const signUpWithResend = createServerFn({ method: "POST" })
-  .inputValidator((input) => signupSchema.parse(input))
-  .handler(async ({ data }) => {
+  .validator((input) => signupSchema.safeParse(input))
+  .handler(async ({ data: parsedInput }) => {
+    if (!parsedInput.success) {
+      const issue = parsedInput.error.issues[0];
+      const field = issue?.path[0];
+      const message =
+        field === "email"
+          ? "Enter a valid email address."
+          : field === "password"
+            ? "Use a password between 12 and 72 characters."
+            : field === "redditProfileUrl"
+              ? "Enter a valid Reddit profile link or @username."
+              : "Please check your signup details and try again.";
+      return { ok: false, message };
+    }
+
+    const data = parsedInput.data;
     try {
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
       const existingAccount = await findAccountByEmail(supabaseAdmin, data.email);
