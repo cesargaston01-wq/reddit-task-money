@@ -4,12 +4,23 @@ const SITE_URL = "https://reddit-task-money.lovable.app";
 const FROM_EMAIL = "TaskReddit <noreply@taskreddit.com>";
 
 const emailSchema = z.string().trim().email().max(255);
+export function extractRedditUsername(raw: string): string | null {
+  let value = raw.trim();
+  if (!value) return null;
+  value = value.split(/[?#]/)[0] ?? value;
+  value = value.replace(/^https?:\/\//i, "").replace(/^[a-z0-9-]+\.reddit\.com/i, "reddit.com");
+  value = value.replace(/^reddit\.com/i, "");
+  value = value.replace(/^\/+/, "");
+  value = value.replace(/^(user|u)\//i, "");
+  value = value.replace(/^@/, "");
+  value = value.replace(/\/.*$/, "").trim();
+  return /^[A-Za-z0-9_-]{3,20}$/.test(value) ? value : null;
+}
+
 function normalizeRedditProfile(value: unknown) {
   if (typeof value !== "string") return value;
-  const trimmed = value.trim();
-  if (!trimmed || /^https?:\/\//i.test(trimmed)) return trimmed.replace(/\/$/, "");
-  const username = trimmed.startsWith("@") ? trimmed.slice(1).trim() : trimmed;
-  return username ? `https://reddit.com/user/${username}` : trimmed;
+  const username = extractRedditUsername(value);
+  return username ? `https://reddit.com/user/${username}` : value.trim();
 }
 
 const redditProfileSchema = z
