@@ -118,9 +118,11 @@ async function verifyWebhookSignature({
   if (!Number.isFinite(timestamp) || Math.abs(Date.now() / 1000 - timestamp) > 300) return false;
 
   const rawSecret = secret.startsWith("whsec_") ? secret.slice(6) : secret;
-  let secretBytes: Uint8Array;
+  let secretBytes: Uint8Array<ArrayBuffer>;
   try {
-    secretBytes = Uint8Array.from(Buffer.from(rawSecret, "base64"));
+    const decoded = Buffer.from(rawSecret, "base64");
+    secretBytes = new Uint8Array(new ArrayBuffer(decoded.length));
+    secretBytes.set(decoded);
   } catch {
     return false;
   }
