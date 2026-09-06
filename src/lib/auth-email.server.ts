@@ -45,8 +45,8 @@ function signupErrorMessage(error: unknown) {
   const message =
     error instanceof Error ? error.message.toLowerCase() : String(error).toLowerCase();
 
-  if (message.includes("password") && (message.includes("weak") || message.includes("breach"))) {
-    return "This password is too weak or has appeared in a data breach. Please choose a stronger one.";
+  if (message.includes("password")) {
+    return "This password was refused for security reasons. Use a unique 12–72 character phrase that you have never used elsewhere.";
   }
   if (message.includes("already") || message.includes("registered") || message.includes("exists")) {
     return "An account already exists with this email. Try signing in instead.";
