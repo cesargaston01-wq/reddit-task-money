@@ -33,7 +33,7 @@ function ResetPasswordPage() {
     const password = String(fd.get("password") ?? "");
     const confirm = String(fd.get("confirm") ?? "");
 
-    if (password.length < 8) return toast.error("8 characters minimum");
+    if (password.length < 12) return toast.error("Use at least 12 characters");
     if (password !== confirm) return toast.error("Passwords do not match");
 
     setLoading(true);
@@ -51,11 +51,11 @@ function ResetPasswordPage() {
       <form onSubmit={handleSubmit} className="panel elevated w-full max-w-md space-y-4 p-6">
         <div className="space-y-2">
           <Label htmlFor="password">New password</Label>
-          <PasswordInput id="password" name="password" required minLength={8} maxLength={72} />
+          <PasswordInput id="password" name="password" required minLength={12} maxLength={72} />
         </div>
         <div className="space-y-2">
           <Label htmlFor="confirm">Confirm password</Label>
-          <PasswordInput id="confirm" name="confirm" required minLength={8} maxLength={72} />
+          <PasswordInput id="confirm" name="confirm" required minLength={12} maxLength={72} />
         </div>
         <Button type="submit" className="w-full" disabled={loading}>
           Update password

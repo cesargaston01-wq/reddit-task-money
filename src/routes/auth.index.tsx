@@ -1,5 +1,4 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
@@ -10,11 +9,6 @@ import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/password-input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSession } from "@/lib/data";
-import {
-  requestPasswordResetWithResend,
-  resendConfirmationWithResend,
-  signUpWithResend,
-} from "@/lib/auth-email.functions";
 
 export const Route = createFileRoute("/auth/")({
   head: () => ({
@@ -64,15 +58,26 @@ function normalizeRedditUrl(raw: string): string {
 
 function AuthPage() {
   const navigate = useNavigate();
-  const signUp = useServerFn(signUpWithResend);
-  const resendConfirmation = useServerFn(resendConfirmationWithResend);
-  const requestPasswordReset = useServerFn(requestPasswordResetWithResend);
   const [loading, setLoading] = useState(false);
   const [confirmEmail, setConfirmEmail] = useState("");
   const [showConfirmMessage, setShowConfirmMessage] = useState(false);
   const [pendingEmail, setPendingEmail] = useState("");
 
   const { data: user, isLoading: isRestoringSession } = useSession();
+
+  async function authRequest(body: Record<string, string>) {
+    const response = await fetch("/api/public/auth", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    const result = (await response.json().catch(() => null)) as
+      | { ok: true }
+      | { ok: false; message?: string }
+      | null;
+    if (!result) throw new Error("The signup service returned an invalid response.");
+    return result;
+  }
 
   useEffect(() => {
     if (user) navigate({ to: "/opportunities/posts", replace: true });
@@ -118,28 +123,21 @@ function AuthPage() {
 
     setLoading(true);
     try {
-      const result = await signUp({
-        data: {
-          email: parsed.data.email,
-          password: parsed.data.password,
-          redditProfileUrl: parsed.data.reddit_profile_url,
-        },
+      const result = await authRequest({
+        action: "signup",
+        email: parsed.data.email,
+        password: parsed.data.password,
+        redditProfileUrl: parsed.data.reddit_profile_url,
       });
-      if (!result.ok) return toast.error(result.message);
+      if (!result.ok) return toast.error(result.message ?? "Signup could not be completed.");
       setConfirmEmail(parsed.data.email);
       setShowConfirmMessage(true);
     } catch (error) {
-      const message = error instanceof Error ? error.message.toLowerCase() : "";
-      if (
-        message.includes("password") &&
-        (message.includes("weak") || message.includes("breach"))
-      ) {
-        toast.error(
-          "This password is too weak or has appeared in a data breach. Please choose a stronger one.",
-        );
-      } else {
-        toast.error("We could not create your account. Please try again.");
-      }
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "The signup service could not be reached. Please try again.",
+      );
     } finally {
       setLoading(false);
     }
@@ -149,7 +147,7 @@ function AuthPage() {
     if (!confirmEmail) return;
     setLoading(true);
     try {
-      await resendConfirmation({ data: { email: confirmEmail } });
+      await authRequest({ action: "resend-confirmation", email: confirmEmail });
       toast.success("If this account still needs confirmation, a new email has been sent.");
     } catch {
       toast.error("We could not send the confirmation email. Please try again.");
@@ -165,7 +163,7 @@ function AuthPage() {
     if (!parsedEmail.success) return toast.error("Enter a valid email address.");
     setLoading(true);
     try {
-      await requestPasswordReset({ data: { email: parsedEmail.data } });
+      await authRequest({ action: "reset-password", email: parsedEmail.data });
       toast.success("If an account exists for this email, a reset link has been sent.");
     } catch {
       toast.error("We could not process this request. Please try again.");

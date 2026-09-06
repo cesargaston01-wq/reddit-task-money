@@ -1,10 +1,17 @@
-import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 const SITE_URL = "https://reddit-task-money.lovable.app";
 const FROM_EMAIL = "TaskReddit <noreply@taskreddit.com>";
 
 const emailSchema = z.string().trim().email().max(255);
+function normalizeRedditProfile(value: unknown) {
+  if (typeof value !== "string") return value;
+  const trimmed = value.trim();
+  if (!trimmed || /^https?:\/\//i.test(trimmed)) return trimmed.replace(/\/$/, "");
+  const username = trimmed.startsWith("@") ? trimmed.slice(1).trim() : trimmed;
+  return username ? `https://reddit.com/user/${username}` : trimmed;
+}
+
 const redditProfileSchema = z
   .string()
   .trim()
@@ -14,7 +21,7 @@ const redditProfileSchema = z
 const signupSchema = z.object({
   email: emailSchema,
   password: z.string().min(12).max(72),
-  redditProfileUrl: redditProfileSchema,
+  redditProfileUrl: z.preprocess(normalizeRedditProfile, redditProfileSchema),
 });
 
 const emailOnlySchema = z.object({ email: emailSchema });
@@ -146,107 +153,106 @@ async function findAccountByEmail(
   return null;
 }
 
-export const signUpWithResend = createServerFn({ method: "POST" })
-  .validator((input) => signupSchema.safeParse(input))
-  .handler(async ({ data: parsedInput }) => {
-    if (!parsedInput.success) {
-      const issue = parsedInput.error.issues[0];
-      const field = issue?.path[0];
-      const message =
-        field === "email"
-          ? "Enter a valid email address."
-          : field === "password"
-            ? "Use a password between 12 and 72 characters."
-            : field === "redditProfileUrl"
-              ? "Enter a valid Reddit profile link or @username."
-              : "Please check your signup details and try again.";
-      return { ok: false, message };
+export type AuthEmailResult = { ok: true } | { ok: false; message: string };
+
+export async function createAccountWithResend(input: unknown): Promise<AuthEmailResult> {
+  const parsedInput = signupSchema.safeParse(input);
+  if (!parsedInput.success) {
+    const issue = parsedInput.error.issues[0];
+    const field = issue?.path[0];
+    const message =
+      field === "email"
+        ? "Enter a valid email address."
+        : field === "password"
+          ? "Use a password between 12 and 72 characters."
+          : field === "redditProfileUrl"
+            ? "Enter a valid Reddit profile link or @username."
+            : "Please check your signup details and try again.";
+    return { ok: false, message };
+  }
+
+  const data = parsedInput.data;
+  try {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const existingAccount = await findAccountByEmail(supabaseAdmin, data.email);
+    if (existingAccount?.email_confirmed_at) {
+      return {
+        ok: false,
+        message: "An account already exists with this email. Try signing in instead.",
+      };
     }
 
-    const data = parsedInput.data;
-    try {
-      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-      const existingAccount = await findAccountByEmail(supabaseAdmin, data.email);
-      if (existingAccount?.email_confirmed_at) {
-        return {
-          ok: false,
-          message: "An account already exists with this email. Try signing in instead.",
-        };
+    // A previous email-delivery failure can leave an unusable, unconfirmed account behind.
+    // Remove it before retrying so the user can complete signup normally.
+    if (existingAccount) {
+      const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(existingAccount.id);
+      if (deleteError) {
+        console.error("Unconfirmed account cleanup failed:", deleteError.message);
+        return { ok: false, message: "We could not restart your signup. Please try again." };
       }
+    }
 
-      // A previous email-delivery failure can leave an unusable, unconfirmed account behind.
-      // Remove it before retrying so the user can complete signup normally.
-      if (existingAccount) {
-        const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(
-          existingAccount.id,
-        );
-        if (deleteError) {
-          console.error("Unconfirmed account cleanup failed:", deleteError.message);
-          return { ok: false, message: "We could not restart your signup. Please try again." };
-        }
-      }
-
-      const redditUsername =
-        data.redditProfileUrl.replace(/\/+$/, "").split("/").pop() ?? "Reddit user";
-      const { data: linkData, error } = await supabaseAdmin.auth.admin.generateLink({
-        type: "signup",
-        email: data.email,
-        password: data.password,
-        options: {
-          data: {
-            full_name: redditUsername,
-            reddit_profile_url: data.redditProfileUrl,
-          },
-          redirectTo: `${SITE_URL}/opportunities/posts`,
+    const redditUsername =
+      data.redditProfileUrl.replace(/\/+$/, "").split("/").pop() ?? "Reddit user";
+    const { data: linkData, error } = await supabaseAdmin.auth.admin.generateLink({
+      type: "signup",
+      email: data.email,
+      password: data.password,
+      options: {
+        data: {
+          full_name: redditUsername,
+          reddit_profile_url: data.redditProfileUrl,
         },
-      });
+        redirectTo: `${SITE_URL}/opportunities/posts`,
+      },
+    });
 
-      if (error) {
-        console.error("Signup link generation failed:", error.message);
-        return { ok: false, message: signupErrorMessage(error) };
-      }
-
-      if (!linkData.properties.hashed_token) {
-        console.error("Signup link generation failed: missing token");
-        const { error: rollbackError } = await supabaseAdmin.auth.admin.deleteUser(
-          linkData.user.id,
-        );
-        if (rollbackError) {
-          console.error("Missing-token signup cleanup failed:", rollbackError.message);
-        }
-        return { ok: false, message: "We could not create your account. Please try again." };
-      }
-
-      const actionUrl = confirmationUrl(
-        linkData.properties.hashed_token,
-        "signup",
-        "/opportunities/posts",
-      );
-      const sent = await sendWithResend(data.email, "signup", actionUrl);
-      if (!sent.ok) {
-        const createdUserId = linkData.user.id;
-        const { error: rollbackError } = await supabaseAdmin.auth.admin.deleteUser(createdUserId);
-        if (rollbackError) {
-          console.error("Failed signup cleanup failed:", rollbackError.message);
-        }
-        return {
-          ok: false,
-          message:
-            sent.reason === "configuration"
-              ? "Email delivery is temporarily unavailable. Please try again shortly."
-              : "Resend could not deliver the confirmation email. Check the address and try again.",
-        };
-      }
-      return { ok: true };
-    } catch (err) {
-      console.error("Signup failed:", err instanceof Error ? err.message : String(err));
-      return { ok: false, message: signupErrorMessage(err) };
+    if (error) {
+      console.error("Signup link generation failed:", error.message);
+      return { ok: false, message: signupErrorMessage(error) };
     }
-  });
 
-export const resendConfirmationWithResend = createServerFn({ method: "POST" })
-  .inputValidator((input) => emailOnlySchema.parse(input))
-  .handler(async ({ data }) => {
+    if (!linkData.properties.hashed_token) {
+      console.error("Signup link generation failed: missing token");
+      const { error: rollbackError } = await supabaseAdmin.auth.admin.deleteUser(linkData.user.id);
+      if (rollbackError) {
+        console.error("Missing-token signup cleanup failed:", rollbackError.message);
+      }
+      return { ok: false, message: "We could not create your account. Please try again." };
+    }
+
+    const actionUrl = confirmationUrl(
+      linkData.properties.hashed_token,
+      "signup",
+      "/opportunities/posts",
+    );
+    const sent = await sendWithResend(data.email, "signup", actionUrl);
+    if (!sent.ok) {
+      const createdUserId = linkData.user.id;
+      const { error: rollbackError } = await supabaseAdmin.auth.admin.deleteUser(createdUserId);
+      if (rollbackError) {
+        console.error("Failed signup cleanup failed:", rollbackError.message);
+      }
+      return {
+        ok: false,
+        message:
+          sent.reason === "configuration"
+            ? "Email delivery is temporarily unavailable. Please try again shortly."
+            : "Resend could not deliver the confirmation email. Check the address and try again.",
+      };
+    }
+    return { ok: true };
+  } catch (err) {
+    console.error("Signup failed:", err instanceof Error ? err.message : String(err));
+    return { ok: false, message: signupErrorMessage(err) };
+  }
+}
+
+export async function resendAccountConfirmation(input: unknown): Promise<AuthEmailResult> {
+  const parsedInput = emailOnlySchema.safeParse(input);
+  if (!parsedInput.success) return { ok: true };
+  const data = parsedInput.data;
+  try {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const account = await findAccountByEmail(supabaseAdmin, data.email);
     if (!account || account.email_confirmed_at) {
@@ -269,13 +275,23 @@ export const resendConfirmationWithResend = createServerFn({ method: "POST" })
       "magiclink",
       "/opportunities/posts",
     );
-    await sendWithResend(data.email, "signup", actionUrl);
+    const sent = await sendWithResend(data.email, "signup", actionUrl);
+    if (!sent.ok) console.error("Confirmation email delivery failed:", sent.reason);
     return { ok: true };
-  });
+  } catch (error) {
+    console.error(
+      "Confirmation request failed:",
+      error instanceof Error ? error.message : String(error),
+    );
+    return { ok: true };
+  }
+}
 
-export const requestPasswordResetWithResend = createServerFn({ method: "POST" })
-  .inputValidator((input) => emailOnlySchema.parse(input))
-  .handler(async ({ data }) => {
+export async function requestAccountPasswordReset(input: unknown): Promise<AuthEmailResult> {
+  const parsedInput = emailOnlySchema.safeParse(input);
+  if (!parsedInput.success) return { ok: true };
+  const data = parsedInput.data;
+  try {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: linkData, error } = await supabaseAdmin.auth.admin.generateLink({
       type: "recovery",
@@ -293,6 +309,14 @@ export const requestPasswordResetWithResend = createServerFn({ method: "POST" })
       "recovery",
       "/auth/reset-password",
     );
-    await sendWithResend(data.email, "recovery", actionUrl);
+    const sent = await sendWithResend(data.email, "recovery", actionUrl);
+    if (!sent.ok) console.error("Recovery email delivery failed:", sent.reason);
     return { ok: true };
-  });
+  } catch (error) {
+    console.error(
+      "Recovery request failed:",
+      error instanceof Error ? error.message : String(error),
+    );
+    return { ok: true };
+  }
+}
