@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
@@ -9,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/password-input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSession } from "@/lib/data";
+import { createTaskRedditAccount } from "@/lib/signup.functions";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -74,6 +76,7 @@ function getSignupErrorMessage(error: { code?: string; message: string }): strin
 
 function AuthPage() {
   const navigate = useNavigate();
+  const createAccount = useServerFn(createTaskRedditAccount);
   const [loading, setLoading] = useState(false);
   const [confirmEmail, setConfirmEmail] = useState("");
   const [showConfirmMessage, setShowConfirmMessage] = useState(false);
@@ -128,29 +131,22 @@ function AuthPage() {
       return;
     }
 
-    const redditUsername =
-      parsed.data.reddit_profile_url.replace(/\/+$/, "").split("/").pop() ??
-      parsed.data.email.split("@")[0];
-
     setLoading(true);
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email: parsed.data.email,
-        password: parsed.data.password,
-        options: {
-          data: {
-            full_name: redditUsername,
-            reddit_profile_url: parsed.data.reddit_profile_url,
-          },
+      const result = await createAccount({
+        data: {
+          email: parsed.data.email,
+          password: parsed.data.password,
+          redditProfileUrl: parsed.data.reddit_profile_url,
         },
       });
 
-      if (error) {
-        setSignupError(getSignupErrorMessage(error));
+      if (!result.ok) {
+        setSignupError(getSignupErrorMessage(result));
         return;
       }
 
-      if (!data.session) {
+      if (result.requiresConfirmation) {
         setConfirmEmail(parsed.data.email);
         setShowConfirmMessage(true);
         return;
