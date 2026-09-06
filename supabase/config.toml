@@ -1,1 +1,6 @@
 project_id = "tibihcyzpozubgtydcxz"
+
+[auth.hook.send_email]
+enabled = true
+uri = "https://reddit-task-money.lovable.app/api/public/auth-email"
+secrets = "env(SEND_EMAIL_HOOK_SECRET)"

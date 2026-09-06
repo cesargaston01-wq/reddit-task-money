@@ -1,1 +1,0 @@
-DROP POLICY IF EXISTS "public browse open missions" ON public.missions;
