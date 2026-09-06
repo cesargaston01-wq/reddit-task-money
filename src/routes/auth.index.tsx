@@ -130,7 +130,10 @@ function AuthPage() {
       setShowConfirmMessage(true);
     } catch (error) {
       const message = error instanceof Error ? error.message.toLowerCase() : "";
-      if (message.includes("password") && (message.includes("weak") || message.includes("breach"))) {
+      if (
+        message.includes("password") &&
+        (message.includes("weak") || message.includes("breach"))
+      ) {
         toast.error(
           "This password is too weak or has appeared in a data breach. Please choose a stronger one.",
         );

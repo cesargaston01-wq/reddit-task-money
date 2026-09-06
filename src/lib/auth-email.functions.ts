@@ -105,7 +105,12 @@ async function sendWithResend(to: string, kind: EmailKind, actionUrl: string) {
         Authorization: `Bearer ${lovableApiKey}`,
         "X-Connection-Api-Key": resendApiKey,
       },
-      body: JSON.stringify({ from: FROM_EMAIL, to: [to], subject: email.subject, html: email.html }),
+      body: JSON.stringify({
+        from: FROM_EMAIL,
+        to: [to],
+        subject: email.subject,
+        html: email.html,
+      }),
     });
 
     if (!response.ok) {
