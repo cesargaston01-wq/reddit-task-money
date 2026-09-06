@@ -16,7 +16,6 @@ import {
   signupWithResend,
 } from "@/lib/auth.functions";
 
-
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
@@ -91,7 +90,6 @@ function AuthPage() {
   const signup = useServerFn(signupWithResend);
   const resendConfirm = useServerFn(resendConfirmationEmail);
   const sendReset = useServerFn(sendPasswordResetEmail);
-
 
   useEffect(() => {
     if (user) navigate({ to: "/opportunities/posts", replace: true });
@@ -195,7 +193,6 @@ function AuthPage() {
       setLoading(false);
     }
   }
-
 
   if (isRestoringSession || user) {
     return (
