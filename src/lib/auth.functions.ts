@@ -44,6 +44,11 @@ export const signupWithResend = createServerFn({ method: "POST" })
         tokenHash: linkData.properties.hashed_token,
       });
     } catch (sendError) {
+      const userId = linkData.user?.id;
+      if (userId) {
+        const { error: cleanupError } = await supabaseAdmin.auth.admin.deleteUser(userId);
+        if (cleanupError) console.error("Failed to roll back signup", cleanupError);
+      }
       return {
         ok: false as const,
         message: sendError instanceof Error ? sendError.message : "Email delivery failed.",

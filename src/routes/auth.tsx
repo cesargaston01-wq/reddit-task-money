@@ -8,13 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/password-input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useServerFn } from "@tanstack/react-start";
 import { useSession } from "@/lib/data";
-import {
-  resendConfirmationEmail,
-  sendPasswordResetEmail,
-  signupWithResend,
-} from "@/lib/auth.functions";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -78,6 +72,18 @@ function getSignupErrorMessage(error: { code?: string; message: string }): strin
   return error.message;
 }
 
+type AuthActionResult = { ok: boolean; message?: string };
+
+async function runAuthAction(body: Record<string, string>): Promise<AuthActionResult> {
+  const response = await fetch("/api/public/auth-actions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  const result = (await response.json()) as AuthActionResult;
+  return result;
+}
+
 function AuthPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -87,10 +93,6 @@ function AuthPage() {
   const [signupError, setSignupError] = useState("");
 
   const { data: user, isLoading: isRestoringSession } = useSession();
-  const signup = useServerFn(signupWithResend);
-  const resendConfirm = useServerFn(resendConfirmationEmail);
-  const sendReset = useServerFn(sendPasswordResetEmail);
-
   useEffect(() => {
     if (user) navigate({ to: "/opportunities/posts", replace: true });
   }, [navigate, user]);
@@ -143,17 +145,16 @@ function AuthPage() {
 
     setLoading(true);
     try {
-      const result = await signup({
-        data: {
-          email: parsed.data.email,
-          password: parsed.data.password,
-          reddit_profile_url: parsed.data.reddit_profile_url,
-          full_name: redditUsername,
-        },
+      const result = await runAuthAction({
+        action: "signup",
+        email: parsed.data.email,
+        password: parsed.data.password,
+        reddit_profile_url: parsed.data.reddit_profile_url,
+        full_name: redditUsername,
       });
 
       if (!result.ok) {
-        setSignupError(getSignupErrorMessage({ message: result.message }));
+        setSignupError(getSignupErrorMessage({ message: result.message ?? "Signup failed." }));
         return;
       }
 
@@ -170,8 +171,8 @@ function AuthPage() {
     if (!confirmEmail) return;
     setLoading(true);
     try {
-      const result = await resendConfirm({ data: { email: confirmEmail } });
-      if (!result.ok) return toast.error(result.message);
+      const result = await runAuthAction({ action: "resend", email: confirmEmail });
+      if (!result.ok) return toast.error(result.message ?? "We couldn't send the email.");
       toast.success("Confirmation email resent. Check your inbox.");
     } catch {
       toast.error("We couldn't send the email. Please try again.");
@@ -185,7 +186,7 @@ function AuthPage() {
     if (!email) return;
     setLoading(true);
     try {
-      await sendReset({ data: { email: email.trim() } });
+      await runAuthAction({ action: "recovery", email: email.trim() });
       toast.success("Password reset email sent. Check your inbox.");
     } catch {
       toast.error("We couldn't send the email. Please try again.");
