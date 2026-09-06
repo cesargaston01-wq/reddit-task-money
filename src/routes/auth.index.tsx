@@ -252,7 +252,6 @@ function AuthPage() {
                   id="s-pass"
                   name="password"
                   required
-                  minLength={12}
                   maxLength={72}
                   aria-describedby="signup-password-help signup-error"
                   aria-invalid={Boolean(signupError)}
