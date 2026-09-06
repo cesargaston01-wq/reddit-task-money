@@ -21,6 +21,19 @@ const emailOnlySchema = z.object({ email: emailSchema });
 
 type EmailKind = "signup" | "recovery";
 type ConfirmationType = EmailKind | "magiclink";
+type SendResult = { ok: true } | { ok: false; reason: "configuration" | "provider" };
+
+function signupErrorMessage(error: unknown) {
+  const message = error instanceof Error ? error.message.toLowerCase() : String(error).toLowerCase();
+
+  if (message.includes("password") && (message.includes("weak") || message.includes("breach"))) {
+    return "This password is too weak or has appeared in a data breach. Please choose a stronger one.";
+  }
+  if (message.includes("already") || message.includes("registered") || message.includes("exists")) {
+    return "An account already exists with this email. Try signing in instead.";
+  }
+  return "We could not create your account. Please try again.";
+}
 
 function confirmationUrl(tokenHash: string, type: ConfirmationType, next: string) {
   const params = new URLSearchParams({ token_hash: tokenHash, type, next });
@@ -79,7 +92,7 @@ async function sendWithResend(to: string, kind: EmailKind, actionUrl: string) {
   const lovableApiKey = process.env["LOVABLE_API_KEY"];
   if (!resendApiKey || !lovableApiKey) {
     console.error("Resend connection is not configured");
-    return false;
+    return { ok: false, reason: "configuration" } satisfies SendResult;
   }
 
   const email = renderEmail(kind, actionUrl);
@@ -96,31 +109,10 @@ async function sendWithResend(to: string, kind: EmailKind, actionUrl: string) {
   if (!response.ok) {
     const body = await response.text();
     console.error(`Resend request failed [${response.status}]: ${body}`);
-    return false;
+    return { ok: false, reason: "provider" } satisfies SendResult;
   }
 
-  return true;
-}
-
-async function accountExistsAndNeedsConfirmation(
-  supabaseAdmin: Awaited<typeof import("@/integrations/supabase/client.server")>["supabaseAdmin"],
-  email: string,
-) {
-  const normalizedEmail = email.toLowerCase();
-
-  for (let page = 1; page <= 10; page += 1) {
-    const { data, error } = await supabaseAdmin.auth.admin.listUsers({ page, perPage: 1000 });
-    if (error) {
-      console.error("Account lookup failed:", error.message);
-      return false;
-    }
-
-    const account = data.users.find((user) => user.email?.toLowerCase() === normalizedEmail);
-    if (account) return !account.email_confirmed_at;
-    if (data.users.length < 1000) return false;
-  }
-
-  return false;
+  return { ok: true } satisfies SendResult;
 }
 
 async function findAccountByEmail(
@@ -182,21 +174,7 @@ export const signUpWithResend = createServerFn({ method: "POST" })
 
       if (error) {
         console.error("Signup link generation failed:", error.message);
-        const message = error.message.toLowerCase();
-        if (message.includes("already") || message.includes("registered")) {
-          return {
-            ok: false,
-            message: "An account already exists with this email. Try signing in instead.",
-          };
-        }
-        if (message.includes("password")) {
-          return {
-            ok: false,
-            message:
-              "This password is too weak or has appeared in a data breach. Please choose a stronger one.",
-          };
-        }
-        return { ok: false, message: "We could not create your account. Please try again." };
+        return { ok: false, message: signupErrorMessage(error) };
       }
 
       if (!linkData.properties.hashed_token) {
@@ -210,7 +188,7 @@ export const signUpWithResend = createServerFn({ method: "POST" })
         "/opportunities/posts",
       );
       const sent = await sendWithResend(data.email, "signup", actionUrl);
-      if (!sent) {
+      if (!sent.ok) {
         const createdUserId = linkData.user.id;
         const { error: rollbackError } = await supabaseAdmin.auth.admin.deleteUser(createdUserId);
         if (rollbackError) {
@@ -218,13 +196,16 @@ export const signUpWithResend = createServerFn({ method: "POST" })
         }
         return {
           ok: false,
-          message: "We could not send the confirmation email. Please try again.",
+          message:
+            sent.reason === "configuration"
+              ? "Email delivery is temporarily unavailable. Please try again shortly."
+              : "Resend could not deliver the confirmation email. Check the address and try again.",
         };
       }
       return { ok: true };
     } catch (err) {
       console.error("Signup failed:", err instanceof Error ? err.message : String(err));
-      return { ok: false, message: "We could not create your account. Please try again." };
+      return { ok: false, message: signupErrorMessage(err) };
     }
   });
 
@@ -232,7 +213,8 @@ export const resendConfirmationWithResend = createServerFn({ method: "POST" })
   .inputValidator((input) => emailOnlySchema.parse(input))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    if (!(await accountExistsAndNeedsConfirmation(supabaseAdmin, data.email))) {
+    const account = await findAccountByEmail(supabaseAdmin, data.email);
+    if (!account || account.email_confirmed_at) {
       return { ok: true };
     }
 
