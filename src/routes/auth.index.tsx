@@ -59,6 +59,7 @@ function normalizeRedditUrl(raw: string): string {
 function AuthPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [signupError, setSignupError] = useState("");
   const [confirmEmail, setConfirmEmail] = useState("");
   const [showConfirmMessage, setShowConfirmMessage] = useState(false);
   const [pendingEmail, setPendingEmail] = useState("");
@@ -112,6 +113,7 @@ function AuthPage() {
 
   async function handleSignup(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setSignupError("");
     const fd = new FormData(e.currentTarget);
     const redditUrl = normalizeRedditUrl(String(fd.get("reddit_profile_url") ?? ""));
     const parsed = signupSchema.safeParse({
@@ -119,7 +121,11 @@ function AuthPage() {
       password: fd.get("password"),
       reddit_profile_url: redditUrl,
     });
-    if (!parsed.success) return toast.error(parsed.error.issues[0].message);
+    if (!parsed.success) {
+      const message = parsed.error.issues[0]?.message ?? "Please check your signup details.";
+      setSignupError(message);
+      return;
+    }
 
     setLoading(true);
     try {
@@ -129,11 +135,14 @@ function AuthPage() {
         password: parsed.data.password,
         redditProfileUrl: parsed.data.reddit_profile_url,
       });
-      if (!result.ok) return toast.error(result.message ?? "Signup could not be completed.");
+      if (!result.ok) {
+        setSignupError(result.message ?? "Signup could not be completed.");
+        return;
+      }
       setConfirmEmail(parsed.data.email);
       setShowConfirmMessage(true);
     } catch (error) {
-      toast.error(
+      setSignupError(
         error instanceof Error
           ? error.message
           : "The signup service could not be reached. Please try again.",
@@ -239,9 +248,16 @@ function AuthPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="s-pass">Password</Label>
-                <PasswordInput id="s-pass" name="password" required minLength={12} maxLength={72} />
+                <PasswordInput
+                  id="s-pass"
+                  name="password"
+                  required
+                  maxLength={72}
+                  aria-describedby="signup-password-help signup-error"
+                  aria-invalid={Boolean(signupError)}
+                />
                 <p className="text-xs text-muted-foreground">
-                  At least 12 characters. Avoid common passwords — mix letters, numbers and symbols.
+                  Use 12–72 characters and a unique phrase that you have never used elsewhere.
                 </p>
               </div>
 
@@ -255,8 +271,17 @@ function AuthPage() {
                   maxLength={255}
                 />
               </div>
+              {signupError ? (
+                <p
+                  id="signup-error"
+                  role="alert"
+                  className="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+                >
+                  {signupError}
+                </p>
+              ) : null}
               <Button type="submit" className="w-full" disabled={loading}>
-                Create my account
+                {loading ? "Creating account…" : "Create my account"}
               </Button>
               <p className="text-center text-xs text-muted-foreground">
                 Your account stays pending until it's manually reviewed.
