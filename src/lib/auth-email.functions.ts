@@ -102,6 +102,29 @@ async function sendWithResend(to: string, kind: EmailKind, actionUrl: string) {
   return true;
 }
 
+async function accountExistsAndNeedsConfirmation(
+  supabaseAdmin: Awaited<
+    typeof import("@/integrations/supabase/client.server")
+  >["supabaseAdmin"],
+  email: string,
+) {
+  const normalizedEmail = email.toLowerCase();
+
+  for (let page = 1; page <= 10; page += 1) {
+    const { data, error } = await supabaseAdmin.auth.admin.listUsers({ page, perPage: 1000 });
+    if (error) {
+      console.error("Account lookup failed:", error.message);
+      return false;
+    }
+
+    const account = data.users.find((user) => user.email?.toLowerCase() === normalizedEmail);
+    if (account) return !account.email_confirmed_at;
+    if (data.users.length < 1000) return false;
+  }
+
+  return false;
+}
+
 export const signUpWithResend = createServerFn({ method: "POST" })
   .inputValidator((input) => signupSchema.parse(input))
   .handler(async ({ data }) => {
@@ -145,6 +168,10 @@ export const resendConfirmationWithResend = createServerFn({ method: "POST" })
   .inputValidator((input) => emailOnlySchema.parse(input))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    if (!(await accountExistsAndNeedsConfirmation(supabaseAdmin, data.email))) {
+      return { ok: true };
+    }
+
     const { data: linkData, error } = await supabaseAdmin.auth.admin.generateLink({
       type: "magiclink",
       email: data.email,
