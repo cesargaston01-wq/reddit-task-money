@@ -5,6 +5,16 @@ import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/auth/confirm")({
+  head: () => ({
+    meta: [
+      { title: "Confirm your email — TaskReddit" },
+      { name: "description", content: "Confirm your TaskReddit email address securely." },
+      { property: "og:title", content: "Confirm your email — TaskReddit" },
+      { property: "og:description", content: "Confirm your TaskReddit email address securely." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
   component: ConfirmPage,
 });
 
