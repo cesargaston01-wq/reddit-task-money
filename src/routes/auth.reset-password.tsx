@@ -7,6 +7,19 @@ import { PasswordInput } from "@/components/password-input";
 import { Label } from "@/components/ui/label";
 
 export const Route = createFileRoute("/auth/reset-password")({
+  head: () => ({
+    meta: [
+      { title: "Reset your password — TaskReddit" },
+      { name: "description", content: "Choose a new password for your TaskReddit account." },
+      { property: "og:title", content: "Reset your password — TaskReddit" },
+      {
+        property: "og:description",
+        content: "Choose a new password for your TaskReddit account.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
   component: ResetPasswordPage,
 });
 

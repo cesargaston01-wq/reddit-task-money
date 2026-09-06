@@ -130,7 +130,12 @@ export const signUpWithResend = createServerFn({ method: "POST" })
       "/opportunities/posts",
     );
     const sent = await sendWithResend(data.email, "signup", actionUrl);
-    if (!sent) return { ok: false, message: "We could not send the confirmation email. Please try again." };
+    if (!sent) {
+      return {
+        ok: false,
+        message: "We could not send the confirmation email. Please try again.",
+      };
+    }
     return { ok: true };
   });
 

@@ -116,10 +116,6 @@ function AuthPage() {
     });
     if (!parsed.success) return toast.error(parsed.error.issues[0].message);
 
-    const redditUsername =
-      parsed.data.reddit_profile_url.replace(/\/+$/, "").split("/").pop() ??
-      parsed.data.email.split("@")[0];
-
     setLoading(true);
     try {
       const result = await signUp({
