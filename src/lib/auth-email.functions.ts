@@ -152,8 +152,16 @@ export const signUpWithResend = createServerFn({ method: "POST" })
             message: "An account already exists with this email. Try signing in instead.",
           };
         }
+        if (message.includes("password")) {
+          return {
+            ok: false,
+            message:
+              "This password is too weak or has appeared in a data breach. Please choose a stronger one.",
+          };
+        }
         return { ok: false, message: "We could not create your account. Please try again." };
       }
+
 
       if (!linkData.properties.hashed_token) {
         console.error("Signup link generation failed: missing token");
