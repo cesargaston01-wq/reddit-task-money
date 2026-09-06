@@ -38,7 +38,7 @@ export const Route = createFileRoute("/auth/")({
 
 const signupSchema = z.object({
   email: z.string().trim().email("Invalid email").max(255),
-  password: z.string().min(8, "8 characters minimum").max(72),
+  password: z.string().min(12, "Use at least 12 characters").max(72),
   reddit_profile_url: z
     .string()
     .trim()
@@ -128,8 +128,18 @@ function AuthPage() {
       if (!result.ok) return toast.error(result.message);
       setConfirmEmail(parsed.data.email);
       setShowConfirmMessage(true);
-    } catch {
-      toast.error("We could not create your account. Please try again.");
+    } catch (error) {
+      const message = error instanceof Error ? error.message.toLowerCase() : "";
+      if (
+        message.includes("password") &&
+        (message.includes("weak") || message.includes("breach"))
+      ) {
+        toast.error(
+          "This password is too weak or has appeared in a data breach. Please choose a stronger one.",
+        );
+      } else {
+        toast.error("We could not create your account. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -231,9 +241,9 @@ function AuthPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="s-pass">Password</Label>
-                <PasswordInput id="s-pass" name="password" required minLength={8} maxLength={72} />
+                <PasswordInput id="s-pass" name="password" required minLength={12} maxLength={72} />
                 <p className="text-xs text-muted-foreground">
-                  At least 8 characters. Avoid common passwords — mix letters, numbers and symbols.
+                  At least 12 characters. Avoid common passwords — mix letters, numbers and symbols.
                 </p>
               </div>
 
