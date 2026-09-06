@@ -35,11 +35,8 @@ export const Route = createFileRoute("/api/public/auth")({
           return json({ ok: false, message: "Please check your details and try again." }, 400);
         }
 
-        const {
-          createAccountWithResend,
-          requestAccountPasswordReset,
-          resendAccountConfirmation,
-        } = await import("@/lib/auth-email.server");
+        const { createAccountWithResend, requestAccountPasswordReset, resendAccountConfirmation } =
+          await import("@/lib/auth-email.server");
 
         if (parsed.data.action === "signup") {
           const result = await createAccountWithResend(parsed.data);

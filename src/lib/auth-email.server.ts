@@ -173,79 +173,75 @@ export async function createAccountWithResend(input: unknown): Promise<AuthEmail
 
   const data = parsedInput.data;
   try {
-      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-      const existingAccount = await findAccountByEmail(supabaseAdmin, data.email);
-      if (existingAccount?.email_confirmed_at) {
-        return {
-          ok: false,
-          message: "An account already exists with this email. Try signing in instead.",
-        };
-      }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const existingAccount = await findAccountByEmail(supabaseAdmin, data.email);
+    if (existingAccount?.email_confirmed_at) {
+      return {
+        ok: false,
+        message: "An account already exists with this email. Try signing in instead.",
+      };
+    }
 
-      // A previous email-delivery failure can leave an unusable, unconfirmed account behind.
-      // Remove it before retrying so the user can complete signup normally.
-      if (existingAccount) {
-        const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(
-          existingAccount.id,
-        );
-        if (deleteError) {
-          console.error("Unconfirmed account cleanup failed:", deleteError.message);
-          return { ok: false, message: "We could not restart your signup. Please try again." };
-        }
+    // A previous email-delivery failure can leave an unusable, unconfirmed account behind.
+    // Remove it before retrying so the user can complete signup normally.
+    if (existingAccount) {
+      const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(existingAccount.id);
+      if (deleteError) {
+        console.error("Unconfirmed account cleanup failed:", deleteError.message);
+        return { ok: false, message: "We could not restart your signup. Please try again." };
       }
+    }
 
-      const redditUsername =
-        data.redditProfileUrl.replace(/\/+$/, "").split("/").pop() ?? "Reddit user";
-      const { data: linkData, error } = await supabaseAdmin.auth.admin.generateLink({
-        type: "signup",
-        email: data.email,
-        password: data.password,
-        options: {
-          data: {
-            full_name: redditUsername,
-            reddit_profile_url: data.redditProfileUrl,
-          },
-          redirectTo: `${SITE_URL}/opportunities/posts`,
+    const redditUsername =
+      data.redditProfileUrl.replace(/\/+$/, "").split("/").pop() ?? "Reddit user";
+    const { data: linkData, error } = await supabaseAdmin.auth.admin.generateLink({
+      type: "signup",
+      email: data.email,
+      password: data.password,
+      options: {
+        data: {
+          full_name: redditUsername,
+          reddit_profile_url: data.redditProfileUrl,
         },
-      });
+        redirectTo: `${SITE_URL}/opportunities/posts`,
+      },
+    });
 
-      if (error) {
-        console.error("Signup link generation failed:", error.message);
-        return { ok: false, message: signupErrorMessage(error) };
-      }
+    if (error) {
+      console.error("Signup link generation failed:", error.message);
+      return { ok: false, message: signupErrorMessage(error) };
+    }
 
-      if (!linkData.properties.hashed_token) {
-        console.error("Signup link generation failed: missing token");
-        const { error: rollbackError } = await supabaseAdmin.auth.admin.deleteUser(
-          linkData.user.id,
-        );
-        if (rollbackError) {
-          console.error("Missing-token signup cleanup failed:", rollbackError.message);
-        }
-        return { ok: false, message: "We could not create your account. Please try again." };
+    if (!linkData.properties.hashed_token) {
+      console.error("Signup link generation failed: missing token");
+      const { error: rollbackError } = await supabaseAdmin.auth.admin.deleteUser(linkData.user.id);
+      if (rollbackError) {
+        console.error("Missing-token signup cleanup failed:", rollbackError.message);
       }
+      return { ok: false, message: "We could not create your account. Please try again." };
+    }
 
-      const actionUrl = confirmationUrl(
-        linkData.properties.hashed_token,
-        "signup",
-        "/opportunities/posts",
-      );
-      const sent = await sendWithResend(data.email, "signup", actionUrl);
-      if (!sent.ok) {
-        const createdUserId = linkData.user.id;
-        const { error: rollbackError } = await supabaseAdmin.auth.admin.deleteUser(createdUserId);
-        if (rollbackError) {
-          console.error("Failed signup cleanup failed:", rollbackError.message);
-        }
-        return {
-          ok: false,
-          message:
-            sent.reason === "configuration"
-              ? "Email delivery is temporarily unavailable. Please try again shortly."
-              : "Resend could not deliver the confirmation email. Check the address and try again.",
-        };
+    const actionUrl = confirmationUrl(
+      linkData.properties.hashed_token,
+      "signup",
+      "/opportunities/posts",
+    );
+    const sent = await sendWithResend(data.email, "signup", actionUrl);
+    if (!sent.ok) {
+      const createdUserId = linkData.user.id;
+      const { error: rollbackError } = await supabaseAdmin.auth.admin.deleteUser(createdUserId);
+      if (rollbackError) {
+        console.error("Failed signup cleanup failed:", rollbackError.message);
       }
-      return { ok: true };
+      return {
+        ok: false,
+        message:
+          sent.reason === "configuration"
+            ? "Email delivery is temporarily unavailable. Please try again shortly."
+            : "Resend could not deliver the confirmation email. Check the address and try again.",
+      };
+    }
+    return { ok: true };
   } catch (err) {
     console.error("Signup failed:", err instanceof Error ? err.message : String(err));
     return { ok: false, message: signupErrorMessage(err) };
@@ -283,7 +279,10 @@ export async function resendAccountConfirmation(input: unknown): Promise<AuthEma
     if (!sent.ok) console.error("Confirmation email delivery failed:", sent.reason);
     return { ok: true };
   } catch (error) {
-    console.error("Confirmation request failed:", error instanceof Error ? error.message : String(error));
+    console.error(
+      "Confirmation request failed:",
+      error instanceof Error ? error.message : String(error),
+    );
     return { ok: true };
   }
 }
@@ -314,7 +313,10 @@ export async function requestAccountPasswordReset(input: unknown): Promise<AuthE
     if (!sent.ok) console.error("Recovery email delivery failed:", sent.reason);
     return { ok: true };
   } catch (error) {
-    console.error("Recovery request failed:", error instanceof Error ? error.message : String(error));
+    console.error(
+      "Recovery request failed:",
+      error instanceof Error ? error.message : String(error),
+    );
     return { ok: true };
   }
 }
