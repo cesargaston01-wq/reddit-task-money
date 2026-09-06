@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
@@ -23,8 +23,12 @@ type OtpType = "signup" | "recovery" | "email_change" | "invite" | "magiclink" |
 function ConfirmPage() {
   const navigate = useNavigate();
   const [status, setStatus] = useState<"verifying" | "success" | "error">("verifying");
+  const verificationStarted = useRef(false);
 
   useEffect(() => {
+    if (verificationStarted.current) return;
+    verificationStarted.current = true;
+
     const params = new URLSearchParams(window.location.search);
     const token_hash = params.get("token_hash");
     const rawType = params.get("type");
