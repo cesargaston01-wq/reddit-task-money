@@ -156,7 +156,9 @@ export const signUpWithResend = createServerFn({ method: "POST" })
       // A previous email-delivery failure can leave an unusable, unconfirmed account behind.
       // Remove it before retrying so the user can complete signup normally.
       if (existingAccount) {
-        const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(existingAccount.id);
+        const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(
+          existingAccount.id,
+        );
         if (deleteError) {
           console.error("Unconfirmed account cleanup failed:", deleteError.message);
           return { ok: false, message: "We could not restart your signup. Please try again." };
@@ -196,7 +198,6 @@ export const signUpWithResend = createServerFn({ method: "POST" })
         }
         return { ok: false, message: "We could not create your account. Please try again." };
       }
-
 
       if (!linkData.properties.hashed_token) {
         console.error("Signup link generation failed: missing token");
