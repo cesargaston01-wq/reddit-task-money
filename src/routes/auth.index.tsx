@@ -16,7 +16,7 @@ import {
   signUpWithResend,
 } from "@/lib/auth-email.functions";
 
-export const Route = createFileRoute("/auth")({
+export const Route = createFileRoute("/auth/")({
   head: () => ({
     meta: [
       { title: "Sign in — TaskReddit" },
