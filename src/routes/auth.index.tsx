@@ -39,21 +39,22 @@ const signupSchema = z.object({
     .max(255)
     .regex(
       /^https?:\/\/(www\.)?reddit\.com\/user\/[A-Za-z0-9_-]+\/?$/,
-      "e.g. https://reddit.com/user/username",
+      "Enter your Reddit username, e.g. @username",
     ),
 });
 
 function normalizeRedditUrl(raw: string): string {
-  const trimmed = raw.trim();
-  if (!trimmed) return trimmed;
-
-  if (/^https?:\/\//i.test(trimmed)) {
-    return trimmed.replace(/\/$/, "");
-  }
-
-  const username = trimmed.startsWith("@") ? trimmed.slice(1).trim() : trimmed;
-  if (!username) return trimmed;
-  return `https://reddit.com/user/${username}`;
+  let value = raw.trim();
+  if (!value) return value;
+  value = value.split(/[?#]/)[0] ?? value;
+  value = value.replace(/^https?:\/\//i, "").replace(/^[a-z0-9-]+\.reddit\.com/i, "reddit.com");
+  value = value.replace(/^reddit\.com/i, "");
+  value = value.replace(/^\/+/, "");
+  value = value.replace(/^(user|u)\//i, "");
+  value = value.replace(/^@/, "");
+  value = value.replace(/\/.*$/, "").trim();
+  if (!/^[A-Za-z0-9_-]{3,20}$/.test(value)) return raw.trim();
+  return `https://reddit.com/user/${value}`;
 }
 
 function AuthPage() {
