@@ -72,18 +72,6 @@ function getSignupErrorMessage(error: { code?: string; message: string }): strin
   return error.message;
 }
 
-type AuthActionResult = { ok: boolean; message?: string };
-
-async function runAuthAction(body: Record<string, string>): Promise<AuthActionResult> {
-  const response = await fetch("/api/public/auth-actions", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
-  const result = (await response.json()) as AuthActionResult;
-  return result;
-}
-
 function AuthPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -93,6 +81,7 @@ function AuthPage() {
   const [signupError, setSignupError] = useState("");
 
   const { data: user, isLoading: isRestoringSession } = useSession();
+
   useEffect(() => {
     if (user) navigate({ to: "/opportunities/posts", replace: true });
   }, [navigate, user]);
@@ -145,21 +134,30 @@ function AuthPage() {
 
     setLoading(true);
     try {
-      const result = await runAuthAction({
-        action: "signup",
+      const { data, error } = await supabase.auth.signUp({
         email: parsed.data.email,
         password: parsed.data.password,
-        reddit_profile_url: parsed.data.reddit_profile_url,
-        full_name: redditUsername,
+        options: {
+          data: {
+            full_name: redditUsername,
+            reddit_profile_url: parsed.data.reddit_profile_url,
+          },
+        },
       });
 
-      if (!result.ok) {
-        setSignupError(getSignupErrorMessage({ message: result.message ?? "Signup failed." }));
+      if (error) {
+        setSignupError(getSignupErrorMessage(error));
         return;
       }
 
-      setConfirmEmail(parsed.data.email);
-      setShowConfirmMessage(true);
+      if (!data.session) {
+        setConfirmEmail(parsed.data.email);
+        setShowConfirmMessage(true);
+        return;
+      }
+
+      toast.success("Account created. Your Reddit profile is being reviewed.");
+      navigate({ to: "/opportunities/posts" });
     } catch {
       setSignupError("We couldn't reach the account service. Check your connection and try again.");
     } finally {
@@ -170,29 +168,25 @@ function AuthPage() {
   async function resendConfirmation() {
     if (!confirmEmail) return;
     setLoading(true);
-    try {
-      const result = await runAuthAction({ action: "resend", email: confirmEmail });
-      if (!result.ok) return toast.error(result.message ?? "We couldn't send the email.");
-      toast.success("Confirmation email resent. Check your inbox.");
-    } catch {
-      toast.error("We couldn't send the email. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email: confirmEmail,
+    });
+    setLoading(false);
+    if (error) return toast.error(error.message);
+    toast.success("Confirmation email resent. Check your inbox.");
   }
 
   async function handleForgotPassword() {
     const email = window.prompt("Enter your email to receive a reset link:");
     if (!email) return;
     setLoading(true);
-    try {
-      await runAuthAction({ action: "recovery", email: email.trim() });
-      toast.success("Password reset email sent. Check your inbox.");
-    } catch {
-      toast.error("We couldn't send the email. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo: `${window.location.origin}/auth/confirm`,
+    });
+    setLoading(false);
+    if (error) return toast.error(error.message);
+    toast.success("Password reset email sent. Check your inbox.");
   }
 
   if (isRestoringSession || user) {
