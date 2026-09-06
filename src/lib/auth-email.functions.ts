@@ -103,9 +103,7 @@ async function sendWithResend(to: string, kind: EmailKind, actionUrl: string) {
 }
 
 async function accountExistsAndNeedsConfirmation(
-  supabaseAdmin: Awaited<
-    typeof import("@/integrations/supabase/client.server")
-  >["supabaseAdmin"],
+  supabaseAdmin: Awaited<typeof import("@/integrations/supabase/client.server")>["supabaseAdmin"],
   email: string,
 ) {
   const normalizedEmail = email.toLowerCase();
