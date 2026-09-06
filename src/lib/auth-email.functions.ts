@@ -179,7 +179,6 @@ export const signUpWithResend = createServerFn({ method: "POST" })
     }
   });
 
-
 export const resendConfirmationWithResend = createServerFn({ method: "POST" })
   .inputValidator((input) => emailOnlySchema.parse(input))
   .handler(async ({ data }) => {
