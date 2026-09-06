@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as DiscoverRouteImport } from './routes/discover'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthIndexRouteImport } from './routes/auth.index'
@@ -32,6 +33,11 @@ const DiscoverRoute = DiscoverRouteImport.update({
   path: '/discover',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
@@ -42,19 +48,19 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthIndexRoute = AuthIndexRouteImport.update({
-  id: '/auth/',
-  path: '/auth/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthRoute,
 } as any)
 const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
-  id: '/auth/reset-password',
-  path: '/auth/reset-password',
-  getParentRoute: () => rootRouteImport,
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => AuthRoute,
 } as any)
 const AuthConfirmRoute = AuthConfirmRouteImport.update({
-  id: '/auth/confirm',
-  path: '/auth/confirm',
-  getParentRoute: () => rootRouteImport,
+  id: '/confirm',
+  path: '/confirm',
+  getParentRoute: () => AuthRoute,
 } as any)
 const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
   id: '/profile',
@@ -86,6 +92,7 @@ const AuthenticatedOpportunitiesCommentsRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRouteWithChildren
   '/discover': typeof DiscoverRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -114,6 +121,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRouteWithChildren
   '/discover': typeof DiscoverRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
@@ -129,6 +137,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
     | '/discover'
     | '/sitemap.xml'
     | '/admin'
@@ -156,6 +165,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/auth'
     | '/discover'
     | '/sitemap.xml'
     | '/_authenticated/admin'
@@ -171,11 +181,9 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRouteWithChildren
   DiscoverRoute: typeof DiscoverRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  AuthConfirmRoute: typeof AuthConfirmRoute
-  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
-  AuthIndexRoute: typeof AuthIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -194,6 +202,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiscoverRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated': {
       id: '/_authenticated'
       path: ''
@@ -210,24 +225,24 @@ declare module '@tanstack/react-router' {
     }
     '/auth/': {
       id: '/auth/'
-      path: '/auth'
+      path: '/'
       fullPath: '/auth/'
       preLoaderRoute: typeof AuthIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/auth/reset-password': {
       id: '/auth/reset-password'
-      path: '/auth/reset-password'
+      path: '/reset-password'
       fullPath: '/auth/reset-password'
       preLoaderRoute: typeof AuthResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/auth/confirm': {
       id: '/auth/confirm'
-      path: '/auth/confirm'
+      path: '/confirm'
       fullPath: '/auth/confirm'
       preLoaderRoute: typeof AuthConfirmRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/_authenticated/profile': {
       id: '/_authenticated/profile'
@@ -287,14 +302,26 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
-const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  DiscoverRoute: DiscoverRoute,
-  SitemapDotxmlRoute: SitemapDotxmlRoute,
+interface AuthRouteChildren {
+  AuthConfirmRoute: typeof AuthConfirmRoute
+  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
+  AuthIndexRoute: typeof AuthIndexRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
   AuthConfirmRoute: AuthConfirmRoute,
   AuthResetPasswordRoute: AuthResetPasswordRoute,
   AuthIndexRoute: AuthIndexRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRouteWithChildren,
+  DiscoverRoute: DiscoverRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
