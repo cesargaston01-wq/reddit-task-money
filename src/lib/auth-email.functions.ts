@@ -20,8 +20,9 @@ const signupSchema = z.object({
 const emailOnlySchema = z.object({ email: emailSchema });
 
 type EmailKind = "signup" | "recovery";
+type ConfirmationType = EmailKind | "magiclink";
 
-function confirmationUrl(tokenHash: string, type: EmailKind, next: string) {
+function confirmationUrl(tokenHash: string, type: ConfirmationType, next: string) {
   const params = new URLSearchParams({ token_hash: tokenHash, type, next });
   return `${SITE_URL}/auth/confirm?${params.toString()}`;
 }
@@ -145,9 +146,8 @@ export const resendConfirmationWithResend = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: linkData, error } = await supabaseAdmin.auth.admin.generateLink({
-      type: "signup",
+      type: "magiclink",
       email: data.email,
-      password: crypto.randomUUID(),
       options: { redirectTo: `${SITE_URL}/opportunities/posts` },
     });
 
@@ -158,7 +158,7 @@ export const resendConfirmationWithResend = createServerFn({ method: "POST" })
 
     const actionUrl = confirmationUrl(
       linkData.properties.hashed_token,
-      "signup",
+      "magiclink",
       "/opportunities/posts",
     );
     await sendWithResend(data.email, "signup", actionUrl);
