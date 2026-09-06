@@ -1,5 +1,4 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
@@ -10,7 +9,6 @@ import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/password-input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSession } from "@/lib/data";
-import { createTaskRedditAccount } from "@/lib/signup.functions";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -58,30 +56,12 @@ function normalizeRedditUrl(raw: string): string {
   return `https://reddit.com/user/${username}`;
 }
 
-function getSignupErrorMessage(error: { code?: string; message: string }): string {
-  const message = error.message.toLowerCase();
-
-  if (error.code === "weak_password" || message.includes("weak and easy to guess")) {
-    return "This password has appeared in a known data breach. Choose a new, unique password.";
-  }
-  if (error.code === "user_already_exists" || message.includes("already registered")) {
-    return "An account already exists for this email. Sign in or reset your password.";
-  }
-  if (error.code === "over_email_send_rate_limit" || message.includes("rate limit")) {
-    return "Too many confirmation emails were requested. Please wait a few minutes and try again.";
-  }
-
-  return error.message;
-}
-
 function AuthPage() {
   const navigate = useNavigate();
-  const createAccount = useServerFn(createTaskRedditAccount);
   const [loading, setLoading] = useState(false);
   const [confirmEmail, setConfirmEmail] = useState("");
   const [showConfirmMessage, setShowConfirmMessage] = useState(false);
   const [pendingEmail, setPendingEmail] = useState("");
-  const [signupError, setSignupError] = useState("");
 
   const { data: user, isLoading: isRestoringSession } = useSession();
 
@@ -118,7 +98,6 @@ function AuthPage() {
 
   async function handleSignup(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setSignupError("");
     const fd = new FormData(e.currentTarget);
     const redditUrl = normalizeRedditUrl(String(fd.get("reddit_profile_url") ?? ""));
     const parsed = signupSchema.safeParse({
@@ -126,39 +105,35 @@ function AuthPage() {
       password: fd.get("password"),
       reddit_profile_url: redditUrl,
     });
-    if (!parsed.success) {
-      setSignupError(parsed.error.issues[0].message);
+    if (!parsed.success) return toast.error(parsed.error.issues[0].message);
+
+    const redditUsername =
+      parsed.data.reddit_profile_url.replace(/\/+$/, "").split("/").pop() ??
+      parsed.data.email.split("@")[0];
+
+    setLoading(true);
+    const { data, error } = await supabase.auth.signUp({
+      email: parsed.data.email,
+      password: parsed.data.password,
+      options: {
+        data: {
+          full_name: redditUsername,
+          reddit_profile_url: parsed.data.reddit_profile_url,
+        },
+      },
+    });
+
+    setLoading(false);
+    if (error) return toast.error(error.message);
+
+    if (!data.session) {
+      setConfirmEmail(parsed.data.email);
+      setShowConfirmMessage(true);
       return;
     }
 
-    setLoading(true);
-    try {
-      const result = await createAccount({
-        data: {
-          email: parsed.data.email,
-          password: parsed.data.password,
-          redditProfileUrl: parsed.data.reddit_profile_url,
-        },
-      });
-
-      if (!result.ok) {
-        setSignupError(getSignupErrorMessage(result));
-        return;
-      }
-
-      if (result.requiresConfirmation) {
-        setConfirmEmail(parsed.data.email);
-        setShowConfirmMessage(true);
-        return;
-      }
-
-      toast.success("Account created. Your Reddit profile is being reviewed.");
-      navigate({ to: "/opportunities/posts" });
-    } catch {
-      setSignupError("We couldn't reach the account service. Check your connection and try again.");
-    } finally {
-      setLoading(false);
-    }
+    toast.success("Account created. Your Reddit profile is being reviewed.");
+    navigate({ to: "/opportunities/posts" });
   }
 
   async function resendConfirmation() {
@@ -265,16 +240,8 @@ function AuthPage() {
                   maxLength={255}
                 />
               </div>
-              {signupError ? (
-                <p
-                  role="alert"
-                  className="rounded-md border border-destructive/60 bg-destructive/10 px-4 py-3 text-sm text-destructive"
-                >
-                  {signupError}
-                </p>
-              ) : null}
               <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Creating account…" : "Create my account"}
+                Create my account
               </Button>
               <p className="text-center text-xs text-muted-foreground">
                 Your account stays pending until it's manually reviewed.
