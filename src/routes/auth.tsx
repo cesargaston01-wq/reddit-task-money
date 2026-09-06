@@ -232,6 +232,9 @@ function AuthPage() {
               <div className="space-y-2">
                 <Label htmlFor="s-pass">Password</Label>
                 <PasswordInput id="s-pass" name="password" required minLength={8} maxLength={72} />
+                <p className="text-xs text-muted-foreground">
+                  At least 8 characters. Avoid common passwords — mix letters, numbers and symbols.
+                </p>
               </div>
 
               <div className="space-y-2">
