@@ -96,20 +96,28 @@ async function sendWithResend(to: string, kind: EmailKind, actionUrl: string) {
     return { ok: false, reason: "configuration" } satisfies SendResult;
   }
 
-  const email = renderEmail(kind, actionUrl);
-  const response = await fetch("https://connector-gateway.lovable.dev/resend/emails", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${lovableApiKey}`,
-      "X-Connection-Api-Key": resendApiKey,
-    },
-    body: JSON.stringify({ from: FROM_EMAIL, to: [to], subject: email.subject, html: email.html }),
-  });
+  try {
+    const email = renderEmail(kind, actionUrl);
+    const response = await fetch("https://connector-gateway.lovable.dev/resend/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${lovableApiKey}`,
+        "X-Connection-Api-Key": resendApiKey,
+      },
+      body: JSON.stringify({ from: FROM_EMAIL, to: [to], subject: email.subject, html: email.html }),
+    });
 
-  if (!response.ok) {
-    const body = await response.text();
-    console.error(`Resend request failed [${response.status}]: ${body}`);
+    if (!response.ok) {
+      const body = await response.text();
+      console.error(`Resend request failed [${response.status}]: ${body}`);
+      return { ok: false, reason: "provider" } satisfies SendResult;
+    }
+  } catch (error) {
+    console.error(
+      "Resend request failed before receiving a response:",
+      error instanceof Error ? error.message : String(error),
+    );
     return { ok: false, reason: "provider" } satisfies SendResult;
   }
 
@@ -180,6 +188,12 @@ export const signUpWithResend = createServerFn({ method: "POST" })
 
       if (!linkData.properties.hashed_token) {
         console.error("Signup link generation failed: missing token");
+        const { error: rollbackError } = await supabaseAdmin.auth.admin.deleteUser(
+          linkData.user.id,
+        );
+        if (rollbackError) {
+          console.error("Missing-token signup cleanup failed:", rollbackError.message);
+        }
         return { ok: false, message: "We could not create your account. Please try again." };
       }
 
