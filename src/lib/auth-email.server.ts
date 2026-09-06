@@ -1,4 +1,3 @@
-import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 const SITE_URL = "https://reddit-task-money.lovable.app";
@@ -146,9 +145,10 @@ async function findAccountByEmail(
   return null;
 }
 
-export const signUpWithResend = createServerFn({ method: "POST" })
-  .validator((input) => signupSchema.safeParse(input))
-  .handler(async ({ data: parsedInput }) => {
+export type AuthEmailResult = { ok: true } | { ok: false; message: string };
+
+export async function createAccountWithResend(input: unknown): Promise<AuthEmailResult> {
+  const parsedInput = signupSchema.safeParse(input);
     if (!parsedInput.success) {
       const issue = parsedInput.error.issues[0];
       const field = issue?.path[0];
@@ -242,11 +242,13 @@ export const signUpWithResend = createServerFn({ method: "POST" })
       console.error("Signup failed:", err instanceof Error ? err.message : String(err));
       return { ok: false, message: signupErrorMessage(err) };
     }
-  });
+}
 
-export const resendConfirmationWithResend = createServerFn({ method: "POST" })
-  .inputValidator((input) => emailOnlySchema.parse(input))
-  .handler(async ({ data }) => {
+export async function resendAccountConfirmation(input: unknown): Promise<AuthEmailResult> {
+  const parsedInput = emailOnlySchema.safeParse(input);
+  if (!parsedInput.success) return { ok: true };
+  const data = parsedInput.data;
+  try {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const account = await findAccountByEmail(supabaseAdmin, data.email);
     if (!account || account.email_confirmed_at) {
@@ -270,12 +272,20 @@ export const resendConfirmationWithResend = createServerFn({ method: "POST" })
       "/opportunities/posts",
     );
     await sendWithResend(data.email, "signup", actionUrl);
+    const sent = await sendWithResend(data.email, "signup", actionUrl);
+    if (!sent.ok) console.error("Confirmation email delivery failed:", sent.reason);
     return { ok: true };
-  });
+  } catch (error) {
+    console.error("Confirmation request failed:", error instanceof Error ? error.message : String(error));
+    return { ok: true };
+  }
+}
 
-export const requestPasswordResetWithResend = createServerFn({ method: "POST" })
-  .inputValidator((input) => emailOnlySchema.parse(input))
-  .handler(async ({ data }) => {
+export async function requestAccountPasswordReset(input: unknown): Promise<AuthEmailResult> {
+  const parsedInput = emailOnlySchema.safeParse(input);
+  if (!parsedInput.success) return { ok: true };
+  const data = parsedInput.data;
+  try {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: linkData, error } = await supabaseAdmin.auth.admin.generateLink({
       type: "recovery",
@@ -294,5 +304,11 @@ export const requestPasswordResetWithResend = createServerFn({ method: "POST" })
       "/auth/reset-password",
     );
     await sendWithResend(data.email, "recovery", actionUrl);
+    const sent = await sendWithResend(data.email, "recovery", actionUrl);
+    if (!sent.ok) console.error("Recovery email delivery failed:", sent.reason);
     return { ok: true };
-  });
+  } catch (error) {
+    console.error("Recovery request failed:", error instanceof Error ? error.message : String(error));
+    return { ok: true };
+  }
+}
