@@ -105,7 +105,8 @@ export const signUpWithResend = createServerFn({ method: "POST" })
   .inputValidator((input) => signupSchema.parse(input))
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const redditUsername = data.redditProfileUrl.replace(/\/+$/, "").split("/").pop() ?? "Reddit user";
+    const redditUsername =
+      data.redditProfileUrl.replace(/\/+$/, "").split("/").pop() ?? "Reddit user";
     const { data: linkData, error } = await supabaseAdmin.auth.admin.generateLink({
       type: "signup",
       email: data.email,
