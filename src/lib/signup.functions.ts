@@ -82,7 +82,10 @@ export const createTaskRedditAccount = createServerFn({ method: "POST" })
 
       return { ok: true, requiresConfirmation: !signupData.session };
     } catch (error) {
-      console.error("Signup request failed:", error instanceof Error ? error.message : "Unknown error");
+      console.error(
+        "Signup request failed:",
+        error instanceof Error ? error.message : "Unknown error",
+      );
       return {
         ok: false,
         code: "service_unavailable",

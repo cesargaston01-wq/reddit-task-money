@@ -135,8 +135,8 @@ function AuthPage() {
     try {
       const result = await createAccount({
         data: {
-        email: parsed.data.email,
-        password: parsed.data.password,
+          email: parsed.data.email,
+          password: parsed.data.password,
           redditProfileUrl: parsed.data.reddit_profile_url,
         },
       });
