@@ -1,10 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
-import {
-  createAccountWithResend,
-  requestAccountPasswordReset,
-  resendAccountConfirmation,
-} from "@/lib/auth-email.server";
 
 const requestSchema = z.discriminatedUnion("action", [
   z.object({
@@ -39,6 +34,12 @@ export const Route = createFileRoute("/api/public/auth")({
         if (!parsed.success) {
           return json({ ok: false, message: "Please check your details and try again." }, 400);
         }
+
+        const {
+          createAccountWithResend,
+          requestAccountPasswordReset,
+          resendAccountConfirmation,
+        } = await import("@/lib/auth-email.server");
 
         if (parsed.data.action === "signup") {
           const result = await createAccountWithResend(parsed.data);

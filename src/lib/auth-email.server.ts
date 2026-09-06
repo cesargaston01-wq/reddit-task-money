@@ -4,6 +4,14 @@ const SITE_URL = "https://reddit-task-money.lovable.app";
 const FROM_EMAIL = "TaskReddit <noreply@taskreddit.com>";
 
 const emailSchema = z.string().trim().email().max(255);
+function normalizeRedditProfile(value: unknown) {
+  if (typeof value !== "string") return value;
+  const trimmed = value.trim();
+  if (!trimmed || /^https?:\/\//i.test(trimmed)) return trimmed.replace(/\/$/, "");
+  const username = trimmed.startsWith("@") ? trimmed.slice(1).trim() : trimmed;
+  return username ? `https://reddit.com/user/${username}` : trimmed;
+}
+
 const redditProfileSchema = z
   .string()
   .trim()
@@ -13,7 +21,7 @@ const redditProfileSchema = z
 const signupSchema = z.object({
   email: emailSchema,
   password: z.string().min(12).max(72),
-  redditProfileUrl: redditProfileSchema,
+  redditProfileUrl: z.preprocess(normalizeRedditProfile, redditProfileSchema),
 });
 
 const emailOnlySchema = z.object({ email: emailSchema });
@@ -149,22 +157,22 @@ export type AuthEmailResult = { ok: true } | { ok: false; message: string };
 
 export async function createAccountWithResend(input: unknown): Promise<AuthEmailResult> {
   const parsedInput = signupSchema.safeParse(input);
-    if (!parsedInput.success) {
-      const issue = parsedInput.error.issues[0];
-      const field = issue?.path[0];
-      const message =
-        field === "email"
-          ? "Enter a valid email address."
-          : field === "password"
-            ? "Use a password between 12 and 72 characters."
-            : field === "redditProfileUrl"
-              ? "Enter a valid Reddit profile link or @username."
-              : "Please check your signup details and try again.";
-      return { ok: false, message };
-    }
+  if (!parsedInput.success) {
+    const issue = parsedInput.error.issues[0];
+    const field = issue?.path[0];
+    const message =
+      field === "email"
+        ? "Enter a valid email address."
+        : field === "password"
+          ? "Use a password between 12 and 72 characters."
+          : field === "redditProfileUrl"
+            ? "Enter a valid Reddit profile link or @username."
+            : "Please check your signup details and try again.";
+    return { ok: false, message };
+  }
 
-    const data = parsedInput.data;
-    try {
+  const data = parsedInput.data;
+  try {
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
       const existingAccount = await findAccountByEmail(supabaseAdmin, data.email);
       if (existingAccount?.email_confirmed_at) {
@@ -238,10 +246,10 @@ export async function createAccountWithResend(input: unknown): Promise<AuthEmail
         };
       }
       return { ok: true };
-    } catch (err) {
-      console.error("Signup failed:", err instanceof Error ? err.message : String(err));
-      return { ok: false, message: signupErrorMessage(err) };
-    }
+  } catch (err) {
+    console.error("Signup failed:", err instanceof Error ? err.message : String(err));
+    return { ok: false, message: signupErrorMessage(err) };
+  }
 }
 
 export async function resendAccountConfirmation(input: unknown): Promise<AuthEmailResult> {
@@ -271,7 +279,6 @@ export async function resendAccountConfirmation(input: unknown): Promise<AuthEma
       "magiclink",
       "/opportunities/posts",
     );
-    await sendWithResend(data.email, "signup", actionUrl);
     const sent = await sendWithResend(data.email, "signup", actionUrl);
     if (!sent.ok) console.error("Confirmation email delivery failed:", sent.reason);
     return { ok: true };
@@ -303,7 +310,6 @@ export async function requestAccountPasswordReset(input: unknown): Promise<AuthE
       "recovery",
       "/auth/reset-password",
     );
-    await sendWithResend(data.email, "recovery", actionUrl);
     const sent = await sendWithResend(data.email, "recovery", actionUrl);
     if (!sent.ok) console.error("Recovery email delivery failed:", sent.reason);
     return { ok: true };

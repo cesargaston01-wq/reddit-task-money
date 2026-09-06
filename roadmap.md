@@ -10,3 +10,5 @@
 - [ ] Confirm the public signup page no longer shows the stale 8-character guidance and generic error.
 - [x] Isolate the current signup failure between account creation, RPC response, and Resend delivery.
 - [x] Prevent signup validation errors from escaping as an opaque generic error.
+- [x] Replace the signup RPC with a fresh public signup endpoint and explicit responses.
+- [ ] Verify the rebuilt signup, confirmation, resend, and recovery flow end to end.
