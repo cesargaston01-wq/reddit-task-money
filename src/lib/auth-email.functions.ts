@@ -24,7 +24,8 @@ type ConfirmationType = EmailKind | "magiclink";
 type SendResult = { ok: true } | { ok: false; reason: "configuration" | "provider" };
 
 function signupErrorMessage(error: unknown) {
-  const message = error instanceof Error ? error.message.toLowerCase() : String(error).toLowerCase();
+  const message =
+    error instanceof Error ? error.message.toLowerCase() : String(error).toLowerCase();
 
   if (message.includes("password") && (message.includes("weak") || message.includes("breach"))) {
     return "This password is too weak or has appeared in a data breach. Please choose a stronger one.";
