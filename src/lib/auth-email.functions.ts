@@ -13,7 +13,7 @@ const redditProfileSchema = z
 
 const signupSchema = z.object({
   email: emailSchema,
-  password: z.string().min(8).max(72),
+  password: z.string().min(12).max(72),
   redditProfileUrl: redditProfileSchema,
 });
 
