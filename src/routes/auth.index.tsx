@@ -39,7 +39,7 @@ const signupSchema = z.object({
     .max(255)
     .regex(
       /^https?:\/\/(www\.)?reddit\.com\/user\/[A-Za-z0-9_-]+\/?$/,
-      "e.g. https://reddit.com/user/username",
+      "Enter your Reddit username, e.g. @username",
     ),
 });
 
