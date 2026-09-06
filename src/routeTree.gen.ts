@@ -20,6 +20,7 @@ import { Route as AuthConfirmRouteImport } from './routes/auth.confirm'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as ApiPublicAuthRouteImport } from './routes/api/public/auth'
 import { Route as AuthenticatedOpportunitiesPostsRouteImport } from './routes/_authenticated/opportunities.posts'
 import { Route as AuthenticatedOpportunitiesCommentsRouteImport } from './routes/_authenticated/opportunities.comments'
 
@@ -77,6 +78,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiPublicAuthRoute = ApiPublicAuthRouteImport.update({
+  id: '/api/public/auth',
+  path: '/api/public/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedOpportunitiesPostsRoute =
   AuthenticatedOpportunitiesPostsRouteImport.update({
     id: '/opportunities/posts',
@@ -103,6 +109,7 @@ export interface FileRoutesByFullPath {
   '/auth/': typeof AuthIndexRoute
   '/opportunities/comments': typeof AuthenticatedOpportunitiesCommentsRoute
   '/opportunities/posts': typeof AuthenticatedOpportunitiesPostsRoute
+  '/api/public/auth': typeof ApiPublicAuthRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -116,6 +123,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthIndexRoute
   '/opportunities/comments': typeof AuthenticatedOpportunitiesCommentsRoute
   '/opportunities/posts': typeof AuthenticatedOpportunitiesPostsRoute
+  '/api/public/auth': typeof ApiPublicAuthRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -132,6 +140,7 @@ export interface FileRoutesById {
   '/auth/': typeof AuthIndexRoute
   '/_authenticated/opportunities/comments': typeof AuthenticatedOpportunitiesCommentsRoute
   '/_authenticated/opportunities/posts': typeof AuthenticatedOpportunitiesPostsRoute
+  '/api/public/auth': typeof ApiPublicAuthRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -148,6 +157,7 @@ export interface FileRouteTypes {
     | '/auth/'
     | '/opportunities/comments'
     | '/opportunities/posts'
+    | '/api/public/auth'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -161,6 +171,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/opportunities/comments'
     | '/opportunities/posts'
+    | '/api/public/auth'
   id:
     | '__root__'
     | '/'
@@ -176,6 +187,7 @@ export interface FileRouteTypes {
     | '/auth/'
     | '/_authenticated/opportunities/comments'
     | '/_authenticated/opportunities/posts'
+    | '/api/public/auth'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -184,6 +196,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   DiscoverRoute: typeof DiscoverRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ApiPublicAuthRoute: typeof ApiPublicAuthRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -265,6 +278,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/auth': {
+      id: '/api/public/auth'
+      path: '/api/public/auth'
+      fullPath: '/api/public/auth'
+      preLoaderRoute: typeof ApiPublicAuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/opportunities/posts': {
       id: '/_authenticated/opportunities/posts'
       path: '/opportunities/posts'
@@ -322,6 +342,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   DiscoverRoute: DiscoverRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ApiPublicAuthRoute: ApiPublicAuthRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
