@@ -8,7 +8,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/password-input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useServerFn } from "@tanstack/react-start";
 import { useSession } from "@/lib/data";
+import {
+  resendConfirmationEmail,
+  sendPasswordResetEmail,
+  signupWithResend,
+} from "@/lib/auth.functions";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -81,6 +87,9 @@ function AuthPage() {
   const [signupError, setSignupError] = useState("");
 
   const { data: user, isLoading: isRestoringSession } = useSession();
+  const signup = useServerFn(signupWithResend);
+  const resendConfirm = useServerFn(resendConfirmationEmail);
+  const sendReset = useServerFn(sendPasswordResetEmail);
 
   useEffect(() => {
     if (user) navigate({ to: "/opportunities/posts", replace: true });
@@ -134,30 +143,22 @@ function AuthPage() {
 
     setLoading(true);
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email: parsed.data.email,
-        password: parsed.data.password,
-        options: {
-          data: {
-            full_name: redditUsername,
-            reddit_profile_url: parsed.data.reddit_profile_url,
-          },
+      const result = await signup({
+        data: {
+          email: parsed.data.email,
+          password: parsed.data.password,
+          reddit_profile_url: parsed.data.reddit_profile_url,
+          full_name: redditUsername,
         },
       });
 
-      if (error) {
-        setSignupError(getSignupErrorMessage(error));
+      if (!result.ok) {
+        setSignupError(getSignupErrorMessage({ message: result.message }));
         return;
       }
 
-      if (!data.session) {
-        setConfirmEmail(parsed.data.email);
-        setShowConfirmMessage(true);
-        return;
-      }
-
-      toast.success("Account created. Your Reddit profile is being reviewed.");
-      navigate({ to: "/opportunities/posts" });
+      setConfirmEmail(parsed.data.email);
+      setShowConfirmMessage(true);
     } catch {
       setSignupError("We couldn't reach the account service. Check your connection and try again.");
     } finally {
@@ -168,25 +169,29 @@ function AuthPage() {
   async function resendConfirmation() {
     if (!confirmEmail) return;
     setLoading(true);
-    const { error } = await supabase.auth.resend({
-      type: "signup",
-      email: confirmEmail,
-    });
-    setLoading(false);
-    if (error) return toast.error(error.message);
-    toast.success("Confirmation email resent. Check your inbox.");
+    try {
+      const result = await resendConfirm({ data: { email: confirmEmail } });
+      if (!result.ok) return toast.error(result.message);
+      toast.success("Confirmation email resent. Check your inbox.");
+    } catch {
+      toast.error("We couldn't send the email. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function handleForgotPassword() {
     const email = window.prompt("Enter your email to receive a reset link:");
     if (!email) return;
     setLoading(true);
-    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-      redirectTo: `${window.location.origin}/auth/confirm`,
-    });
-    setLoading(false);
-    if (error) return toast.error(error.message);
-    toast.success("Password reset email sent. Check your inbox.");
+    try {
+      await sendReset({ data: { email: email.trim() } });
+      toast.success("Password reset email sent. Check your inbox.");
+    } catch {
+      toast.error("We couldn't send the email. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   if (isRestoringSession || user) {
