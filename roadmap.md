@@ -8,3 +8,4 @@
 - [ ] Publish and recheck signup on the public site.
 - [x] Prevent known-weak 8-character passwords before account creation and show the precise reason.
 - [ ] Confirm the public signup page no longer shows the stale 8-character guidance and generic error.
+- [ ] Isolate the current signup failure between account creation, RPC response, and Resend delivery.
