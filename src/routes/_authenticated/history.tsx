@@ -26,6 +26,7 @@ function HistoryPage() {
   return (
     <DashboardLayout title="My missions" description="Every mission you have submitted.">
       {isLoading ? (
+
         <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
       ) : !data?.length ? (
         <div className="panel p-8 text-center text-sm text-muted-foreground">
