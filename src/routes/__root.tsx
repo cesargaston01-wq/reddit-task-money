@@ -119,7 +119,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
               "@id": "https://reddit-task-money.lovable.app/#organization",
               name: "TaskReddit",
               url: "https://reddit-task-money.lovable.app/",
-              email: "cesar@skilfut.com",
+              
             },
             {
               "@type": "WebSite",
