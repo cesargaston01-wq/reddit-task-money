@@ -235,7 +235,7 @@ function renderEmail(payload: AuthEmailPayload) {
                   ${content}
                   <p style="color:#94a3b8;font-size:12px;margin-top:32px;border-top:1px solid #e2e8f0;padding-top:16px;">
                     TaskReddit — paid Reddit missions for verified creators.<br>
-                    Need help? Reply to this email or contact cesar@skilfut.com.
+                    Need help? Just reply to this email.
                   </p>
                 </td>
               </tr>

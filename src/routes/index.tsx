@@ -2,7 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowRight,
   Calendar,
-  Mail,
   MessageSquare,
   ShieldCheck,
   Sparkles,
@@ -134,7 +133,7 @@ function Landing() {
               </a>
             </Button>
             <Button asChild variant="ghost" size="sm" className="hidden md:inline-flex">
-              <a href="mailto:cesar@skilfut.com?subject=Post%20a%20listing%20on%20TaskReddit">
+              <a href={WHOP_COMMUNITY_URL} target="_blank" rel="noopener noreferrer">
                 Post a listing
               </a>
             </Button>
@@ -366,13 +365,6 @@ function Landing() {
               Whop community
             </a>
 
-            <a
-              href="mailto:cesar@skilfut.com"
-              className="inline-flex items-center gap-1.5 transition-colors hover:text-foreground"
-            >
-              <Mail className="h-3.5 w-3.5 text-primary" />
-              cesar@skilfut.com
-            </a>
           </div>
         </div>
       </footer>
