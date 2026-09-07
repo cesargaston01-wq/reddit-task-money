@@ -2,7 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowRight,
   Calendar,
-  Mail,
   MessageSquare,
   ShieldCheck,
   Sparkles,
