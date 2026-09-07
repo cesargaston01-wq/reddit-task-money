@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
+import { CommunityHistory } from "@/components/community-history";
 import { DashboardLayout } from "@/components/dashboard-layout";
 import { Badge } from "@/components/ui/badge";
 import { useMySubmissions } from "@/lib/data";
@@ -26,6 +27,7 @@ function HistoryPage() {
   return (
     <DashboardLayout title="My missions" description="Every mission you have submitted.">
       {isLoading ? (
+
         <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
       ) : !data?.length ? (
         <div className="panel p-8 text-center text-sm text-muted-foreground">
@@ -57,6 +59,8 @@ function HistoryPage() {
           ))}
         </div>
       )}
+
+      <CommunityHistory className="mt-10" />
     </DashboardLayout>
   );
 }

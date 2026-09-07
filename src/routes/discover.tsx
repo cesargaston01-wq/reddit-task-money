@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowRight, FileText, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { CommunityHistory } from "@/components/community-history";
 import { MissionBrowser } from "@/components/opportunity-list";
 import { useProfile, useSession } from "@/lib/data";
 import { cn } from "@/lib/utils";
@@ -103,6 +104,8 @@ function DiscoverPage() {
         <div className="mt-6">
           <MissionBrowser key={tab} type={tab} canSubmit={canSubmit} />
         </div>
+
+        <CommunityHistory className="mt-14" />
       </main>
 
       <footer className="border-t border-border/60 py-8">
