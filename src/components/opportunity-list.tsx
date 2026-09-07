@@ -143,7 +143,10 @@ export function MissionBrowser({
   canSubmit: boolean;
   lockedMessage?: string;
 }) {
-  const { data: missions, isLoading, refetch } = useMissions(type);
+  const { data: realMissions, isLoading: realLoading, refetch } = useMissions(type);
+  // Visitors always see a fixed teaser list, independent from the database.
+  const missions = canSubmit ? realMissions : PREVIEW_MISSIONS[type];
+  const isLoading = canSubmit && realLoading;
   const { data: user } = useSession();
   const submit = useSubmitMission();
   const reserve = useReserveMission();
