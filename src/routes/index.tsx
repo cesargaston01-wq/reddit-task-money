@@ -167,8 +167,9 @@ function Landing() {
                 Earn money with your <span className="text-primary">Reddit</span> account
               </h1>
               <p className="mt-5 max-w-xl text-base text-muted-foreground md:text-lg">
-                Publish posts and comments in relevant communities. Clear missions, exact
-                instructions, a fixed payout.
+                Companies are looking for real people to share their opinions on specific topics
+                within relevant communities. Post about what suits you, and get paid for every
+                approved contribution.
               </p>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3 md:justify-start">
                 <Button asChild size="lg">
