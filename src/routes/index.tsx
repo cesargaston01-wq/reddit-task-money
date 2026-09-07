@@ -133,9 +133,7 @@ function Landing() {
               </a>
             </Button>
             <Button asChild variant="ghost" size="sm" className="hidden md:inline-flex">
-              <a href={POST_LISTING_URL} target="_blank" rel="noopener noreferrer">
-                Post a listing
-              </a>
+              <a href={POST_LISTING_URL}>Post a listing</a>
             </Button>
 
 
