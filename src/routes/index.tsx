@@ -22,7 +22,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { WHOP_COMMUNITY_URL } from "@/lib/community";
+import { WHOP_COMMUNITY_URL, POST_LISTING_URL } from "@/lib/community";
 import { useSession } from "@/lib/data";
 const taskredditLogoAsset = { url: "/taskreddit-logo.png" };
 
@@ -133,7 +133,7 @@ function Landing() {
               </a>
             </Button>
             <Button asChild variant="ghost" size="sm" className="hidden md:inline-flex">
-              <a href={WHOP_COMMUNITY_URL} target="_blank" rel="noopener noreferrer">
+              <a href={POST_LISTING_URL} target="_blank" rel="noopener noreferrer">
                 Post a listing
               </a>
             </Button>
