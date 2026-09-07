@@ -2,7 +2,6 @@ import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   FileText,
-  History,
   LogOut,
   MessageSquare,
   Shield,
@@ -20,7 +19,6 @@ import { cn } from "@/lib/utils";
 const nav = [
   { to: "/opportunities/posts", label: "Post opportunities", icon: FileText },
   { to: "/opportunities/comments", label: "Comment opportunities", icon: MessageSquare },
-  { to: "/history", label: "My missions", icon: History },
   { to: "/profile", label: "Profile", icon: UserIcon },
 ] as const;
 

@@ -17,7 +17,6 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth.reset-password'
 import { Route as AuthConfirmRouteImport } from './routes/auth.confirm'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
-import { Route as AuthenticatedHistoryRouteImport } from './routes/_authenticated/history'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as ApiPublicAuthEmailRouteImport } from './routes/api/public/auth-email'
 import { Route as AuthenticatedOpportunitiesPostsRouteImport } from './routes/_authenticated/opportunities.posts'
@@ -62,11 +61,6 @@ const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedHistoryRoute = AuthenticatedHistoryRouteImport.update({
-  id: '/history',
-  path: '/history',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -96,7 +90,6 @@ export interface FileRoutesByFullPath {
   '/discover': typeof DiscoverRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRoute
-  '/history': typeof AuthenticatedHistoryRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
@@ -110,7 +103,6 @@ export interface FileRoutesByTo {
   '/discover': typeof DiscoverRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRoute
-  '/history': typeof AuthenticatedHistoryRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
@@ -126,7 +118,6 @@ export interface FileRoutesById {
   '/discover': typeof DiscoverRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
-  '/_authenticated/history': typeof AuthenticatedHistoryRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
@@ -142,7 +133,6 @@ export interface FileRouteTypes {
     | '/discover'
     | '/sitemap.xml'
     | '/admin'
-    | '/history'
     | '/profile'
     | '/auth/confirm'
     | '/auth/reset-password'
@@ -156,7 +146,6 @@ export interface FileRouteTypes {
     | '/discover'
     | '/sitemap.xml'
     | '/admin'
-    | '/history'
     | '/profile'
     | '/auth/confirm'
     | '/auth/reset-password'
@@ -171,7 +160,6 @@ export interface FileRouteTypes {
     | '/discover'
     | '/sitemap.xml'
     | '/_authenticated/admin'
-    | '/_authenticated/history'
     | '/_authenticated/profile'
     | '/auth/confirm'
     | '/auth/reset-password'
@@ -247,13 +235,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProfileRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/history': {
-      id: '/_authenticated/history'
-      path: '/history'
-      fullPath: '/history'
-      preLoaderRoute: typeof AuthenticatedHistoryRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
@@ -287,7 +268,6 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
-  AuthenticatedHistoryRoute: typeof AuthenticatedHistoryRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedOpportunitiesCommentsRoute: typeof AuthenticatedOpportunitiesCommentsRoute
   AuthenticatedOpportunitiesPostsRoute: typeof AuthenticatedOpportunitiesPostsRoute
@@ -295,7 +275,6 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
-  AuthenticatedHistoryRoute: AuthenticatedHistoryRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedOpportunitiesCommentsRoute:
     AuthenticatedOpportunitiesCommentsRoute,
