@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
+import { CommunityHistory } from "@/components/community-history";
 import { DashboardLayout } from "@/components/dashboard-layout";
 import { Badge } from "@/components/ui/badge";
 import { useMySubmissions } from "@/lib/data";
