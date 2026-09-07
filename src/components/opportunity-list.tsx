@@ -30,6 +30,57 @@ import {
 const LOCKED_PLACEHOLDER =
   "Locked content. Sign in with a verified account to view the full mission brief.";
 
+/**
+ * Static teaser missions shown to visitors who cannot submit yet.
+ * They are never fetched from the database: they only prove that
+ * opportunities exist before signing up.
+ */
+const PREVIEW_SUBREDDITS = [
+  "personalfinance",
+  "Entrepreneur",
+  "fitness",
+  "SaaS",
+  "productivity",
+  "startups",
+  "cryptocurrency",
+  "webdev",
+  "marketing",
+  "sidehustle",
+];
+
+function buildPreviewMissions(type: "post" | "comment"): Mission[] {
+  return PREVIEW_SUBREDDITS.map(
+    (subreddit, i) =>
+      ({
+        id: `preview-${type}-${i}`,
+        type,
+        title:
+          type === "post"
+            ? `Sponsored post opportunity in r/${subreddit}`
+            : `Comment opportunity in r/${subreddit}`,
+        subreddit,
+        payout: type === "post" ? 5 : 3,
+        is_active: true,
+        is_locked: false,
+        reserved_by: null,
+        reserved_until: null,
+        community_url: null,
+        target_post_url: null,
+        post_title: null,
+        post_body: null,
+        comment_text: null,
+        flair: null,
+        instructions: null,
+        created_at: new Date().toISOString(),
+      }) as unknown as Mission,
+  );
+}
+
+const PREVIEW_MISSIONS = {
+  post: buildPreviewMissions("post"),
+  comment: buildPreviewMissions("comment"),
+};
+
 
 function PendingState({ status, reason }: { status?: string; reason?: string | null }) {
   if (status === "rejected") {
