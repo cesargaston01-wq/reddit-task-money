@@ -103,6 +103,8 @@ function DiscoverPage() {
         <div className="mt-6">
           <MissionBrowser key={tab} type={tab} canSubmit={canSubmit} />
         </div>
+
+        <CommunityHistory className="mt-14" />
       </main>
 
       <footer className="border-t border-border/60 py-8">
