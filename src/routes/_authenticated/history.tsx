@@ -58,6 +58,8 @@ function HistoryPage() {
           ))}
         </div>
       )}
+
+      <CommunityHistory className="mt-10" />
     </DashboardLayout>
   );
 }
