@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { CommunityHistory } from "@/components/community-history";
 import { DashboardLayout } from "@/components/dashboard-layout";
 import { OpportunityList } from "@/components/opportunity-list";
 
@@ -15,6 +16,7 @@ export const Route = createFileRoute("/_authenticated/opportunities/comments")({
       description="A mission disappears as soon as a member submits it. $3 per approved comment."
     >
       <OpportunityList type="comment" />
+      <CommunityHistory className="mt-10" />
     </DashboardLayout>
   ),
 });
