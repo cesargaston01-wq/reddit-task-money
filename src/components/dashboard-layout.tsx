@@ -1,6 +1,7 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import {
+  AlertTriangle,
   FileText,
   LogOut,
   MessageSquare,
@@ -134,6 +135,14 @@ export function DashboardLayout({
               <span>New missions are announced instantly in our Whop community.</span>
               <span className="font-medium text-primary">Join now →</span>
             </a>
+            <div className="mt-6 flex items-start gap-3 rounded-lg border border-warning/40 bg-warning/10 p-4 text-xs leading-relaxed text-warning">
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+              <span>
+                <span className="font-semibold">Keep your account natural.</span> Between each paid
+                task, leave normal comments and stay active on Reddit. Only doing sponsored posts or
+                comments can get your account flagged, banned or deleted.
+              </span>
+            </div>
             <div className="mt-8">{children}</div>
           </div>
 

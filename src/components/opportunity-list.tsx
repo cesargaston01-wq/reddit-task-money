@@ -380,6 +380,18 @@ export function MissionBrowser({
                   </div>
                 </div>
 
+                <div className="flex gap-3 rounded-lg border border-destructive/40 bg-destructive/10 p-3">
+                  <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
+                  <div className="text-xs leading-relaxed">
+                    <p className="font-semibold text-destructive">Stay natural between tasks</p>
+                    <p className="mt-1 text-muted-foreground">
+                      Between each paid task, leave normal comments and stay active on Reddit like
+                      any regular user. If you only post sponsored content, your account may be
+                      flagged, banned or deleted.
+                    </p>
+                  </div>
+                </div>
+
                 <p className="rounded-lg border border-border bg-background/60 p-3 text-xs text-muted-foreground">
                   The publication must stay online for at least 3 hours and must not be deleted after
                   payment.
