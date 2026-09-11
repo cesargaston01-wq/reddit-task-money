@@ -6,6 +6,7 @@ import {
   CheckCircle2,
   CircleDollarSign,
   Clock3,
+  Download,
   FileText,
   Loader2,
   MessageSquare,
@@ -150,6 +151,52 @@ function AdminPage() {
       if (lb) return 1;
       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     });
+
+  const exportProfilesCsv = () => {
+    const rows = visibleProfiles.length ? visibleProfiles : (profiles ?? []);
+    const headers = [
+      "email",
+      "full_name",
+      "reddit_profile_url",
+      "phone_number",
+      "wallet_address",
+      "status",
+      "niches",
+      "submissions",
+      "email_notifications",
+      "created_at",
+    ];
+    const escape = (value: unknown) => `"${String(value ?? "").replace(/"/g, '""')}"`;
+    const csv = [
+      headers.join(","),
+      ...rows.map((p) =>
+        [
+          p.email,
+          p.full_name,
+          p.reddit_profile_url,
+          p.phone_number,
+          p.wallet_address,
+          p.status,
+          (p.niches ?? []).join(" | "),
+          activity.get(p.id)?.total ?? 0,
+          p.email_notifications ? "yes" : "no",
+          p.created_at,
+        ]
+          .map(escape)
+          .join(","),
+      ),
+    ].join("\r\n");
+
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `taskreddit-accounts-${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+    toast.success(`${rows.length} account${rows.length > 1 ? "s" : ""} exported`);
+  };
+
 
   const profileStats = {
     total: profiles?.length ?? 0,
@@ -430,10 +477,15 @@ function AdminPage() {
               <Star className={"h-3.5 w-3.5 " + (favoritesOnly ? "fill-current" : "")} />
               Favorites ({favorites.size})
             </Button>
+            <Button size="sm" variant="outline" className="shrink-0 gap-1" onClick={exportProfilesCsv}>
+              <Download className="h-3.5 w-3.5" />
+              Export CSV
+            </Button>
             <span className="text-xs text-muted-foreground sm:ml-auto">
               Showing {visibleProfiles.length} of {profileStats.total}
             </span>
           </div>
+
 
           {visibleProfiles.map((p) => {
             const act = activity.get(p.id);
