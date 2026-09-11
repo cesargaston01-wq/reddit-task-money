@@ -178,7 +178,7 @@ function AdminPage() {
           p.wallet_address,
           p.status,
           (p.niches ?? []).join(" | "),
-          activity.get(p.id)?.count ?? 0,
+          activity.get(p.id)?.total ?? 0,
           p.email_notifications ? "yes" : "no",
           p.created_at,
         ]
