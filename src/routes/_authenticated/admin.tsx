@@ -431,10 +431,15 @@ function AdminPage() {
               <Star className={"h-3.5 w-3.5 " + (favoritesOnly ? "fill-current" : "")} />
               Favorites ({favorites.size})
             </Button>
+            <Button size="sm" variant="outline" className="shrink-0 gap-1" onClick={exportProfilesCsv}>
+              <Download className="h-3.5 w-3.5" />
+              Export CSV
+            </Button>
             <span className="text-xs text-muted-foreground sm:ml-auto">
               Showing {visibleProfiles.length} of {profileStats.total}
             </span>
           </div>
+
 
           {visibleProfiles.map((p) => {
             const act = activity.get(p.id);
