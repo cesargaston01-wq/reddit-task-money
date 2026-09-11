@@ -152,6 +152,52 @@ function AdminPage() {
       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     });
 
+  const exportProfilesCsv = () => {
+    const rows = visibleProfiles.length ? visibleProfiles : (profiles ?? []);
+    const headers = [
+      "email",
+      "full_name",
+      "reddit_profile_url",
+      "phone_number",
+      "wallet_address",
+      "status",
+      "niches",
+      "submissions",
+      "email_notifications",
+      "created_at",
+    ];
+    const escape = (value: unknown) => `"${String(value ?? "").replace(/"/g, '""')}"`;
+    const csv = [
+      headers.join(","),
+      ...rows.map((p) =>
+        [
+          p.email,
+          p.full_name,
+          p.reddit_profile_url,
+          p.phone_number,
+          p.wallet_address,
+          p.status,
+          (p.niches ?? []).join(" | "),
+          activity.get(p.id)?.count ?? 0,
+          p.email_notifications ? "yes" : "no",
+          p.created_at,
+        ]
+          .map(escape)
+          .join(","),
+      ),
+    ].join("\r\n");
+
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `taskreddit-accounts-${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+    toast.success(`${rows.length} account${rows.length > 1 ? "s" : ""} exported`);
+  };
+
+
   const profileStats = {
     total: profiles?.length ?? 0,
     pending: profiles?.filter((profile) => profile.status === "pending").length ?? 0,
