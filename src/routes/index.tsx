@@ -4,7 +4,7 @@ import {
   Calendar,
   MessageSquare,
   ShieldCheck,
-  Sparkles,
+  
   Wallet,
   Zap,
 } from "lucide-react";
