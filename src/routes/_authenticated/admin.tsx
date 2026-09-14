@@ -369,9 +369,9 @@ function AdminPage() {
               <p className="text-xs text-muted-foreground">Review links submitted by your Reddit workers.</p>
             </div>
             <div className="flex gap-1 overflow-x-auto pb-0.5">
-              {(["all", "post", "comment"] as const).map((filter) => (
+              {(["all", "comment"] as const).map((filter) => (
                 <Button key={filter} size="sm" variant={submissionTypeFilter === filter ? "default" : "outline"} className="shrink-0" onClick={() => setSubmissionTypeFilter(filter)}>
-                  {filter === "all" ? `All (${submissionStats.total})` : filter === "post" ? `Posts (${submissionStats.posts})` : `Comments (${submissionStats.comments})`}
+                  {filter === "all" ? `All (${submissionStats.total})` : `Comments (${submissionStats.comments})`}
                 </Button>
               ))}
             </div>
