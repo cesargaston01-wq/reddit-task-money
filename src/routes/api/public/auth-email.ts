@@ -165,7 +165,7 @@ function getSubject(type: EmailActionType) {
 function renderEmail(payload: AuthEmailPayload) {
   const { email_action_type: type, redirect_to: redirectTo, token, token_hash: tokenHash } =
     payload.email_data;
-  const confirmUrl = `${SITE_URL}/auth/confirm?token_hash=${encodeURIComponent(tokenHash)}&type=${type}&next=${encodeURIComponent(redirectTo || "/opportunities/posts")}`;
+  const confirmUrl = `${SITE_URL}/auth/confirm?token_hash=${encodeURIComponent(tokenHash)}&type=${type}&next=${encodeURIComponent(redirectTo || "/opportunities/comments")}`;
 
   let content = "";
   switch (type) {

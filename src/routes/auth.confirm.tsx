@@ -18,7 +18,7 @@ function ConfirmPage() {
     const params = new URLSearchParams(window.location.search);
     const token_hash = params.get("token_hash");
     const rawType = params.get("type");
-    const next = params.get("next") || "/opportunities/posts";
+    const next = params.get("next") || "/opportunities/comments";
 
     if (!token_hash || !rawType) {
       setStatus("error");

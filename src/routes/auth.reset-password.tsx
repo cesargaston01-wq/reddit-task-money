@@ -29,7 +29,7 @@ function ResetPasswordPage() {
 
     if (error) return toast.error(error.message);
     toast.success("Password updated.");
-    navigate({ to: "/opportunities/posts" });
+    navigate({ to: "/opportunities/comments" });
   }
 
   return (

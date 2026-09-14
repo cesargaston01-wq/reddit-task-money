@@ -55,7 +55,7 @@ function DiscoverPage() {
               <Link to="/discover">Discover paid tasks</Link>
             </Button>
             <Button asChild size="sm" className="px-3">
-              <Link to={user ? "/opportunities/posts" : "/auth"}>
+              <Link to={user ? "/opportunities/comments" : "/auth"}>
                 <span className="sm:hidden">{user ? "Dashboard" : "Get started"}</span>
                 <span className="hidden sm:inline">{user ? "Go to dashboard" : "Start earning money"}</span>
                 <ArrowRight className="ml-1 h-4 w-4" />

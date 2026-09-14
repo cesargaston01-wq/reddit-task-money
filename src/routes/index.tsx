@@ -138,7 +138,7 @@ function Landing() {
 
 
             <Button asChild size="sm" className="px-3">
-              <Link to={user ? "/opportunities/posts" : "/auth"}>
+              <Link to={user ? "/opportunities/comments" : "/auth"}>
                 <span className="sm:hidden">{user ? "Dashboard" : "Get started"}</span>
                 <span className="hidden sm:inline">{user ? "Go to dashboard" : "Start earning money"}</span>
                 <ArrowRight className="ml-1 h-4 w-4" />
@@ -173,7 +173,7 @@ function Landing() {
               </p>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3 md:justify-start">
                 <Button asChild size="lg">
-                  <Link to={user ? "/opportunities/posts" : "/auth"}>
+                  <Link to={user ? "/opportunities/comments" : "/auth"}>
                     {user ? "Go to dashboard" : "Start earning money"}<ArrowRight className="ml-1 h-4 w-4" />
                   </Link>
                 </Button>
