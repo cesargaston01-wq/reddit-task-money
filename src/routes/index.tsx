@@ -4,7 +4,7 @@ import {
   Calendar,
   MessageSquare,
   ShieldCheck,
-  Sparkles,
+  
   Wallet,
   Zap,
 } from "lucide-react";
@@ -38,8 +38,8 @@ const faqs = [
     a: "After your publication is reviewed and has been online for at least 3 hours. The payment is then sent to your crypto wallet.",
   },
   {
-    q: "Can I delete my publication?",
-    a: "No. Publications must stay online. Deleting a post after being paid results in your future missions being refused.",
+    q: "Can I delete my comment?",
+    a: "No. Comments must stay online. Deleting a comment after being paid results in your future missions being refused.",
   },
   {
     q: "What happens if my account is rejected?",
@@ -51,9 +51,9 @@ const faqs = [
   },
 ];
 
-const HOME_TITLE = "Get paid for Reddit posts & comments — TaskReddit";
+const HOME_TITLE = "Get paid for Reddit comments — TaskReddit";
 const HOME_DESCRIPTION =
-  "TaskReddit pays $5 per approved Reddit post and $3 per approved comment. Verified accounts pick missions and get paid in crypto.";
+  "TaskReddit pays $3 per approved Reddit comment. Verified accounts pick missions and get paid in crypto.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -138,7 +138,7 @@ function Landing() {
 
 
             <Button asChild size="sm" className="px-3">
-              <Link to={user ? "/opportunities/posts" : "/auth"}>
+              <Link to={user ? "/opportunities/comments" : "/auth"}>
                 <span className="sm:hidden">{user ? "Dashboard" : "Get started"}</span>
                 <span className="hidden sm:inline">{user ? "Go to dashboard" : "Start earning money"}</span>
                 <ArrowRight className="ml-1 h-4 w-4" />
@@ -173,7 +173,7 @@ function Landing() {
               </p>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3 md:justify-start">
                 <Button asChild size="lg">
-                  <Link to={user ? "/opportunities/posts" : "/auth"}>
+                  <Link to={user ? "/opportunities/comments" : "/auth"}>
                     {user ? "Go to dashboard" : "Start earning money"}<ArrowRight className="ml-1 h-4 w-4" />
                   </Link>
                 </Button>
@@ -220,15 +220,7 @@ function Landing() {
                 fetchPriority="high"
               />
 
-              <div className="relative mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4">
-                <div className="panel elevated p-4 text-left sm:p-5">
-
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <Sparkles className="h-4 w-4 text-primary" /> Post mission
-                  </div>
-                  <div className="mt-2 font-display text-3xl font-bold">$5</div>
-                  <p className="mt-1 text-xs text-muted-foreground">per approved post</p>
-                </div>
+              <div className="relative mt-6 grid gap-3 sm:mt-8 sm:gap-4">
                 <div className="panel elevated p-4 text-left sm:p-5">
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <MessageSquare className="h-4 w-4 text-primary" /> Comment mission

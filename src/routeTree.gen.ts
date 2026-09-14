@@ -19,7 +19,6 @@ import { Route as AuthConfirmRouteImport } from './routes/auth.confirm'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as ApiPublicAuthEmailRouteImport } from './routes/api/public/auth-email'
-import { Route as AuthenticatedOpportunitiesPostsRouteImport } from './routes/_authenticated/opportunities.posts'
 import { Route as AuthenticatedOpportunitiesCommentsRouteImport } from './routes/_authenticated/opportunities.comments'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -71,12 +70,6 @@ const ApiPublicAuthEmailRoute = ApiPublicAuthEmailRouteImport.update({
   path: '/api/public/auth-email',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedOpportunitiesPostsRoute =
-  AuthenticatedOpportunitiesPostsRouteImport.update({
-    id: '/opportunities/posts',
-    path: '/opportunities/posts',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
 const AuthenticatedOpportunitiesCommentsRoute =
   AuthenticatedOpportunitiesCommentsRouteImport.update({
     id: '/opportunities/comments',
@@ -94,7 +87,6 @@ export interface FileRoutesByFullPath {
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/opportunities/comments': typeof AuthenticatedOpportunitiesCommentsRoute
-  '/opportunities/posts': typeof AuthenticatedOpportunitiesPostsRoute
   '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
 }
 export interface FileRoutesByTo {
@@ -107,7 +99,6 @@ export interface FileRoutesByTo {
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/opportunities/comments': typeof AuthenticatedOpportunitiesCommentsRoute
-  '/opportunities/posts': typeof AuthenticatedOpportunitiesPostsRoute
   '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
 }
 export interface FileRoutesById {
@@ -122,7 +113,6 @@ export interface FileRoutesById {
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/_authenticated/opportunities/comments': typeof AuthenticatedOpportunitiesCommentsRoute
-  '/_authenticated/opportunities/posts': typeof AuthenticatedOpportunitiesPostsRoute
   '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
 }
 export interface FileRouteTypes {
@@ -137,7 +127,6 @@ export interface FileRouteTypes {
     | '/auth/confirm'
     | '/auth/reset-password'
     | '/opportunities/comments'
-    | '/opportunities/posts'
     | '/api/public/auth-email'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -150,7 +139,6 @@ export interface FileRouteTypes {
     | '/auth/confirm'
     | '/auth/reset-password'
     | '/opportunities/comments'
-    | '/opportunities/posts'
     | '/api/public/auth-email'
   id:
     | '__root__'
@@ -164,7 +152,6 @@ export interface FileRouteTypes {
     | '/auth/confirm'
     | '/auth/reset-password'
     | '/_authenticated/opportunities/comments'
-    | '/_authenticated/opportunities/posts'
     | '/api/public/auth-email'
   fileRoutesById: FileRoutesById
 }
@@ -249,13 +236,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicAuthEmailRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/opportunities/posts': {
-      id: '/_authenticated/opportunities/posts'
-      path: '/opportunities/posts'
-      fullPath: '/opportunities/posts'
-      preLoaderRoute: typeof AuthenticatedOpportunitiesPostsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/opportunities/comments': {
       id: '/_authenticated/opportunities/comments'
       path: '/opportunities/comments'
@@ -270,7 +250,6 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedOpportunitiesCommentsRoute: typeof AuthenticatedOpportunitiesCommentsRoute
-  AuthenticatedOpportunitiesPostsRoute: typeof AuthenticatedOpportunitiesPostsRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -278,7 +257,6 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedOpportunitiesCommentsRoute:
     AuthenticatedOpportunitiesCommentsRoute,
-  AuthenticatedOpportunitiesPostsRoute: AuthenticatedOpportunitiesPostsRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

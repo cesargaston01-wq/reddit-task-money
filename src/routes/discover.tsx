@@ -1,11 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { ArrowRight, FileText, MessageSquare } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CommunityHistory } from "@/components/community-history";
 import { MissionBrowser } from "@/components/opportunity-list";
 import { useProfile, useSession } from "@/lib/data";
-import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/discover")({
   ssr: false,
@@ -15,12 +13,12 @@ export const Route = createFileRoute("/discover")({
       {
         name: "description",
         content:
-          "Browse every available Reddit mission for free: paid posts at $5 and comments at $3, with full read-only instructions.",
+          "Browse every available Reddit comment mission for free: $3 per approved comment, with full read-only instructions.",
       },
       { property: "og:title", content: "Discover paid tasks — TaskReddit" },
       {
         property: "og:description",
-        content: "All open Reddit opportunities: $5 per post, $3 per comment.",
+        content: "All open Reddit comment opportunities: $3 per approved comment.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://reddit-task-money.lovable.app/discover" },
@@ -33,15 +31,10 @@ export const Route = createFileRoute("/discover")({
 });
 
 function DiscoverPage() {
-  const [tab, setTab] = useState<"post" | "comment">("post");
   const { data: user } = useSession();
   const { data: profile } = useProfile();
   const canSubmit = profile?.status === "accepted";
 
-  const tabs = [
-    { key: "post" as const, label: "Post opportunities", icon: FileText, price: "$5" },
-    { key: "comment" as const, label: "Comment opportunities", icon: MessageSquare, price: "$3" },
-  ];
 
   return (
     <div className="min-h-screen">
@@ -55,7 +48,7 @@ function DiscoverPage() {
               <Link to="/discover">Discover paid tasks</Link>
             </Button>
             <Button asChild size="sm" className="px-3">
-              <Link to={user ? "/opportunities/posts" : "/auth"}>
+              <Link to={user ? "/opportunities/comments" : "/auth"}>
                 <span className="sm:hidden">{user ? "Dashboard" : "Get started"}</span>
                 <span className="hidden sm:inline">{user ? "Go to dashboard" : "Start earning money"}</span>
                 <ArrowRight className="ml-1 h-4 w-4" />
@@ -72,24 +65,6 @@ function DiscoverPage() {
           Every open mission, read-only. A verified Reddit account is required to take one.
         </p>
 
-        <div className="mt-8 flex flex-wrap gap-2">
-          {tabs.map((t) => (
-            <button
-              key={t.key}
-              onClick={() => setTab(t.key)}
-              className={cn(
-                "inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm transition-colors",
-                tab === t.key
-                  ? "border-primary/60 bg-primary/10 text-foreground"
-                  : "border-border text-muted-foreground hover:text-foreground",
-              )}
-            >
-              <t.icon className="h-4 w-4" />
-              {t.label}
-              <span className="text-xs text-primary">{t.price}</span>
-            </button>
-          ))}
-        </div>
 
         {!canSubmit ? (
           <div className="panel mt-6 p-4 text-sm text-muted-foreground">
@@ -102,7 +77,7 @@ function DiscoverPage() {
         ) : null}
 
         <div className="mt-6">
-          <MissionBrowser key={tab} type={tab} canSubmit={canSubmit} />
+          <MissionBrowser type="comment" canSubmit={canSubmit} />
         </div>
 
         <CommunityHistory className="mt-14" />

@@ -35,14 +35,14 @@ const FEATURES: Feature[] = [
     value: "500+",
     label: "Reddit accounts earning daily",
     description:
-      "Active users monetizing their accounts with posts and comments.",
+      "Active users monetizing their accounts with comments.",
     icon: <IconUsers className="h-6 w-6" />,
   },
   {
-    value: "$5 / $3",
+    value: "$3",
     label: "Fixed payout per mission",
     description:
-      "Transparent pricing: $5 per approved post, $3 per approved comment.",
+      "Transparent pricing: $3 per approved comment.",
     icon: <IconCoin className="h-6 w-6" />,
   },
 ];

@@ -2,7 +2,7 @@ import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   AlertTriangle,
-  FileText,
+  
   LogOut,
   MessageSquare,
   Shield,
@@ -18,7 +18,6 @@ import { useIsAdmin, useProfile } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
 const nav = [
-  { to: "/opportunities/posts", label: "Post opportunities", icon: FileText },
   { to: "/opportunities/comments", label: "Comment opportunities", icon: MessageSquare },
   { to: "/profile", label: "Profile", icon: UserIcon },
 ] as const;

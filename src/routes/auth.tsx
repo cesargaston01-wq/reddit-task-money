@@ -66,7 +66,7 @@ function AuthPage() {
   const { data: user, isLoading: isRestoringSession } = useSession();
 
   useEffect(() => {
-    if (user) navigate({ to: "/opportunities/posts", replace: true });
+    if (user) navigate({ to: "/opportunities/comments", replace: true });
   }, [navigate, user]);
 
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
@@ -93,7 +93,7 @@ function AuthPage() {
       }
       return toast.error(error.message);
     }
-    navigate({ to: "/opportunities/posts" });
+    navigate({ to: "/opportunities/comments" });
   }
 
   async function handleSignup(e: React.FormEvent<HTMLFormElement>) {
@@ -133,7 +133,7 @@ function AuthPage() {
     }
 
     toast.success("Account created. Your Reddit profile is being reviewed.");
-    navigate({ to: "/opportunities/posts" });
+    navigate({ to: "/opportunities/comments" });
   }
 
   async function resendConfirmation() {

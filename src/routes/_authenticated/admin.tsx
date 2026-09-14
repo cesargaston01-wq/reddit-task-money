@@ -315,10 +315,7 @@ function AdminPage() {
 
         <TabsContent value="missions" className="mt-6 space-y-4">
           <div className="flex flex-wrap gap-2">
-            <Button size="sm" onClick={() => setDraft({ type: "post", payout: 5 })}>
-              <Plus className="mr-1 h-4 w-4" /> Post mission
-            </Button>
-            <Button size="sm" variant="outline" onClick={() => setDraft({ type: "comment", payout: 3 })}>
+            <Button size="sm" onClick={() => setDraft({ type: "comment", payout: 3 })}>
               <Plus className="mr-1 h-4 w-4" /> Comment mission
             </Button>
             <Button size="sm" variant={missionFilter === "live" ? "default" : "outline"} onClick={() => setMissionFilter("live")}>
@@ -360,9 +357,8 @@ function AdminPage() {
 
 
         <TabsContent value="submissions" className="mt-6 space-y-4">
-          <section aria-label="Submission overview" className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-            <SubmissionMetric icon={Radio} label="Live missions" value={liveMissions.length} detail={`${liveMissions.filter((mission) => mission.type === "post").length} posts · ${liveMissions.filter((mission) => mission.type === "comment").length} comments`} tone="primary" />
-            <SubmissionMetric icon={FileText} label="Post submissions" value={submissionStats.posts} detail={`${submissionStats.approved} approved overall`} tone="neutral" />
+          <section aria-label="Submission overview" className="grid grid-cols-2 gap-3 lg:grid-cols-3">
+            <SubmissionMetric icon={Radio} label="Live missions" value={liveMissions.length} detail={`${liveMissions.filter((mission) => mission.type === "comment").length} comments`} tone="primary" />
             <SubmissionMetric icon={MessageSquare} label="Comment submissions" value={submissionStats.comments} detail={`${submissionStats.pending} waiting for review`} tone="neutral" />
             <SubmissionMetric icon={CircleDollarSign} label="Awaiting review" value={submissionStats.pending} detail={`${submissionStats.total} total submissions`} tone="warning" />
           </section>
@@ -373,9 +369,9 @@ function AdminPage() {
               <p className="text-xs text-muted-foreground">Review links submitted by your Reddit workers.</p>
             </div>
             <div className="flex gap-1 overflow-x-auto pb-0.5">
-              {(["all", "post", "comment"] as const).map((filter) => (
+              {(["all", "comment"] as const).map((filter) => (
                 <Button key={filter} size="sm" variant={submissionTypeFilter === filter ? "default" : "outline"} className="shrink-0" onClick={() => setSubmissionTypeFilter(filter)}>
-                  {filter === "all" ? `All (${submissionStats.total})` : filter === "post" ? `Posts (${submissionStats.posts})` : `Comments (${submissionStats.comments})`}
+                  {filter === "all" ? `All (${submissionStats.total})` : `Comments (${submissionStats.comments})`}
                 </Button>
               ))}
             </div>
