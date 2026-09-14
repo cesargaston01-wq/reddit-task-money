@@ -38,8 +38,8 @@ const faqs = [
     a: "After your publication is reviewed and has been online for at least 3 hours. The payment is then sent to your crypto wallet.",
   },
   {
-    q: "Can I delete my publication?",
-    a: "No. Publications must stay online. Deleting a post after being paid results in your future missions being refused.",
+    q: "Can I delete my comment?",
+    a: "No. Comments must stay online. Deleting a comment after being paid results in your future missions being refused.",
   },
   {
     q: "What happens if my account is rejected?",
@@ -51,9 +51,9 @@ const faqs = [
   },
 ];
 
-const HOME_TITLE = "Get paid for Reddit posts & comments — TaskReddit";
+const HOME_TITLE = "Get paid for Reddit comments — TaskReddit";
 const HOME_DESCRIPTION =
-  "TaskReddit pays $5 per approved Reddit post and $3 per approved comment. Verified accounts pick missions and get paid in crypto.";
+  "TaskReddit pays $3 per approved Reddit comment. Verified accounts pick missions and get paid in crypto.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
