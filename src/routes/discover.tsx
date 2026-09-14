@@ -65,24 +65,6 @@ function DiscoverPage() {
           Every open mission, read-only. A verified Reddit account is required to take one.
         </p>
 
-        <div className="mt-8 flex flex-wrap gap-2">
-          {tabs.map((t) => (
-            <button
-              key={t.key}
-              onClick={() => setTab(t.key)}
-              className={cn(
-                "inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm transition-colors",
-                tab === t.key
-                  ? "border-primary/60 bg-primary/10 text-foreground"
-                  : "border-border text-muted-foreground hover:text-foreground",
-              )}
-            >
-              <t.icon className="h-4 w-4" />
-              {t.label}
-              <span className="text-xs text-primary">{t.price}</span>
-            </button>
-          ))}
-        </div>
 
         {!canSubmit ? (
           <div className="panel mt-6 p-4 text-sm text-muted-foreground">
