@@ -1,11 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { ArrowRight, FileText, MessageSquare } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CommunityHistory } from "@/components/community-history";
 import { MissionBrowser } from "@/components/opportunity-list";
 import { useProfile, useSession } from "@/lib/data";
-import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/discover")({
   ssr: false,
@@ -15,12 +13,12 @@ export const Route = createFileRoute("/discover")({
       {
         name: "description",
         content:
-          "Browse every available Reddit mission for free: paid posts at $5 and comments at $3, with full read-only instructions.",
+          "Browse every available Reddit comment mission for free: $3 per approved comment, with full read-only instructions.",
       },
       { property: "og:title", content: "Discover paid tasks — TaskReddit" },
       {
         property: "og:description",
-        content: "All open Reddit opportunities: $5 per post, $3 per comment.",
+        content: "All open Reddit comment opportunities: $3 per approved comment.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://reddit-task-money.lovable.app/discover" },
