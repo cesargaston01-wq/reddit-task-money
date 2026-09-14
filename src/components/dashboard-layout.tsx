@@ -18,7 +18,6 @@ import { useIsAdmin, useProfile } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
 const nav = [
-  { to: "/opportunities/comments", label: "Post opportunities", icon: FileText },
   { to: "/opportunities/comments", label: "Comment opportunities", icon: MessageSquare },
   { to: "/profile", label: "Profile", icon: UserIcon },
 ] as const;
