@@ -220,15 +220,7 @@ function Landing() {
                 fetchPriority="high"
               />
 
-              <div className="relative mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-4">
-                <div className="panel elevated p-4 text-left sm:p-5">
-
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <Sparkles className="h-4 w-4 text-primary" /> Post mission
-                  </div>
-                  <div className="mt-2 font-display text-3xl font-bold">$5</div>
-                  <p className="mt-1 text-xs text-muted-foreground">per approved post</p>
-                </div>
+              <div className="relative mt-6 grid gap-3 sm:mt-8 sm:gap-4">
                 <div className="panel elevated p-4 text-left sm:p-5">
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <MessageSquare className="h-4 w-4 text-primary" /> Comment mission
