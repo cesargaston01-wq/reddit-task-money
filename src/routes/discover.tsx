@@ -77,7 +77,7 @@ function DiscoverPage() {
         ) : null}
 
         <div className="mt-6">
-          <MissionBrowser key={tab} type={tab} canSubmit={canSubmit} />
+          <MissionBrowser type="comment" canSubmit={canSubmit} />
         </div>
 
         <CommunityHistory className="mt-14" />
