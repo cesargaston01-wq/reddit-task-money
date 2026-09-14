@@ -31,15 +31,10 @@ export const Route = createFileRoute("/discover")({
 });
 
 function DiscoverPage() {
-  const [tab, setTab] = useState<"post" | "comment">("post");
   const { data: user } = useSession();
   const { data: profile } = useProfile();
   const canSubmit = profile?.status === "accepted";
 
-  const tabs = [
-    { key: "post" as const, label: "Post opportunities", icon: FileText, price: "$5" },
-    { key: "comment" as const, label: "Comment opportunities", icon: MessageSquare, price: "$3" },
-  ];
 
   return (
     <div className="min-h-screen">
