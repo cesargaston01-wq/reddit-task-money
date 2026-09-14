@@ -357,9 +357,8 @@ function AdminPage() {
 
 
         <TabsContent value="submissions" className="mt-6 space-y-4">
-          <section aria-label="Submission overview" className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-            <SubmissionMetric icon={Radio} label="Live missions" value={liveMissions.length} detail={`${liveMissions.filter((mission) => mission.type === "post").length} posts · ${liveMissions.filter((mission) => mission.type === "comment").length} comments`} tone="primary" />
-            <SubmissionMetric icon={FileText} label="Post submissions" value={submissionStats.posts} detail={`${submissionStats.approved} approved overall`} tone="neutral" />
+          <section aria-label="Submission overview" className="grid grid-cols-2 gap-3 lg:grid-cols-3">
+            <SubmissionMetric icon={Radio} label="Live missions" value={liveMissions.length} detail={`${liveMissions.filter((mission) => mission.type === "comment").length} comments`} tone="primary" />
             <SubmissionMetric icon={MessageSquare} label="Comment submissions" value={submissionStats.comments} detail={`${submissionStats.pending} waiting for review`} tone="neutral" />
             <SubmissionMetric icon={CircleDollarSign} label="Awaiting review" value={submissionStats.pending} detail={`${submissionStats.total} total submissions`} tone="warning" />
           </section>
