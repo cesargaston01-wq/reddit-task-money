@@ -315,10 +315,7 @@ function AdminPage() {
 
         <TabsContent value="missions" className="mt-6 space-y-4">
           <div className="flex flex-wrap gap-2">
-            <Button size="sm" onClick={() => setDraft({ type: "post", payout: 5 })}>
-              <Plus className="mr-1 h-4 w-4" /> Post mission
-            </Button>
-            <Button size="sm" variant="outline" onClick={() => setDraft({ type: "comment", payout: 3 })}>
+            <Button size="sm" onClick={() => setDraft({ type: "comment", payout: 3 })}>
               <Plus className="mr-1 h-4 w-4" /> Comment mission
             </Button>
             <Button size="sm" variant={missionFilter === "live" ? "default" : "outline"} onClick={() => setMissionFilter("live")}>
