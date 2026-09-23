@@ -289,6 +289,7 @@ export type Database = {
         Returns: boolean
       }
       is_accepted: { Args: { _user_id: string }; Returns: boolean }
+      reserve_mission: { Args: { _mission_id: string }; Returns: string }
     }
     Enums: {
       account_status: "pending" | "accepted" | "rejected"
