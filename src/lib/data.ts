@@ -279,23 +279,15 @@ export function useReserveMission() {
         throw new Error("Sign in again before taking a mission.");
       }
 
-      const now = new Date();
-      const reservedUntil = new Date(now.getTime() + 10 * 60_000).toISOString();
-      const { data, error } = await supabase
-        .from("missions")
-        .update({ reserved_by: user.id, reserved_until: reservedUntil })
-        .eq("id", missionId)
-        .eq("is_active", true)
-        .eq("is_locked", false)
-        .or(
-          `reserved_until.is.null,reserved_until.lt.${now.toISOString()},reserved_by.eq.${user.id}`,
-        )
-        .select("id, reserved_until")
-        .maybeSingle();
+      // The reservation window is computed by the database so a phone with a
+      // slightly wrong clock can no longer trigger "Invalid reservation window".
+      const { data, error } = await supabase.rpc("reserve_mission", {
+        _mission_id: missionId,
+      });
 
       if (error) throw new Error(error.message);
       if (!data) throw new Error("This mission was just reserved by another member.");
-      return { reservedUntil: data.reserved_until };
+      return { reservedUntil: data as unknown as string };
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["missions"] }),
   });
