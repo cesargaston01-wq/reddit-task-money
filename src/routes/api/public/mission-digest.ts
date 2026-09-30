@@ -58,8 +58,7 @@ export const Route = createFileRoute("/api/public/mission-digest")({
         const { data: members, error: pErr } = await supabaseAdmin
           .from("profiles")
           .select("email")
-          .eq("status", "accepted")
-          .eq("email_notifications", true);
+          .eq("status", "accepted");
         if (pErr) return new Response(pErr.message, { status: 500 });
         const emails = (members ?? []).map((m) => m.email).filter(Boolean);
 
@@ -72,7 +71,7 @@ export const Route = createFileRoute("/api/public/mission-digest")({
 <p style="color:#334155;font-size:15px;line-height:1.5;margin:0 0 24px;">Communities: ${subs.map((s) => `r/${escapeHtml(s.replace(/^r\//, ""))}`).join(", ")}</p>
 ${button(`${SITE_URL}/opportunities/comments`, "See the missions")}
 <p style="color:#64748B;font-size:14px;margin-top:24px;">First come, first served. Remember: stay naturally active on Reddit between tasks.</p>`,
-          `<br>You get this because mission alerts are on in your profile. Turn them off anytime in <a href="${SITE_URL}/profile" style="color:#FF4500;">your profile</a>.`,
+          `<br>You receive this because you are a verified TaskReddit member.`,
         );
 
         // Individual emails, sent in batches of 100.
