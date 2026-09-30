@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState, type ComponentType } from "react";
 import { toast } from "sonner";
 import {
@@ -16,6 +16,7 @@ import {
   Trash2,
   Star,
   UserRound,
+  Gift,
   XCircle,
 } from "lucide-react";
 import { DashboardLayout } from "@/components/dashboard-layout";
