@@ -216,6 +216,24 @@ export type Database = {
           },
         ]
       }
+      referral_announce_log: {
+        Row: {
+          id: string
+          recipient_count: number
+          sent_at: string
+        }
+        Insert: {
+          id?: string
+          recipient_count?: number
+          sent_at?: string
+        }
+        Update: {
+          id?: string
+          recipient_count?: number
+          sent_at?: string
+        }
+        Relationships: []
+      }
       submissions: {
         Row: {
           admin_note: string | null

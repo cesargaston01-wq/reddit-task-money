@@ -1,0 +1,1 @@
+CREATE POLICY "No client access to referral announce log" ON public.referral_announce_log FOR ALL TO authenticated USING (false) WITH CHECK (false);

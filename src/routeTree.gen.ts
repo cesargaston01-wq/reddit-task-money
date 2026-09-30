@@ -19,6 +19,7 @@ import { Route as AuthConfirmRouteImport } from './routes/auth.confirm'
 import { Route as AuthenticatedReferralsRouteImport } from './routes/_authenticated/referrals'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as ApiPublicReferralAnnouncementRouteImport } from './routes/api/public/referral-announcement'
 import { Route as ApiPublicMissionDigestRouteImport } from './routes/api/public/mission-digest'
 import { Route as ApiPublicAuthEmailRouteImport } from './routes/api/public/auth-email'
 import { Route as ApiPublicAuthActionRouteImport } from './routes/api/public/auth-action'
@@ -73,6 +74,12 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiPublicReferralAnnouncementRoute =
+  ApiPublicReferralAnnouncementRouteImport.update({
+    id: '/api/public/referral-announcement',
+    path: '/api/public/referral-announcement',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicMissionDigestRoute = ApiPublicMissionDigestRouteImport.update({
   id: '/api/public/mission-digest',
   path: '/api/public/mission-digest',
@@ -109,6 +116,7 @@ export interface FileRoutesByFullPath {
   '/api/public/auth-action': typeof ApiPublicAuthActionRoute
   '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
   '/api/public/mission-digest': typeof ApiPublicMissionDigestRoute
+  '/api/public/referral-announcement': typeof ApiPublicReferralAnnouncementRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -124,6 +132,7 @@ export interface FileRoutesByTo {
   '/api/public/auth-action': typeof ApiPublicAuthActionRoute
   '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
   '/api/public/mission-digest': typeof ApiPublicMissionDigestRoute
+  '/api/public/referral-announcement': typeof ApiPublicReferralAnnouncementRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -141,6 +150,7 @@ export interface FileRoutesById {
   '/api/public/auth-action': typeof ApiPublicAuthActionRoute
   '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
   '/api/public/mission-digest': typeof ApiPublicMissionDigestRoute
+  '/api/public/referral-announcement': typeof ApiPublicReferralAnnouncementRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -158,6 +168,7 @@ export interface FileRouteTypes {
     | '/api/public/auth-action'
     | '/api/public/auth-email'
     | '/api/public/mission-digest'
+    | '/api/public/referral-announcement'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -173,6 +184,7 @@ export interface FileRouteTypes {
     | '/api/public/auth-action'
     | '/api/public/auth-email'
     | '/api/public/mission-digest'
+    | '/api/public/referral-announcement'
   id:
     | '__root__'
     | '/'
@@ -189,6 +201,7 @@ export interface FileRouteTypes {
     | '/api/public/auth-action'
     | '/api/public/auth-email'
     | '/api/public/mission-digest'
+    | '/api/public/referral-announcement'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -200,6 +213,7 @@ export interface RootRouteChildren {
   ApiPublicAuthActionRoute: typeof ApiPublicAuthActionRoute
   ApiPublicAuthEmailRoute: typeof ApiPublicAuthEmailRoute
   ApiPublicMissionDigestRoute: typeof ApiPublicMissionDigestRoute
+  ApiPublicReferralAnnouncementRoute: typeof ApiPublicReferralAnnouncementRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -274,6 +288,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/referral-announcement': {
+      id: '/api/public/referral-announcement'
+      path: '/api/public/referral-announcement'
+      fullPath: '/api/public/referral-announcement'
+      preLoaderRoute: typeof ApiPublicReferralAnnouncementRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/mission-digest': {
       id: '/api/public/mission-digest'
       path: '/api/public/mission-digest'
@@ -344,6 +365,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicAuthActionRoute: ApiPublicAuthActionRoute,
   ApiPublicAuthEmailRoute: ApiPublicAuthEmailRoute,
   ApiPublicMissionDigestRoute: ApiPublicMissionDigestRoute,
+  ApiPublicReferralAnnouncementRoute: ApiPublicReferralAnnouncementRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
