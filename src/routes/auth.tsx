@@ -179,7 +179,7 @@ function AuthPage() {
       const res = await resetPasswordWithResend({ data: { email: email.trim() } });
       if ("fallback" in res && res.fallback) {
         const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-          redirectTo: `${window.location.origin}/reset-password`,
+          redirectTo: `${window.location.origin}/auth/reset-password`,
         });
         if (error) throw error;
       }
