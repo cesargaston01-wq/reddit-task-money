@@ -93,6 +93,7 @@ function AdminPage() {
   const [userFilter, setUserFilter] = useState<"all" | "pending" | "accepted" | "rejected">("all");
   const [submittedFilter, setSubmittedFilter] = useState<"all" | "yes" | "no">("all");
   const [favoritesOnly, setFavoritesOnly] = useState(false);
+  const [referralsOnly, setReferralsOnly] = useState(false);
   const [submissionTypeFilter, setSubmissionTypeFilter] = useState<SubmissionTypeFilter>("all");
   const [submissionStatusFilter, setSubmissionStatusFilter] = useState<SubmissionStatusFilter>("all");
   const [missionFilter, setMissionFilter] = useState<"live" | "all">("live");
@@ -155,6 +156,9 @@ function AdminPage() {
       submittedFilter === "all" ? true : submittedFilter === "yes" ? activity.has(p.id) : !activity.has(p.id),
     )
     .filter((p) => (favoritesOnly ? favorites.has(p.id) : true))
+    .filter((p) =>
+      referralsOnly ? Number(referralBy.get(p.id)?.invited ?? 0) > 0 : true,
+    )
     .filter((p) =>
       !query
         ? true
@@ -504,6 +508,16 @@ function AdminPage() {
             >
               <Star className={"h-3.5 w-3.5 " + (favoritesOnly ? "fill-current" : "")} />
               Favorites ({favorites.size})
+            </Button>
+            <Button
+              size="sm"
+              variant={referralsOnly ? "default" : "outline"}
+              onClick={() => setReferralsOnly((v) => !v)}
+              className="shrink-0 gap-1"
+              title="Show only members who invited someone"
+            >
+              <Gift className="h-3.5 w-3.5" />
+              Invited members ({(profiles ?? []).filter((p) => Number(referralBy.get(p.id)?.invited ?? 0) > 0).length})
             </Button>
             <Button size="sm" variant="outline" className="shrink-0 gap-1" onClick={exportProfilesCsv}>
               <Download className="h-3.5 w-3.5" />
