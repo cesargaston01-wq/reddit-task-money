@@ -330,6 +330,7 @@ function AdminPage() {
           <TabsTrigger value="missions">Missions</TabsTrigger>
           <TabsTrigger value="submissions">Submissions</TabsTrigger>
           <TabsTrigger value="users">Users ({profileStats.total})</TabsTrigger>
+          <TabsTrigger value="referrals">Referrals</TabsTrigger>
         </TabsList>
 
         <TabsContent value="missions" className="mt-6 space-y-4">
@@ -619,6 +620,59 @@ function AdminPage() {
           {!visibleProfiles.length ? (
             <div className="panel p-8 text-center text-sm text-muted-foreground">No member found.</div>
           ) : null}
+        </TabsContent>
+
+        <TabsContent value="referrals" className="mt-6 space-y-4">
+          {(() => {
+            const rows = referralRows ?? [];
+            const totalInvited = rows.reduce((s, r) => s + Number(r.invited), 0);
+            const totalValidated = rows.reduce((s, r) => s + Number(r.validated), 0);
+            const totalMissions = rows.reduce((s, r) => s + Number(r.approved_missions), 0);
+            const totalEarned = rows.reduce((s, r) => s + Number(r.earned), 0);
+            return (
+              <>
+                <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+                  <StatusMetric icon={UserRound} label="Invited signups" value={totalInvited} tone="neutral" />
+                  <StatusMetric icon={CheckCircle2} label="Validated" value={totalValidated} tone="success" />
+                  <StatusMetric icon={MessageSquare} label="Approved missions" value={totalMissions} tone="neutral" />
+                  <StatusMetric icon={CircleDollarSign} label="Referral rewards owed" value={`$${totalEarned.toFixed(2)}`} tone="warning" />
+                </div>
+                <div className="panel divide-y divide-border">
+                  {rows.length === 0 ? (
+                    <div className="p-8 text-center text-sm text-muted-foreground">No referrals yet.</div>
+                  ) : (
+                    rows
+                      .slice()
+                      .sort((a, b) => Number(b.earned) - Number(a.earned))
+                      .map((r) => (
+                        <div key={r.referrer_id} className="flex flex-wrap items-center justify-between gap-3 p-4 text-sm">
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2 font-medium">
+                              <Gift className="h-4 w-4 text-primary" /> u/{r.username || "member"}
+                            </div>
+                            <div className="mt-1 truncate text-xs text-muted-foreground">
+                              Wallet: {r.wallet || "not set"}
+                            </div>
+                          </div>
+                          <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
+                            <span>{r.invited} invited</span>
+                            <span>{r.validated} validated</span>
+                            <span>{r.approved_missions} missions</span>
+                            <Badge variant="secondary" className="text-primary">
+                              ${Number(r.earned).toFixed(2)} owed
+                            </Badge>
+                          </div>
+                        </div>
+                      ))
+                  )}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Rewards: $1.00 per validated invitee + $0.50 per approved invitee mission. Pay them in USDC together
+                  with mission payouts.
+                </p>
+              </>
+            );
+          })()}
         </TabsContent>
 
       </Tabs>
