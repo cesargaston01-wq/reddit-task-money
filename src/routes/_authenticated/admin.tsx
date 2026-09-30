@@ -93,6 +93,7 @@ function AdminPage() {
   const [userFilter, setUserFilter] = useState<"all" | "pending" | "accepted" | "rejected">("all");
   const [submittedFilter, setSubmittedFilter] = useState<"all" | "yes" | "no">("all");
   const [favoritesOnly, setFavoritesOnly] = useState(false);
+  const [referralsOnly, setReferralsOnly] = useState(false);
   const [submissionTypeFilter, setSubmissionTypeFilter] = useState<SubmissionTypeFilter>("all");
   const [submissionStatusFilter, setSubmissionStatusFilter] = useState<SubmissionStatusFilter>("all");
   const [missionFilter, setMissionFilter] = useState<"live" | "all">("live");
@@ -146,12 +147,18 @@ function AdminPage() {
 
   const query = userSearch.trim().toLowerCase();
   const favorites = new Set(favoriteIds ?? []);
+  const referralBy = new Map<string, AdminReferralRow>();
+  for (const r of referralRows ?? []) referralBy.set(r.referrer_id, r);
+  const referralOwed = (referralRows ?? []).reduce((sum, r) => sum + Number(r.earned), 0);
   const visibleProfiles = (profiles ?? [])
     .filter((p) => (userFilter === "all" ? true : p.status === userFilter))
     .filter((p) =>
       submittedFilter === "all" ? true : submittedFilter === "yes" ? activity.has(p.id) : !activity.has(p.id),
     )
     .filter((p) => (favoritesOnly ? favorites.has(p.id) : true))
+    .filter((p) =>
+      referralsOnly ? Number(referralBy.get(p.id)?.invited ?? 0) > 0 : true,
+    )
     .filter((p) =>
       !query
         ? true
@@ -182,6 +189,9 @@ function AdminPage() {
       "status",
       "niches",
       "submissions",
+      "invited",
+      "validated_invites",
+      "referral_owed_usd",
       "email_notifications",
       "created_at",
     ];
@@ -198,6 +208,9 @@ function AdminPage() {
           p.status,
           (p.niches ?? []).join(" | "),
           activity.get(p.id)?.total ?? 0,
+          Number(referralBy.get(p.id)?.invited ?? 0),
+          Number(referralBy.get(p.id)?.validated ?? 0),
+          Number(referralBy.get(p.id)?.earned ?? 0).toFixed(2),
           p.email_notifications ? "yes" : "no",
           p.created_at,
         ]
@@ -308,7 +321,10 @@ function AdminPage() {
   }
 
   return (
-    <DashboardLayout title="Administration" description={`Total amount to pay: $${toPay.toFixed(0)}`}>
+    <DashboardLayout
+      title="Administration"
+      description={`Total amount to pay: $${toPay.toFixed(0)} · Referral rewards owed: $${referralOwed.toFixed(2)}`}
+    >
       <section aria-label="Account overview" className="mb-7">
         <div className="mb-3 flex items-end justify-between gap-3">
           <div>
@@ -447,7 +463,7 @@ function AdminPage() {
         </TabsContent>
 
         <TabsContent value="users" className="mt-6 grid gap-3">
-          <div className="panel flex flex-col gap-3 p-3 sm:flex-row sm:items-center">
+          <div className="panel flex flex-wrap items-center gap-3 p-3">
             <Input
               value={userSearch}
               onChange={(e) => setUserSearch(e.target.value)}
@@ -493,6 +509,16 @@ function AdminPage() {
               <Star className={"h-3.5 w-3.5 " + (favoritesOnly ? "fill-current" : "")} />
               Favorites ({favorites.size})
             </Button>
+            <Button
+              size="sm"
+              variant={referralsOnly ? "default" : "outline"}
+              onClick={() => setReferralsOnly((v) => !v)}
+              className="shrink-0 gap-1"
+              title="Show only members who invited someone"
+            >
+              <Gift className="h-3.5 w-3.5" />
+              Invited ({(profiles ?? []).filter((p) => Number(referralBy.get(p.id)?.invited ?? 0) > 0).length})
+            </Button>
             <Button size="sm" variant="outline" className="shrink-0 gap-1" onClick={exportProfilesCsv}>
               <Download className="h-3.5 w-3.5" />
               Export CSV
@@ -506,6 +532,8 @@ function AdminPage() {
           {visibleProfiles.map((p) => {
             const act = activity.get(p.id);
             const isFav = favorites.has(p.id);
+            const ref = referralBy.get(p.id);
+            const owed = Number(ref?.earned ?? 0);
             return (
               <div key={p.id} className="panel flex flex-wrap items-center justify-between gap-3 p-4">
                 <div className="min-w-0">
@@ -572,6 +600,11 @@ function AdminPage() {
                   <div className="text-xs text-muted-foreground">
                     {act?.approved ?? 0} approved · ${(act?.earned ?? 0).toFixed(2)} earned
                   </div>
+                  <div className="text-xs text-muted-foreground">
+                    <Gift className="mr-1 inline h-3 w-3 text-primary" />
+                    {Number(ref?.invited ?? 0)} invited
+                    {Number(ref?.validated ?? 0) > 0 ? ` · ${Number(ref?.validated)} validated` : ""}
+                  </div>
                 </div>
                 <div className="flex shrink-0 flex-col items-end gap-2">
                   <div
@@ -591,6 +624,11 @@ function AdminPage() {
                     </span>
                   </div>
                   <div className="flex flex-wrap items-center justify-end gap-2">
+                    {owed > 0 ? (
+                      <Badge variant="secondary" className="text-primary">
+                        ${owed.toFixed(2)} owed
+                      </Badge>
+                    ) : null}
                     <Badge variant={act ? "default" : "outline"} className={act ? "" : "text-muted-foreground"}>
                       {act ? "Active" : "Never submitted"}
                     </Badge>
