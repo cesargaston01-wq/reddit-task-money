@@ -51,6 +51,15 @@ export const Route = createFileRoute("/_authenticated/admin")({
 });
 
 type Draft = Partial<Mission> & { type: "post" | "comment" };
+type AdminReferralRow = {
+  referrer_id: string;
+  username: string;
+  wallet: string;
+  invited: number;
+  validated: number;
+  approved_missions: number;
+  earned: number;
+};
 type SubmissionTypeFilter = "all" | "post" | "comment";
 type SubmissionStatusFilter = "all" | "pending" | "approved" | "rejected";
 
@@ -68,6 +77,15 @@ function AdminPage() {
   const { data: favoriteIds } = useAdminFavorites();
   const toggleFavorite = useToggleFavorite();
   const deleteMember = useDeleteMember();
+  const { data: referralRows } = useQuery({
+    queryKey: ["referrals", "admin"],
+    enabled: !!isAdmin,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("admin_referral_earnings" as never);
+      if (error) throw error;
+      return (data ?? []) as unknown as AdminReferralRow[];
+    },
+  });
   const [pendingDelete, setPendingDelete] = useState<{ id: string; label: string } | null>(null);
   const [draft, setDraft] = useState<Draft | null>(null);
 
