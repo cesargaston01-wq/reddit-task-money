@@ -635,7 +635,7 @@ function AdminPage() {
                   <StatusMetric icon={UserRound} label="Invited signups" value={totalInvited} tone="neutral" />
                   <StatusMetric icon={CheckCircle2} label="Validated" value={totalValidated} tone="success" />
                   <StatusMetric icon={MessageSquare} label="Approved missions" value={totalMissions} tone="neutral" />
-                  <StatusMetric icon={CircleDollarSign} label="Referral rewards owed" value={`$${totalEarned.toFixed(2)}`} tone="warning" />
+                  <StatusMetric icon={CircleDollarSign} label="Referral rewards owed ($)" value={Number(totalEarned.toFixed(2))} tone="warning" />
                 </div>
                 <div className="panel divide-y divide-border">
                   {rows.length === 0 ? (
