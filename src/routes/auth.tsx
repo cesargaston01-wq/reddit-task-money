@@ -9,6 +9,11 @@ import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/password-input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSession } from "@/lib/data";
+import {
+  signUpWithResend,
+  resendConfirmationWithResend,
+  resetPasswordWithResend,
+} from "@/lib/auth-emails.functions";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -112,26 +117,24 @@ function AuthPage() {
       parsed.data.email.split("@")[0];
 
     setLoading(true);
-    const { data, error } = await supabase.auth.signUp({
-      email: parsed.data.email,
-      password: parsed.data.password,
-      options: {
+    try {
+      const res = await signUpWithResend({
         data: {
+          email: parsed.data.email,
+          password: parsed.data.password,
           full_name: redditUsername,
           reddit_profile_url: parsed.data.reddit_profile_url,
         },
-      },
-    });
-
-    setLoading(false);
-    if (error) return toast.error(error.message);
-
-    if (!data.session) {
+      });
+      if (!res.ok) return toast.error(res.error);
       setConfirmEmail(parsed.data.email);
       setShowConfirmMessage(true);
       return;
+    } catch (err) {
+      return toast.error(err instanceof Error ? err.message : "Sign up failed");
+    } finally {
+      setLoading(false);
     }
-
     toast.success("Account created. Your Reddit profile is being reviewed.");
     navigate({ to: "/opportunities/comments" });
   }
@@ -139,12 +142,13 @@ function AuthPage() {
   async function resendConfirmation() {
     if (!confirmEmail) return;
     setLoading(true);
-    const { error } = await supabase.auth.resend({
-      type: "signup",
-      email: confirmEmail,
-    });
+    try {
+      await resendConfirmationWithResend({ data: { email: confirmEmail } });
+    } catch {
+      setLoading(false);
+      return toast.error("Could not resend the email. Try again.");
+    }
     setLoading(false);
-    if (error) return toast.error(error.message);
     toast.success("Confirmation email resent. Check your inbox.");
   }
 
@@ -152,11 +156,13 @@ function AuthPage() {
     const email = window.prompt("Enter your email to receive a reset link:");
     if (!email) return;
     setLoading(true);
-    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-      redirectTo: `${window.location.origin}/auth/confirm`,
-    });
+    try {
+      await resetPasswordWithResend({ data: { email: email.trim() } });
+    } catch {
+      setLoading(false);
+      return toast.error("Could not send the reset email. Try again.");
+    }
     setLoading(false);
-    if (error) return toast.error(error.message);
     toast.success("Password reset email sent. Check your inbox.");
   }
 
