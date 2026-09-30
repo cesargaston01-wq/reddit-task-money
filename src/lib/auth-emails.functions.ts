@@ -3,6 +3,12 @@ import { z } from "zod";
 
 const siteBase = "https://reddit-task-money.lovable.app";
 
+// Some preview environments don't expose the backend admin credentials.
+// When that happens, the browser falls back to the standard sign-up flow.
+function adminAvailable() {
+  return Boolean(process.env["SUPABASE_URL"] && process.env["SUPABASE_SERVICE_ROLE_KEY"]);
+}
+
 async function sendAuthMail(
   to: string,
   kind: "signup" | "magiclink" | "recovery",
@@ -44,6 +50,7 @@ export const signUpWithResend = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data }) => {
+    if (!adminAvailable()) return { ok: false as const, fallback: true as const, error: "" };
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: link, error } = await supabaseAdmin.auth.admin.generateLink({
       type: "signup",
@@ -53,7 +60,7 @@ export const signUpWithResend = createServerFn({ method: "POST" })
         data: { full_name: data.full_name, reddit_profile_url: data.reddit_profile_url },
       },
     });
-    if (error) return { ok: false as const, error: error.message };
+    if (error) return { ok: false as const, fallback: false as const, error: error.message };
     await sendAuthMail(data.email, "signup", link.properties.hashed_token);
     return { ok: true as const };
   });
@@ -61,6 +68,7 @@ export const signUpWithResend = createServerFn({ method: "POST" })
 export const resendConfirmationWithResend = createServerFn({ method: "POST" })
   .inputValidator((d) => z.object({ email: z.string().email().max(255) }).parse(d))
   .handler(async ({ data }) => {
+    if (!adminAvailable()) return { ok: false as const, fallback: true as const, error: "" };
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: link, error } = await supabaseAdmin.auth.admin.generateLink({
       type: "magiclink",
@@ -73,6 +81,7 @@ export const resendConfirmationWithResend = createServerFn({ method: "POST" })
 export const resetPasswordWithResend = createServerFn({ method: "POST" })
   .inputValidator((d) => z.object({ email: z.string().email().max(255) }).parse(d))
   .handler(async ({ data }) => {
+    if (!adminAvailable()) return { ok: false as const, fallback: true as const, error: "" };
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: link, error } = await supabaseAdmin.auth.admin.generateLink({
       type: "recovery",

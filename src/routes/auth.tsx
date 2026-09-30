@@ -126,7 +126,22 @@ function AuthPage() {
           reddit_profile_url: parsed.data.reddit_profile_url,
         },
       });
-      if (!res.ok) return toast.error(res.error);
+      if (!res.ok && res.fallback) {
+        const { error } = await supabase.auth.signUp({
+          email: parsed.data.email,
+          password: parsed.data.password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/opportunities/comments`,
+            data: {
+              full_name: redditUsername,
+              reddit_profile_url: parsed.data.reddit_profile_url,
+            },
+          },
+        });
+        if (error) return toast.error(error.message);
+      } else if (!res.ok) {
+        return toast.error(res.error);
+      }
       setConfirmEmail(parsed.data.email);
       setShowConfirmMessage(true);
       return;
@@ -143,7 +158,11 @@ function AuthPage() {
     if (!confirmEmail) return;
     setLoading(true);
     try {
-      await resendConfirmationWithResend({ data: { email: confirmEmail } });
+      const res = await resendConfirmationWithResend({ data: { email: confirmEmail } });
+      if ("fallback" in res && res.fallback) {
+        const { error } = await supabase.auth.resend({ type: "signup", email: confirmEmail });
+        if (error) throw error;
+      }
     } catch {
       setLoading(false);
       return toast.error("Could not resend the email. Try again.");
@@ -157,7 +176,13 @@ function AuthPage() {
     if (!email) return;
     setLoading(true);
     try {
-      await resetPasswordWithResend({ data: { email: email.trim() } });
+      const res = await resetPasswordWithResend({ data: { email: email.trim() } });
+      if ("fallback" in res && res.fallback) {
+        const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+          redirectTo: `${window.location.origin}/reset-password`,
+        });
+        if (error) throw error;
+      }
     } catch {
       setLoading(false);
       return toast.error("Could not send the reset email. Try again.");
