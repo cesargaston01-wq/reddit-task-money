@@ -10,8 +10,6 @@ import {
   resendRequest,
 } from "@/lib/email-layout.server";
 
-const MIN_NEW_MISSIONS = 3;
-
 export const Route = createFileRoute("/api/public/mission-digest")({
   server: {
     handlers: {
@@ -31,7 +29,7 @@ export const Route = createFileRoute("/api/public/mission-digest")({
           return new Response("Unauthorized", { status: 401 });
         }
 
-        // Missions posted since the last digest (or last 24h).
+        // Max one alert per 24h: skip if a digest went out less than a day ago.
         const { data: lastLog } = await supabaseAdmin
           .from("mission_digest_log" as never)
           .select("sent_at")
@@ -40,8 +38,12 @@ export const Route = createFileRoute("/api/public/mission-digest")({
           .maybeSingle();
         const dayAgo = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
         const lastSent = (lastLog as { sent_at?: string } | null)?.sent_at;
-        const since = lastSent && lastSent > dayAgo ? lastSent : dayAgo;
+        if (lastSent && lastSent > dayAgo) {
+          return Response.json({ sent: false, reason: "daily_cap", last_sent: lastSent });
+        }
+        const since = lastSent ?? dayAgo;
 
+        // Any new open mission since the last alert triggers the email.
         const { data: missions, error: mErr } = await supabaseAdmin
           .from("missions")
           .select("id, subreddit, payout")
@@ -49,8 +51,8 @@ export const Route = createFileRoute("/api/public/mission-digest")({
           .eq("is_locked", false)
           .gt("created_at", since);
         if (mErr) return new Response(mErr.message, { status: 500 });
-        if (!missions || missions.length < MIN_NEW_MISSIONS) {
-          return Response.json({ sent: false, reason: "not_enough_missions", count: missions?.length ?? 0 });
+        if (!missions || missions.length === 0) {
+          return Response.json({ sent: false, reason: "no_new_missions" });
         }
 
         const { data: members, error: pErr } = await supabaseAdmin
