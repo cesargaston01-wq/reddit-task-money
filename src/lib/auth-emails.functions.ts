@@ -23,16 +23,13 @@ async function sendAuthMail(
        <p style="color:#334155;font-size:16px;line-height:1.5;margin:0 0 24px;">Confirm your email to start earning on Reddit missions.</p>
        ${button(url, "Confirm my email")}
        <p style="color:#64748B;font-size:14px;margin-top:24px;">If the button doesn't work, paste this link:<br>${url}</p>`;
-  const res = await resendRequest("/emails", {
+  await resendRequest("/emails", {
     from: FROM_EMAIL,
     to: [to],
     reply_to: REPLY_TO,
     subject,
     html: emailLayout(subject, content),
   });
-  if (res && typeof res === "object" && "ok" in res && !(res as Response).ok) {
-    throw new Error("Email could not be sent. Please try again.");
-  }
 }
 
 export const signUpWithResend = createServerFn({ method: "POST" })
