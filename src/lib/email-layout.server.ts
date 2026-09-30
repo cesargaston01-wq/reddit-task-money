@@ -1,5 +1,6 @@
 export const SITE_URL = "https://reddit-task-money.lovable.app";
 export const FROM_EMAIL = "TaskReddit <contact@taskreddit.com>";
+export const AUTH_FROM_EMAIL = "TaskReddit <noreply@taskreddit.com>";
 export const REPLY_TO = "contact@taskreddit.com";
 
 export function escapeHtml(value: string) {

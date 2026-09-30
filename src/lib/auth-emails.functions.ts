@@ -8,7 +8,7 @@ async function sendAuthMail(
   kind: "signup" | "magiclink" | "recovery",
   tokenHash: string,
 ) {
-  const { emailLayout, button, resendRequest, FROM_EMAIL, REPLY_TO, SITE_URL } = await import(
+  const { emailLayout, button, resendRequest, AUTH_FROM_EMAIL, REPLY_TO, SITE_URL } = await import(
     "./email-layout.server"
   );
   const url = `${SITE_URL || siteBase}/auth/confirm?token_hash=${encodeURIComponent(tokenHash)}&type=${kind}&next=${encodeURIComponent("/opportunities/comments")}`;
@@ -24,7 +24,7 @@ async function sendAuthMail(
        ${button(url, "Confirm my email")}
        <p style="color:#64748B;font-size:14px;margin-top:24px;">If the button doesn't work, paste this link:<br>${url}</p>`;
   await resendRequest("/emails", {
-    from: FROM_EMAIL,
+    from: AUTH_FROM_EMAIL,
     to: [to],
     reply_to: REPLY_TO,
     subject,

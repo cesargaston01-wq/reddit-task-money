@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { FROM_EMAIL, REPLY_TO, SITE_URL, emailLayout } from "@/lib/email-layout.server";
+import { AUTH_FROM_EMAIL, REPLY_TO, SITE_URL, emailLayout } from "@/lib/email-layout.server";
 
 export const Route = createFileRoute("/api/public/auth-email")({
   server: {
@@ -51,7 +51,7 @@ export const Route = createFileRoute("/api/public/auth-email")({
             "X-Connection-Api-Key": resendApiKey,
           },
           body: JSON.stringify({
-            from: FROM_EMAIL,
+            from: AUTH_FROM_EMAIL,
             to: [recipient],
             reply_to: REPLY_TO,
             subject,
