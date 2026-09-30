@@ -463,7 +463,7 @@ function AdminPage() {
         </TabsContent>
 
         <TabsContent value="users" className="mt-6 grid gap-3">
-          <div className="panel flex flex-col gap-3 p-3 sm:flex-row sm:items-center">
+          <div className="panel flex flex-wrap items-center gap-3 p-3">
             <Input
               value={userSearch}
               onChange={(e) => setUserSearch(e.target.value)}
@@ -517,7 +517,7 @@ function AdminPage() {
               title="Show only members who invited someone"
             >
               <Gift className="h-3.5 w-3.5" />
-              Invited members ({(profiles ?? []).filter((p) => Number(referralBy.get(p.id)?.invited ?? 0) > 0).length})
+              Invited ({(profiles ?? []).filter((p) => Number(referralBy.get(p.id)?.invited ?? 0) > 0).length})
             </Button>
             <Button size="sm" variant="outline" className="shrink-0 gap-1" onClick={exportProfilesCsv}>
               <Download className="h-3.5 w-3.5" />
