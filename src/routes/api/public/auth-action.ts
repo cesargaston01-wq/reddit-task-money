@@ -16,6 +16,7 @@ const body = z.discriminatedUnion("action", [
     password: z.string().min(6).max(72),
     full_name: z.string().max(100),
     reddit_profile_url: z.string().max(300),
+    referral_code: z.string().max(32).optional(),
   }),
   z.object({ action: z.literal("resend"), email: z.string().email().max(255) }),
   z.object({ action: z.literal("reset"), email: z.string().email().max(255) }),

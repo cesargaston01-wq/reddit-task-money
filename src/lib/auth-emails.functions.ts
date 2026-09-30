@@ -11,6 +11,7 @@ const signupSchema = z.object({
   password: z.string().min(6).max(72),
   full_name: z.string().max(100),
   reddit_profile_url: z.string().max(300),
+    referral_code: z.string().max(32).optional(),
 });
 const emailSchema = z.object({ email: z.string().email().max(255) });
 

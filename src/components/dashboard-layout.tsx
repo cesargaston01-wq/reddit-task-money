@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 
 const nav = [
   { to: "/opportunities/comments", label: "Comment opportunities", icon: MessageSquare },
+  { to: "/referrals", label: "Referrals", icon: Gift },
   { to: "/profile", label: "Profile", icon: UserIcon },
 ] as const;
 
