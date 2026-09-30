@@ -9,6 +9,25 @@ import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/password-input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSession } from "@/lib/data";
+
+// The editor preview can't send Resend emails itself, so it asks the live site to do it.
+const LIVE_SITE = "https://reddit-task-money.lovable.app";
+async function liveAuthAction(
+  body: Record<string, string>,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    const r = await fetch(`${LIVE_SITE}/api/public/auth-action`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    const data = (await r.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
+    if (data?.ok) return { ok: true };
+    return { ok: false, error: data?.error || "Could not send the email. Publish the site and try again." };
+  } catch {
+    return { ok: false, error: "Could not send the email. Publish the site and try again." };
+  }
+}
 import {
   signUpWithResend,
   resendConfirmationWithResend,
@@ -127,18 +146,14 @@ function AuthPage() {
         },
       });
       if (!res.ok && res.fallback) {
-        const { error } = await supabase.auth.signUp({
+        const live = await liveAuthAction({
+          action: "signup",
           email: parsed.data.email,
           password: parsed.data.password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/opportunities/comments`,
-            data: {
-              full_name: redditUsername,
-              reddit_profile_url: parsed.data.reddit_profile_url,
-            },
-          },
+          full_name: redditUsername,
+          reddit_profile_url: parsed.data.reddit_profile_url,
         });
-        if (error) return toast.error(error.message);
+        if (!live.ok) return toast.error(live.error);
       } else if (!res.ok) {
         return toast.error(res.error);
       }
@@ -159,9 +174,9 @@ function AuthPage() {
     setLoading(true);
     try {
       const res = await resendConfirmationWithResend({ data: { email: confirmEmail } });
-      if ("fallback" in res && res.fallback) {
-        const { error } = await supabase.auth.resend({ type: "signup", email: confirmEmail });
-        if (error) throw error;
+      if (!res.ok && res.fallback) {
+        const live = await liveAuthAction({ action: "resend", email: confirmEmail });
+        if (!live.ok) throw new Error(live.error);
       }
     } catch {
       setLoading(false);
@@ -177,11 +192,9 @@ function AuthPage() {
     setLoading(true);
     try {
       const res = await resetPasswordWithResend({ data: { email: email.trim() } });
-      if ("fallback" in res && res.fallback) {
-        const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-          redirectTo: `${window.location.origin}/auth/reset-password`,
-        });
-        if (error) throw error;
+      if (!res.ok && res.fallback) {
+        const live = await liveAuthAction({ action: "reset", email: email.trim() });
+        if (!live.ok) throw new Error(live.error);
       }
     } catch {
       setLoading(false);

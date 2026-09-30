@@ -20,6 +20,7 @@ import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as ApiPublicMissionDigestRouteImport } from './routes/api/public/mission-digest'
 import { Route as ApiPublicAuthEmailRouteImport } from './routes/api/public/auth-email'
+import { Route as ApiPublicAuthActionRouteImport } from './routes/api/public/auth-action'
 import { Route as AuthenticatedOpportunitiesCommentsRouteImport } from './routes/_authenticated/opportunities.comments'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -76,6 +77,11 @@ const ApiPublicAuthEmailRoute = ApiPublicAuthEmailRouteImport.update({
   path: '/api/public/auth-email',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicAuthActionRoute = ApiPublicAuthActionRouteImport.update({
+  id: '/api/public/auth-action',
+  path: '/api/public/auth-action',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedOpportunitiesCommentsRoute =
   AuthenticatedOpportunitiesCommentsRouteImport.update({
     id: '/opportunities/comments',
@@ -93,6 +99,7 @@ export interface FileRoutesByFullPath {
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/opportunities/comments': typeof AuthenticatedOpportunitiesCommentsRoute
+  '/api/public/auth-action': typeof ApiPublicAuthActionRoute
   '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
   '/api/public/mission-digest': typeof ApiPublicMissionDigestRoute
 }
@@ -106,6 +113,7 @@ export interface FileRoutesByTo {
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/opportunities/comments': typeof AuthenticatedOpportunitiesCommentsRoute
+  '/api/public/auth-action': typeof ApiPublicAuthActionRoute
   '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
   '/api/public/mission-digest': typeof ApiPublicMissionDigestRoute
 }
@@ -121,6 +129,7 @@ export interface FileRoutesById {
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/_authenticated/opportunities/comments': typeof AuthenticatedOpportunitiesCommentsRoute
+  '/api/public/auth-action': typeof ApiPublicAuthActionRoute
   '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
   '/api/public/mission-digest': typeof ApiPublicMissionDigestRoute
 }
@@ -136,6 +145,7 @@ export interface FileRouteTypes {
     | '/auth/confirm'
     | '/auth/reset-password'
     | '/opportunities/comments'
+    | '/api/public/auth-action'
     | '/api/public/auth-email'
     | '/api/public/mission-digest'
   fileRoutesByTo: FileRoutesByTo
@@ -149,6 +159,7 @@ export interface FileRouteTypes {
     | '/auth/confirm'
     | '/auth/reset-password'
     | '/opportunities/comments'
+    | '/api/public/auth-action'
     | '/api/public/auth-email'
     | '/api/public/mission-digest'
   id:
@@ -163,6 +174,7 @@ export interface FileRouteTypes {
     | '/auth/confirm'
     | '/auth/reset-password'
     | '/_authenticated/opportunities/comments'
+    | '/api/public/auth-action'
     | '/api/public/auth-email'
     | '/api/public/mission-digest'
   fileRoutesById: FileRoutesById
@@ -173,6 +185,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   DiscoverRoute: typeof DiscoverRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ApiPublicAuthActionRoute: typeof ApiPublicAuthActionRoute
   ApiPublicAuthEmailRoute: typeof ApiPublicAuthEmailRoute
   ApiPublicMissionDigestRoute: typeof ApiPublicMissionDigestRoute
 }
@@ -256,6 +269,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicAuthEmailRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/auth-action': {
+      id: '/api/public/auth-action'
+      path: '/api/public/auth-action'
+      fullPath: '/api/public/auth-action'
+      preLoaderRoute: typeof ApiPublicAuthActionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/opportunities/comments': {
       id: '/_authenticated/opportunities/comments'
       path: '/opportunities/comments'
@@ -300,6 +320,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   DiscoverRoute: DiscoverRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ApiPublicAuthActionRoute: ApiPublicAuthActionRoute,
   ApiPublicAuthEmailRoute: ApiPublicAuthEmailRoute,
   ApiPublicMissionDigestRoute: ApiPublicMissionDigestRoute,
 }
