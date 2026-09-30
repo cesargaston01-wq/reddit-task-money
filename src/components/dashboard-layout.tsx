@@ -9,6 +9,7 @@ import {
   User as UserIcon,
   Users,
   Menu,
+  Gift,
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,6 +20,7 @@ import { cn } from "@/lib/utils";
 
 const nav = [
   { to: "/opportunities/comments", label: "Comment opportunities", icon: MessageSquare },
+  { to: "/referrals", label: "Referrals", icon: Gift },
   { to: "/profile", label: "Profile", icon: UserIcon },
 ] as const;
 

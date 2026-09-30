@@ -6,6 +6,7 @@ export const signupInput = z.object({
   password: z.string().min(6).max(72),
   full_name: z.string().max(100),
   reddit_profile_url: z.string().max(300),
+  referral_code: z.string().max(32).optional(),
 });
 export const emailInput = z.object({ email: z.string().email().max(255) });
 
@@ -44,7 +45,7 @@ export async function doSignup(data: z.infer<typeof signupInput>): Promise<AuthA
     type: "signup",
     email,
     password: data.password,
-    options: { data: { full_name: data.full_name, reddit_profile_url: data.reddit_profile_url } },
+    options: { data: { full_name: data.full_name, reddit_profile_url: data.reddit_profile_url, referral_code: data.referral_code ?? "" } },
   });
   if (error) return { ok: false, error: error.message };
   await sendAuthMail(email, "signup", link.properties.hashed_token);

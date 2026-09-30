@@ -170,6 +170,8 @@ export type Database = {
           niches: string[]
           phone_number: string
           reddit_profile_url: string
+          referral_code: string
+          referred_by: string | null
           rejection_reason: string | null
           status: Database["public"]["Enums"]["account_status"]
           wallet_address: string
@@ -183,6 +185,8 @@ export type Database = {
           niches?: string[]
           phone_number?: string
           reddit_profile_url?: string
+          referral_code?: string
+          referred_by?: string | null
           rejection_reason?: string | null
           status?: Database["public"]["Enums"]["account_status"]
           wallet_address?: string
@@ -196,11 +200,21 @@ export type Database = {
           niches?: string[]
           phone_number?: string
           reddit_profile_url?: string
+          referral_code?: string
+          referred_by?: string | null
           rejection_reason?: string | null
           status?: Database["public"]["Enums"]["account_status"]
           wallet_address?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_referred_by_fkey"
+            columns: ["referred_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       submissions: {
         Row: {
@@ -317,6 +331,28 @@ export type Database = {
       }
     }
     Functions: {
+      admin_referral_earnings: {
+        Args: never
+        Returns: {
+          approved_missions: number
+          earned: number
+          invited: number
+          referrer_id: string
+          username: string
+          validated: number
+          wallet: string
+        }[]
+      }
+      get_my_referrals: {
+        Args: never
+        Returns: {
+          approved_missions: number
+          earned: number
+          joined_at: string
+          status: Database["public"]["Enums"]["account_status"]
+          username: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

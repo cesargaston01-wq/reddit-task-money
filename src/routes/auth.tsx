@@ -89,6 +89,12 @@ function AuthPage() {
 
   const { data: user, isLoading: isRestoringSession } = useSession();
 
+  // Remember an invite code from ?ref=... so it survives navigation.
+  useEffect(() => {
+    const ref = new URLSearchParams(window.location.search).get("ref");
+    if (ref && /^[a-z0-9]{4,32}$/i.test(ref)) localStorage.setItem("taskreddit_ref", ref.toLowerCase());
+  }, []);
+
   useEffect(() => {
     if (user) navigate({ to: "/opportunities/comments", replace: true });
   }, [navigate, user]);
@@ -143,6 +149,7 @@ function AuthPage() {
           password: parsed.data.password,
           full_name: redditUsername,
           reddit_profile_url: parsed.data.reddit_profile_url,
+          referral_code: localStorage.getItem("taskreddit_ref") ?? "",
         },
       });
       if (!res.ok && res.fallback) {
@@ -152,6 +159,7 @@ function AuthPage() {
           password: parsed.data.password,
           full_name: redditUsername,
           reddit_profile_url: parsed.data.reddit_profile_url,
+          referral_code: localStorage.getItem("taskreddit_ref") ?? "",
         });
         if (!live.ok) return toast.error(live.error);
       } else if (!res.ok) {
