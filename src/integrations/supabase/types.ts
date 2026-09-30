@@ -43,6 +43,21 @@ export type Database = {
           },
         ]
       }
+      internal_secrets: {
+        Row: {
+          name: string
+          value: string
+        }
+        Insert: {
+          name: string
+          value: string
+        }
+        Update: {
+          name?: string
+          value?: string
+        }
+        Relationships: []
+      }
       member_deletion_requests: {
         Row: {
           created_at: string
@@ -61,6 +76,27 @@ export type Database = {
           id?: string
           requested_by?: string
           target_user_id?: string
+        }
+        Relationships: []
+      }
+      mission_digest_log: {
+        Row: {
+          id: string
+          mission_count: number
+          recipient_count: number
+          sent_at: string
+        }
+        Insert: {
+          id?: string
+          mission_count: number
+          recipient_count: number
+          sent_at?: string
+        }
+        Update: {
+          id?: string
+          mission_count?: number
+          recipient_count?: number
+          sent_at?: string
         }
         Relationships: []
       }

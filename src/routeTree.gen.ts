@@ -18,6 +18,7 @@ import { Route as AuthResetPasswordRouteImport } from './routes/auth.reset-passw
 import { Route as AuthConfirmRouteImport } from './routes/auth.confirm'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as ApiPublicMissionDigestRouteImport } from './routes/api/public/mission-digest'
 import { Route as ApiPublicAuthEmailRouteImport } from './routes/api/public/auth-email'
 import { Route as AuthenticatedOpportunitiesCommentsRouteImport } from './routes/_authenticated/opportunities.comments'
 
@@ -65,6 +66,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiPublicMissionDigestRoute = ApiPublicMissionDigestRouteImport.update({
+  id: '/api/public/mission-digest',
+  path: '/api/public/mission-digest',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicAuthEmailRoute = ApiPublicAuthEmailRouteImport.update({
   id: '/api/public/auth-email',
   path: '/api/public/auth-email',
@@ -88,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/opportunities/comments': typeof AuthenticatedOpportunitiesCommentsRoute
   '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
+  '/api/public/mission-digest': typeof ApiPublicMissionDigestRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -100,6 +107,7 @@ export interface FileRoutesByTo {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/opportunities/comments': typeof AuthenticatedOpportunitiesCommentsRoute
   '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
+  '/api/public/mission-digest': typeof ApiPublicMissionDigestRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -114,6 +122,7 @@ export interface FileRoutesById {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/_authenticated/opportunities/comments': typeof AuthenticatedOpportunitiesCommentsRoute
   '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
+  '/api/public/mission-digest': typeof ApiPublicMissionDigestRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -128,6 +137,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/opportunities/comments'
     | '/api/public/auth-email'
+    | '/api/public/mission-digest'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -140,6 +150,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/opportunities/comments'
     | '/api/public/auth-email'
+    | '/api/public/mission-digest'
   id:
     | '__root__'
     | '/'
@@ -153,6 +164,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/_authenticated/opportunities/comments'
     | '/api/public/auth-email'
+    | '/api/public/mission-digest'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -162,6 +174,7 @@ export interface RootRouteChildren {
   DiscoverRoute: typeof DiscoverRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiPublicAuthEmailRoute: typeof ApiPublicAuthEmailRoute
+  ApiPublicMissionDigestRoute: typeof ApiPublicMissionDigestRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -229,6 +242,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/mission-digest': {
+      id: '/api/public/mission-digest'
+      path: '/api/public/mission-digest'
+      fullPath: '/api/public/mission-digest'
+      preLoaderRoute: typeof ApiPublicMissionDigestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/auth-email': {
       id: '/api/public/auth-email'
       path: '/api/public/auth-email'
@@ -281,6 +301,7 @@ const rootRouteChildren: RootRouteChildren = {
   DiscoverRoute: DiscoverRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiPublicAuthEmailRoute: ApiPublicAuthEmailRoute,
+  ApiPublicMissionDigestRoute: ApiPublicMissionDigestRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

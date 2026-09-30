@@ -1,7 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-
-const SITE_URL = "https://reddit-task-money.lovable.app";
-const FROM_EMAIL = "TaskReddit <noreply@taskreddit.com>";
+import { FROM_EMAIL, REPLY_TO, SITE_URL, emailLayout } from "@/lib/email-layout.server";
 
 export const Route = createFileRoute("/api/public/auth-email")({
   server: {
@@ -55,6 +53,7 @@ export const Route = createFileRoute("/api/public/auth-email")({
           body: JSON.stringify({
             from: FROM_EMAIL,
             to: [recipient],
+            reply_to: REPLY_TO,
             subject,
             html,
           }),
@@ -214,36 +213,5 @@ function renderEmail(payload: AuthEmailPayload) {
       break;
   }
 
-  return `
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-       <title>${getSubject(type)}</title>
-    </head>
-    <body style="margin:0;padding:0;background:#f8fafc;">
-      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
-        <tr>
-          <td align="center" style="padding:40px 16px;">
-            <table role="presentation" width="100%" max-width="480" cellspacing="0" cellpadding="0" border="0" style="max-width:480px;background:#ffffff;border-radius:12px;box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);">
-              <tr>
-                <td style="padding:32px;">
-                  <div style="margin-bottom:24px;">
-                    <span style="font-family:Arial,sans-serif;font-size:20px;font-weight:700;color:#0F172A;">Task<span style="color:#FF4500;">Reddit</span></span>
-                  </div>
-                  ${content}
-                  <p style="color:#94a3b8;font-size:12px;margin-top:32px;border-top:1px solid #e2e8f0;padding-top:16px;">
-                    TaskReddit — paid Reddit missions for verified creators.<br>
-                    Need help? Just reply to this email.
-                  </p>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-      </table>
-    </body>
-    </html>
-  `;
+  return emailLayout(getSubject(type), content);
 }
