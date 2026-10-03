@@ -116,13 +116,26 @@ function Landing() {
   return (
     <div className="min-h-screen">
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
-        <div className="mx-auto grid h-16 max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 sm:px-5">
-          <Link to="/" className="flex min-w-0 items-center gap-2 font-display text-base font-bold tracking-tight sm:text-lg">
-            <img src={taskredditLogoAsset.url} alt="TaskReddit logo" className="h-7 w-7 shrink-0" width={28} height={28} />
-            <span className="truncate">
-              Task<span className="text-primary">Reddit</span>
-            </span>
-          </Link>
+        <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-2 sm:px-5">
+          <div className="flex min-w-0 flex-col">
+            <Link to="/" className="flex min-w-0 items-center gap-2 font-display text-base font-bold tracking-tight sm:text-lg">
+              <img src={taskredditLogoAsset.url} alt="TaskReddit logo" className="h-7 w-7 shrink-0" width={28} height={28} />
+              <span className="truncate">
+                Task<span className="text-primary">Reddit</span>
+              </span>
+            </Link>
+            <button
+              type="button"
+              onClick={() => {
+                navigator.clipboard.writeText("2Bi8m6e869iizfPLDNoJmD1qYWYa9wm2rdGL3d59pump");
+                toast.success("Address copied");
+              }}
+              className="cursor-pointer break-all text-left text-[10px] leading-snug text-muted-foreground transition-colors hover:text-foreground"
+              title="Click to copy"
+            >
+              CA: 2Bi8m6e869iizfPLDNoJmD1qYWYa9wm2rdGL3d59pump
+            </button>
+          </div>
           <div className="flex shrink-0 items-center gap-1 sm:gap-2">
             <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
               <Link to="/discover">Discover paid tasks</Link>
