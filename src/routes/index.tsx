@@ -9,6 +9,8 @@ import {
   Zap,
 } from "lucide-react";
 
+import { toast } from "sonner";
+
 import { Button } from "@/components/ui/button";
 import { FeaturesSectionWithHoverEffects } from "@/components/ui/feature-section-with-hover-effects";
 import HowItWorks from "@/components/ui/how-it-works";
