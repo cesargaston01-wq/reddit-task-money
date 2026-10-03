@@ -73,6 +73,19 @@ export function DashboardLayout({
             Task<span className="text-primary">Reddit</span>
           </Link>
         </div>
+        <div className="px-5 pb-2">
+          <button
+            type="button"
+            onClick={() => {
+              navigator.clipboard.writeText("2Bi8m6e869iizfPLDNoJmD1qYWYa9wm2rdGL3d59pump");
+              toast.success("Address copied");
+            }}
+            className="w-full cursor-pointer break-all text-left text-[10px] leading-snug text-muted-foreground transition-colors hover:text-foreground"
+            title="Click to copy"
+          >
+            2Bi8m6e869iizfPLDNoJmD1qYWYa9wm2rdGL3d59pump
+          </button>
+        </div>
         <nav className="space-y-1 px-3">
           {links.map((item) => {
             const active = pathname === item.to;
