@@ -2,7 +2,7 @@ import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   AlertTriangle,
-  
+
   LogOut,
   MessageSquare,
   Shield,
@@ -12,6 +12,7 @@ import {
   Gift,
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { WHOP_COMMUNITY_URL } from "@/lib/community";
@@ -72,6 +73,19 @@ export function DashboardLayout({
           <Link to="/" className="font-display text-base font-bold">
             Task<span className="text-primary">Reddit</span>
           </Link>
+        </div>
+        <div className="px-5 pb-2">
+          <button
+            type="button"
+            onClick={() => {
+              navigator.clipboard.writeText("2Bi8m6e869iizfPLDNoJmD1qYWYa9wm2rdGL3d59pump");
+              toast.success("Address copied");
+            }}
+            className="w-full cursor-pointer break-all text-left text-[10px] leading-snug text-muted-foreground transition-colors hover:text-foreground"
+            title="Click to copy"
+          >
+            2Bi8m6e869iizfPLDNoJmD1qYWYa9wm2rdGL3d59pump
+          </button>
         </div>
         <nav className="space-y-1 px-3">
           {links.map((item) => {
