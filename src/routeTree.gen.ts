@@ -9,34 +9,25 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
-import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
-import { Route as AuthenticatedReferralsRouteImport } from './routes/_authenticated/referrals'
-import { Route as AuthConfirmRouteImport } from './routes/auth.confirm'
+import { Route as DiscoverRouteImport } from './routes/discover'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth.reset-password'
-import { Route as AuthenticatedOpportunitiesCommentsRouteImport } from './routes/_authenticated/opportunities.comments'
-import { Route as ApiPublicAuthActionRouteImport } from './routes/api/public/auth-action'
-import { Route as ApiPublicAuthEmailRouteImport } from './routes/api/public/auth-email'
-import { Route as ApiPublicMissionDigestRouteImport } from './routes/api/public/mission-digest'
+import { Route as AuthConfirmRouteImport } from './routes/auth.confirm'
+import { Route as AuthenticatedReferralsRouteImport } from './routes/_authenticated/referrals'
+import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as ApiPublicReferralAnnouncementRouteImport } from './routes/api/public/referral-announcement'
+import { Route as ApiPublicMissionDigestRouteImport } from './routes/api/public/mission-digest'
+import { Route as ApiPublicAuthEmailRouteImport } from './routes/api/public/auth-email'
+import { Route as ApiPublicAuthActionRouteImport } from './routes/api/public/auth-action'
+import { Route as AuthenticatedOpportunitiesCommentsRouteImport } from './routes/_authenticated/opportunities.comments'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DiscoverRoute = DiscoverRouteImport.update({
@@ -44,14 +35,33 @@ const DiscoverRoute = DiscoverRouteImport.update({
   path: '/discover',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthConfirmRoute = AuthConfirmRouteImport.update({
+  id: '/confirm',
+  path: '/confirm',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthenticatedReferralsRoute = AuthenticatedReferralsRouteImport.update({
+  id: '/referrals',
+  path: '/referrals',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
@@ -59,30 +69,20 @@ const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedReferralsRoute = AuthenticatedReferralsRouteImport.update({
-  id: '/referrals',
-  path: '/referrals',
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthConfirmRoute = AuthConfirmRouteImport.update({
-  id: '/confirm',
-  path: '/confirm',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthenticatedOpportunitiesCommentsRoute =
-  AuthenticatedOpportunitiesCommentsRouteImport.update({
-    id: '/opportunities/comments',
-    path: '/opportunities/comments',
-    getParentRoute: () => AuthenticatedRouteRoute,
+const ApiPublicReferralAnnouncementRoute =
+  ApiPublicReferralAnnouncementRouteImport.update({
+    id: '/api/public/referral-announcement',
+    path: '/api/public/referral-announcement',
+    getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPublicAuthActionRoute = ApiPublicAuthActionRouteImport.update({
-  id: '/api/public/auth-action',
-  path: '/api/public/auth-action',
+const ApiPublicMissionDigestRoute = ApiPublicMissionDigestRouteImport.update({
+  id: '/api/public/mission-digest',
+  path: '/api/public/mission-digest',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicAuthEmailRoute = ApiPublicAuthEmailRouteImport.update({
@@ -90,16 +90,16 @@ const ApiPublicAuthEmailRoute = ApiPublicAuthEmailRouteImport.update({
   path: '/api/public/auth-email',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicMissionDigestRoute = ApiPublicMissionDigestRouteImport.update({
-  id: '/api/public/mission-digest',
-  path: '/api/public/mission-digest',
+const ApiPublicAuthActionRoute = ApiPublicAuthActionRouteImport.update({
+  id: '/api/public/auth-action',
+  path: '/api/public/auth-action',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicReferralAnnouncementRoute =
-  ApiPublicReferralAnnouncementRouteImport.update({
-    id: '/api/public/referral-announcement',
-    path: '/api/public/referral-announcement',
-    getParentRoute: () => rootRouteImport,
+const AuthenticatedOpportunitiesCommentsRoute =
+  AuthenticatedOpportunitiesCommentsRouteImport.update({
+    id: '/opportunities/comments',
+    path: '/opportunities/comments',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -218,25 +218,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated': {
-      id: '/_authenticated'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/discover': {
@@ -246,18 +232,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiscoverRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/admin': {
-      id: '/_authenticated/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth/reset-password': {
+      id: '/auth/reset-password'
+      path: '/reset-password'
+      fullPath: '/auth/reset-password'
+      preLoaderRoute: typeof AuthResetPasswordRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/confirm': {
+      id: '/auth/confirm'
+      path: '/confirm'
+      fullPath: '/auth/confirm'
+      preLoaderRoute: typeof AuthConfirmRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_authenticated/referrals': {
+      id: '/_authenticated/referrals'
+      path: '/referrals'
+      fullPath: '/referrals'
+      preLoaderRoute: typeof AuthenticatedReferralsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/profile': {
@@ -267,46 +281,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProfileRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/referrals': {
-      id: '/_authenticated/referrals'
-      path: '/referrals'
-      fullPath: '/referrals'
-      preLoaderRoute: typeof AuthenticatedReferralsRouteImport
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/auth/confirm': {
-      id: '/auth/confirm'
-      path: '/confirm'
-      fullPath: '/auth/confirm'
-      preLoaderRoute: typeof AuthConfirmRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/auth/reset-password': {
-      id: '/auth/reset-password'
-      path: '/reset-password'
-      fullPath: '/auth/reset-password'
-      preLoaderRoute: typeof AuthResetPasswordRouteImport
-      parentRoute: typeof AuthRoute
-    }
-    '/_authenticated/opportunities/comments': {
-      id: '/_authenticated/opportunities/comments'
-      path: '/opportunities/comments'
-      fullPath: '/opportunities/comments'
-      preLoaderRoute: typeof AuthenticatedOpportunitiesCommentsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/api/public/auth-action': {
-      id: '/api/public/auth-action'
-      path: '/api/public/auth-action'
-      fullPath: '/api/public/auth-action'
-      preLoaderRoute: typeof ApiPublicAuthActionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/auth-email': {
-      id: '/api/public/auth-email'
-      path: '/api/public/auth-email'
-      fullPath: '/api/public/auth-email'
-      preLoaderRoute: typeof ApiPublicAuthEmailRouteImport
+    '/api/public/referral-announcement': {
+      id: '/api/public/referral-announcement'
+      path: '/api/public/referral-announcement'
+      fullPath: '/api/public/referral-announcement'
+      preLoaderRoute: typeof ApiPublicReferralAnnouncementRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/mission-digest': {
@@ -316,12 +302,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicMissionDigestRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/referral-announcement': {
-      id: '/api/public/referral-announcement'
-      path: '/api/public/referral-announcement'
-      fullPath: '/api/public/referral-announcement'
-      preLoaderRoute: typeof ApiPublicReferralAnnouncementRouteImport
+    '/api/public/auth-email': {
+      id: '/api/public/auth-email'
+      path: '/api/public/auth-email'
+      fullPath: '/api/public/auth-email'
+      preLoaderRoute: typeof ApiPublicAuthEmailRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/api/public/auth-action': {
+      id: '/api/public/auth-action'
+      path: '/api/public/auth-action'
+      fullPath: '/api/public/auth-action'
+      preLoaderRoute: typeof ApiPublicAuthActionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/opportunities/comments': {
+      id: '/_authenticated/opportunities/comments'
+      path: '/opportunities/comments'
+      fullPath: '/opportunities/comments'
+      preLoaderRoute: typeof AuthenticatedOpportunitiesCommentsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
