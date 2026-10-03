@@ -9,7 +9,6 @@ import {
   Zap,
 } from "lucide-react";
 
-import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { FeaturesSectionWithHoverEffects } from "@/components/ui/feature-section-with-hover-effects";
@@ -126,17 +125,6 @@ function Landing() {
                 Task<span className="text-primary">Reddit</span>
               </span>
             </Link>
-            <button
-              type="button"
-              onClick={() => {
-                navigator.clipboard.writeText("2Bi8m6e869iizfPLDNoJmD1qYWYa9wm2rdGL3d59pump");
-                toast.success("Address copied");
-              }}
-              className="cursor-pointer break-all text-left text-[10px] leading-snug text-muted-foreground transition-colors hover:text-foreground"
-              title="Click to copy"
-            >
-              CA: 2Bi8m6e869iizfPLDNoJmD1qYWYa9wm2rdGL3d59pump
-            </button>
           </div>
           <div className="flex shrink-0 items-center gap-1 sm:gap-2">
             <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
