@@ -12,7 +12,6 @@ import {
   Gift,
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
-import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { WHOP_COMMUNITY_URL } from "@/lib/community";
