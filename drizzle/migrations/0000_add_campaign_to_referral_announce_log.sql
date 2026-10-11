@@ -1,0 +1,1 @@
+ALTER TABLE public.referral_announce_log ADD COLUMN campaign text NOT NULL DEFAULT 'launch';

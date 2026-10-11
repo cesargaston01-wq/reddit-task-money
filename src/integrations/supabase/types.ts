@@ -218,16 +218,19 @@ export type Database = {
       }
       referral_announce_log: {
         Row: {
+          campaign: string
           id: string
           recipient_count: number
           sent_at: string
         }
         Insert: {
+          campaign?: string
           id?: string
           recipient_count?: number
           sent_at?: string
         }
         Update: {
+          campaign?: string
           id?: string
           recipient_count?: number
           sent_at?: string
