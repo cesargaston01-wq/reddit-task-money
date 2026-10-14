@@ -22,6 +22,7 @@ import { Route as AuthResetPasswordRouteImport } from './routes/auth.reset-passw
 import { Route as AuthenticatedOpportunitiesCommentsRouteImport } from './routes/_authenticated/opportunities.comments'
 import { Route as ApiPublicAuthActionRouteImport } from './routes/api/public/auth-action'
 import { Route as ApiPublicAuthEmailRouteImport } from './routes/api/public/auth-email'
+import { Route as ApiPublicCommentsAlertRouteImport } from './routes/api/public/comments-alert'
 import { Route as ApiPublicMissionDigestRouteImport } from './routes/api/public/mission-digest'
 import { Route as ApiPublicReferralAnnouncementRouteImport } from './routes/api/public/referral-announcement'
 import { Route as ApiPublicReferralReminderRouteImport } from './routes/api/public/referral-reminder'
@@ -91,6 +92,11 @@ const ApiPublicAuthEmailRoute = ApiPublicAuthEmailRouteImport.update({
   path: '/api/public/auth-email',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicCommentsAlertRoute = ApiPublicCommentsAlertRouteImport.update({
+  id: '/api/public/comments-alert',
+  path: '/api/public/comments-alert',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicMissionDigestRoute = ApiPublicMissionDigestRouteImport.update({
   id: '/api/public/mission-digest',
   path: '/api/public/mission-digest',
@@ -122,6 +128,7 @@ export interface FileRoutesByFullPath {
   '/opportunities/comments': typeof AuthenticatedOpportunitiesCommentsRoute
   '/api/public/auth-action': typeof ApiPublicAuthActionRoute
   '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
+  '/api/public/comments-alert': typeof ApiPublicCommentsAlertRoute
   '/api/public/mission-digest': typeof ApiPublicMissionDigestRoute
   '/api/public/referral-announcement': typeof ApiPublicReferralAnnouncementRoute
   '/api/public/referral-reminder': typeof ApiPublicReferralReminderRoute
@@ -139,6 +146,7 @@ export interface FileRoutesByTo {
   '/opportunities/comments': typeof AuthenticatedOpportunitiesCommentsRoute
   '/api/public/auth-action': typeof ApiPublicAuthActionRoute
   '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
+  '/api/public/comments-alert': typeof ApiPublicCommentsAlertRoute
   '/api/public/mission-digest': typeof ApiPublicMissionDigestRoute
   '/api/public/referral-announcement': typeof ApiPublicReferralAnnouncementRoute
   '/api/public/referral-reminder': typeof ApiPublicReferralReminderRoute
@@ -158,6 +166,7 @@ export interface FileRoutesById {
   '/_authenticated/opportunities/comments': typeof AuthenticatedOpportunitiesCommentsRoute
   '/api/public/auth-action': typeof ApiPublicAuthActionRoute
   '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
+  '/api/public/comments-alert': typeof ApiPublicCommentsAlertRoute
   '/api/public/mission-digest': typeof ApiPublicMissionDigestRoute
   '/api/public/referral-announcement': typeof ApiPublicReferralAnnouncementRoute
   '/api/public/referral-reminder': typeof ApiPublicReferralReminderRoute
@@ -177,6 +186,7 @@ export interface FileRouteTypes {
     | '/opportunities/comments'
     | '/api/public/auth-action'
     | '/api/public/auth-email'
+    | '/api/public/comments-alert'
     | '/api/public/mission-digest'
     | '/api/public/referral-announcement'
     | '/api/public/referral-reminder'
@@ -194,6 +204,7 @@ export interface FileRouteTypes {
     | '/opportunities/comments'
     | '/api/public/auth-action'
     | '/api/public/auth-email'
+    | '/api/public/comments-alert'
     | '/api/public/mission-digest'
     | '/api/public/referral-announcement'
     | '/api/public/referral-reminder'
@@ -212,6 +223,7 @@ export interface FileRouteTypes {
     | '/_authenticated/opportunities/comments'
     | '/api/public/auth-action'
     | '/api/public/auth-email'
+    | '/api/public/comments-alert'
     | '/api/public/mission-digest'
     | '/api/public/referral-announcement'
     | '/api/public/referral-reminder'
@@ -225,6 +237,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiPublicAuthActionRoute: typeof ApiPublicAuthActionRoute
   ApiPublicAuthEmailRoute: typeof ApiPublicAuthEmailRoute
+  ApiPublicCommentsAlertRoute: typeof ApiPublicCommentsAlertRoute
   ApiPublicMissionDigestRoute: typeof ApiPublicMissionDigestRoute
   ApiPublicReferralAnnouncementRoute: typeof ApiPublicReferralAnnouncementRoute
   ApiPublicReferralReminderRoute: typeof ApiPublicReferralReminderRoute
@@ -323,6 +336,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicAuthEmailRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/comments-alert': {
+      id: '/api/public/comments-alert'
+      path: '/api/public/comments-alert'
+      fullPath: '/api/public/comments-alert'
+      preLoaderRoute: typeof ApiPublicCommentsAlertRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/mission-digest': {
       id: '/api/public/mission-digest'
       path: '/api/public/mission-digest'
@@ -385,6 +405,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiPublicAuthActionRoute: ApiPublicAuthActionRoute,
   ApiPublicAuthEmailRoute: ApiPublicAuthEmailRoute,
+  ApiPublicCommentsAlertRoute: ApiPublicCommentsAlertRoute,
   ApiPublicMissionDigestRoute: ApiPublicMissionDigestRoute,
   ApiPublicReferralAnnouncementRoute: ApiPublicReferralAnnouncementRoute,
   ApiPublicReferralReminderRoute: ApiPublicReferralReminderRoute,
