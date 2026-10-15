@@ -24,6 +24,7 @@ import { Route as ApiPublicAuthActionRouteImport } from './routes/api/public/aut
 import { Route as ApiPublicAuthEmailRouteImport } from './routes/api/public/auth-email'
 import { Route as ApiPublicCommentsAlertRouteImport } from './routes/api/public/comments-alert'
 import { Route as ApiPublicMissionDigestRouteImport } from './routes/api/public/mission-digest'
+import { Route as ApiPublicMissionsAlertRouteImport } from './routes/api/public/missions-alert'
 import { Route as ApiPublicReferralAnnouncementRouteImport } from './routes/api/public/referral-announcement'
 import { Route as ApiPublicReferralReminderRouteImport } from './routes/api/public/referral-reminder'
 
@@ -102,6 +103,11 @@ const ApiPublicMissionDigestRoute = ApiPublicMissionDigestRouteImport.update({
   path: '/api/public/mission-digest',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicMissionsAlertRoute = ApiPublicMissionsAlertRouteImport.update({
+  id: '/api/public/missions-alert',
+  path: '/api/public/missions-alert',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicReferralAnnouncementRoute =
   ApiPublicReferralAnnouncementRouteImport.update({
     id: '/api/public/referral-announcement',
@@ -130,6 +136,7 @@ export interface FileRoutesByFullPath {
   '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
   '/api/public/comments-alert': typeof ApiPublicCommentsAlertRoute
   '/api/public/mission-digest': typeof ApiPublicMissionDigestRoute
+  '/api/public/missions-alert': typeof ApiPublicMissionsAlertRoute
   '/api/public/referral-announcement': typeof ApiPublicReferralAnnouncementRoute
   '/api/public/referral-reminder': typeof ApiPublicReferralReminderRoute
 }
@@ -148,6 +155,7 @@ export interface FileRoutesByTo {
   '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
   '/api/public/comments-alert': typeof ApiPublicCommentsAlertRoute
   '/api/public/mission-digest': typeof ApiPublicMissionDigestRoute
+  '/api/public/missions-alert': typeof ApiPublicMissionsAlertRoute
   '/api/public/referral-announcement': typeof ApiPublicReferralAnnouncementRoute
   '/api/public/referral-reminder': typeof ApiPublicReferralReminderRoute
 }
@@ -168,6 +176,7 @@ export interface FileRoutesById {
   '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
   '/api/public/comments-alert': typeof ApiPublicCommentsAlertRoute
   '/api/public/mission-digest': typeof ApiPublicMissionDigestRoute
+  '/api/public/missions-alert': typeof ApiPublicMissionsAlertRoute
   '/api/public/referral-announcement': typeof ApiPublicReferralAnnouncementRoute
   '/api/public/referral-reminder': typeof ApiPublicReferralReminderRoute
 }
@@ -188,6 +197,7 @@ export interface FileRouteTypes {
     | '/api/public/auth-email'
     | '/api/public/comments-alert'
     | '/api/public/mission-digest'
+    | '/api/public/missions-alert'
     | '/api/public/referral-announcement'
     | '/api/public/referral-reminder'
   fileRoutesByTo: FileRoutesByTo
@@ -206,6 +216,7 @@ export interface FileRouteTypes {
     | '/api/public/auth-email'
     | '/api/public/comments-alert'
     | '/api/public/mission-digest'
+    | '/api/public/missions-alert'
     | '/api/public/referral-announcement'
     | '/api/public/referral-reminder'
   id:
@@ -225,6 +236,7 @@ export interface FileRouteTypes {
     | '/api/public/auth-email'
     | '/api/public/comments-alert'
     | '/api/public/mission-digest'
+    | '/api/public/missions-alert'
     | '/api/public/referral-announcement'
     | '/api/public/referral-reminder'
   fileRoutesById: FileRoutesById
@@ -239,6 +251,7 @@ export interface RootRouteChildren {
   ApiPublicAuthEmailRoute: typeof ApiPublicAuthEmailRoute
   ApiPublicCommentsAlertRoute: typeof ApiPublicCommentsAlertRoute
   ApiPublicMissionDigestRoute: typeof ApiPublicMissionDigestRoute
+  ApiPublicMissionsAlertRoute: typeof ApiPublicMissionsAlertRoute
   ApiPublicReferralAnnouncementRoute: typeof ApiPublicReferralAnnouncementRoute
   ApiPublicReferralReminderRoute: typeof ApiPublicReferralReminderRoute
 }
@@ -350,6 +363,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicMissionDigestRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/missions-alert': {
+      id: '/api/public/missions-alert'
+      path: '/api/public/missions-alert'
+      fullPath: '/api/public/missions-alert'
+      preLoaderRoute: typeof ApiPublicMissionsAlertRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/referral-announcement': {
       id: '/api/public/referral-announcement'
       path: '/api/public/referral-announcement'
@@ -407,6 +427,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicAuthEmailRoute: ApiPublicAuthEmailRoute,
   ApiPublicCommentsAlertRoute: ApiPublicCommentsAlertRoute,
   ApiPublicMissionDigestRoute: ApiPublicMissionDigestRoute,
+  ApiPublicMissionsAlertRoute: ApiPublicMissionsAlertRoute,
   ApiPublicReferralAnnouncementRoute: ApiPublicReferralAnnouncementRoute,
   ApiPublicReferralReminderRoute: ApiPublicReferralReminderRoute,
 }
