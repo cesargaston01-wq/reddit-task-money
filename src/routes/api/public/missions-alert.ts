@@ -2,15 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { timingSafeEqual } from "crypto";
 import { FROM_EMAIL, REPLY_TO, SITE_URL, button, emailLayout, resendRequest } from "@/lib/email-layout.server";
 
-const EXCLUDED = new Set([
-  "ing.luismar@gmail.com",
-  "beepboopbeez@gmail.com",
-  "monsifmarocco@gmail.com",
-  "brandonbellofatto@gmail.com",
-  "pedrosantos.film@gmail.com",
-  "santos.pedro.pires@gmail.com",
-  "stephensoulas@gmail.com",
-]);
+const EXCLUDED = new Set<string>();
 const CAMPAIGN = "missions-alert-2026-10-15";
 
 // One-time alert: new missions available. Secret-guarded, sends once.
