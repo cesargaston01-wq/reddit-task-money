@@ -23,6 +23,7 @@ import { Route as AuthenticatedOpportunitiesCommentsRouteImport } from './routes
 import { Route as ApiPublicAuthActionRouteImport } from './routes/api/public/auth-action'
 import { Route as ApiPublicAuthEmailRouteImport } from './routes/api/public/auth-email'
 import { Route as ApiPublicCommentsAlertRouteImport } from './routes/api/public/comments-alert'
+import { Route as ApiPublicInactiveAlertRouteImport } from './routes/api/public/inactive-alert'
 import { Route as ApiPublicMissionDigestRouteImport } from './routes/api/public/mission-digest'
 import { Route as ApiPublicMissionsAlertRouteImport } from './routes/api/public/missions-alert'
 import { Route as ApiPublicReferralAnnouncementRouteImport } from './routes/api/public/referral-announcement'
@@ -98,6 +99,11 @@ const ApiPublicCommentsAlertRoute = ApiPublicCommentsAlertRouteImport.update({
   path: '/api/public/comments-alert',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicInactiveAlertRoute = ApiPublicInactiveAlertRouteImport.update({
+  id: '/api/public/inactive-alert',
+  path: '/api/public/inactive-alert',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicMissionDigestRoute = ApiPublicMissionDigestRouteImport.update({
   id: '/api/public/mission-digest',
   path: '/api/public/mission-digest',
@@ -135,6 +141,7 @@ export interface FileRoutesByFullPath {
   '/api/public/auth-action': typeof ApiPublicAuthActionRoute
   '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
   '/api/public/comments-alert': typeof ApiPublicCommentsAlertRoute
+  '/api/public/inactive-alert': typeof ApiPublicInactiveAlertRoute
   '/api/public/mission-digest': typeof ApiPublicMissionDigestRoute
   '/api/public/missions-alert': typeof ApiPublicMissionsAlertRoute
   '/api/public/referral-announcement': typeof ApiPublicReferralAnnouncementRoute
@@ -154,6 +161,7 @@ export interface FileRoutesByTo {
   '/api/public/auth-action': typeof ApiPublicAuthActionRoute
   '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
   '/api/public/comments-alert': typeof ApiPublicCommentsAlertRoute
+  '/api/public/inactive-alert': typeof ApiPublicInactiveAlertRoute
   '/api/public/mission-digest': typeof ApiPublicMissionDigestRoute
   '/api/public/missions-alert': typeof ApiPublicMissionsAlertRoute
   '/api/public/referral-announcement': typeof ApiPublicReferralAnnouncementRoute
@@ -175,6 +183,7 @@ export interface FileRoutesById {
   '/api/public/auth-action': typeof ApiPublicAuthActionRoute
   '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
   '/api/public/comments-alert': typeof ApiPublicCommentsAlertRoute
+  '/api/public/inactive-alert': typeof ApiPublicInactiveAlertRoute
   '/api/public/mission-digest': typeof ApiPublicMissionDigestRoute
   '/api/public/missions-alert': typeof ApiPublicMissionsAlertRoute
   '/api/public/referral-announcement': typeof ApiPublicReferralAnnouncementRoute
@@ -196,6 +205,7 @@ export interface FileRouteTypes {
     | '/api/public/auth-action'
     | '/api/public/auth-email'
     | '/api/public/comments-alert'
+    | '/api/public/inactive-alert'
     | '/api/public/mission-digest'
     | '/api/public/missions-alert'
     | '/api/public/referral-announcement'
@@ -215,6 +225,7 @@ export interface FileRouteTypes {
     | '/api/public/auth-action'
     | '/api/public/auth-email'
     | '/api/public/comments-alert'
+    | '/api/public/inactive-alert'
     | '/api/public/mission-digest'
     | '/api/public/missions-alert'
     | '/api/public/referral-announcement'
@@ -235,6 +246,7 @@ export interface FileRouteTypes {
     | '/api/public/auth-action'
     | '/api/public/auth-email'
     | '/api/public/comments-alert'
+    | '/api/public/inactive-alert'
     | '/api/public/mission-digest'
     | '/api/public/missions-alert'
     | '/api/public/referral-announcement'
@@ -250,6 +262,7 @@ export interface RootRouteChildren {
   ApiPublicAuthActionRoute: typeof ApiPublicAuthActionRoute
   ApiPublicAuthEmailRoute: typeof ApiPublicAuthEmailRoute
   ApiPublicCommentsAlertRoute: typeof ApiPublicCommentsAlertRoute
+  ApiPublicInactiveAlertRoute: typeof ApiPublicInactiveAlertRoute
   ApiPublicMissionDigestRoute: typeof ApiPublicMissionDigestRoute
   ApiPublicMissionsAlertRoute: typeof ApiPublicMissionsAlertRoute
   ApiPublicReferralAnnouncementRoute: typeof ApiPublicReferralAnnouncementRoute
@@ -356,6 +369,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCommentsAlertRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/inactive-alert': {
+      id: '/api/public/inactive-alert'
+      path: '/api/public/inactive-alert'
+      fullPath: '/api/public/inactive-alert'
+      preLoaderRoute: typeof ApiPublicInactiveAlertRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/mission-digest': {
       id: '/api/public/mission-digest'
       path: '/api/public/mission-digest'
@@ -426,6 +446,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicAuthActionRoute: ApiPublicAuthActionRoute,
   ApiPublicAuthEmailRoute: ApiPublicAuthEmailRoute,
   ApiPublicCommentsAlertRoute: ApiPublicCommentsAlertRoute,
+  ApiPublicInactiveAlertRoute: ApiPublicInactiveAlertRoute,
   ApiPublicMissionDigestRoute: ApiPublicMissionDigestRoute,
   ApiPublicMissionsAlertRoute: ApiPublicMissionsAlertRoute,
   ApiPublicReferralAnnouncementRoute: ApiPublicReferralAnnouncementRoute,
