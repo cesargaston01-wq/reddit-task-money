@@ -60,7 +60,8 @@ export const Route = createFileRoute("/api/public/mission-digest")({
           .select("email")
           .eq("status", "accepted");
         if (pErr) return new Response(pErr.message, { status: 500 });
-        const emails = (members ?? []).map((m) => m.email).filter(Boolean);
+        const { UNSUBSCRIBED } = await import("@/lib/email-layout.server");
+        const emails = (members ?? []).map((m) => m.email).filter((e) => e && !UNSUBSCRIBED.has(e.trim().toLowerCase()));
 
         const total = missions.reduce((s, m) => s + Number(m.payout || 0), 0);
         const subs = [...new Set(missions.map((m) => m.subreddit))].slice(0, 5);
