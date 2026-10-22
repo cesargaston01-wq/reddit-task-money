@@ -91,8 +91,12 @@ function AuthPage() {
 
   // Remember an invite code from ?ref=... so it survives navigation.
   useEffect(() => {
-    const ref = new URLSearchParams(window.location.search).get("ref");
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get("ref");
     if (ref && /^[a-z0-9]{4,32}$/i.test(ref)) localStorage.setItem("taskreddit_ref", ref.toLowerCase());
+    const confirmed = params.get("confirmed");
+    if (confirmed === "1") toast.success("Email confirmed! You can now log in.");
+    else if (confirmed === "invalid") toast.error("This confirmation link is invalid or expired. Log in to get a new one.");
   }, []);
 
   useEffect(() => {
