@@ -9,6 +9,7 @@ import {
   Loader2,
   Lock,
   Timer,
+  Wallet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -148,6 +149,8 @@ export function MissionBrowser({
   const missions = canSubmit ? realMissions : PREVIEW_MISSIONS[type];
   const isLoading = canSubmit && realLoading;
   const { data: user } = useSession();
+  const { data: profile } = useProfile();
+  const hasWallet = !canSubmit || !!profile?.wallet_address?.trim();
   const submit = useSubmitMission();
   const reserve = useReserveMission();
   const release = useReleaseMission();
@@ -398,7 +401,21 @@ export function MissionBrowser({
                 </p>
 
                 {canSubmit ? (
-                  held ? (
+                  !hasWallet ? (
+                    <div className="space-y-3 rounded-xl border border-warning/40 bg-warning/10 p-4">
+                      <p className="flex items-start gap-2 text-xs leading-relaxed text-warning">
+                        <Wallet className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                        Add your payout wallet (USDC on Ethereum) in your profile before taking or
+                        submitting a mission — it's where we send your earnings.
+                      </p>
+                      <Button asChild className="w-full">
+                        <Link to="/profile">
+                          <Wallet className="mr-2 h-4 w-4" />
+                          Add my wallet
+                        </Link>
+                      </Button>
+                    </div>
+                  ) : held ? (
                     <div className="space-y-4 rounded-xl border border-primary/40 bg-primary/5 p-4">
                       <div className="flex items-start gap-3">
                         <Timer className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
