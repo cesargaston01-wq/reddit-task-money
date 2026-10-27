@@ -15,6 +15,13 @@
       "when": 1793139402893,
       "tag": "0001_account_approved_email",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793139811799,
+      "tag": "0002_require_wallet_for_missions",
+      "breakpoints": true
     }
   ]
 }
