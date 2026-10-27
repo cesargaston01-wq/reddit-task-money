@@ -8,6 +8,13 @@
       "when": 1791743116038,
       "tag": "0000_add_campaign_to_referral_announce_log",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793139402893,
+      "tag": "0001_account_approved_email",
+      "breakpoints": true
     }
   ]
 }
