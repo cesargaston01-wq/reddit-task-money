@@ -20,6 +20,7 @@ import { Route as AuthenticatedReferralsRouteImport } from './routes/_authentica
 import { Route as AuthConfirmRouteImport } from './routes/auth.confirm'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth.reset-password'
 import { Route as AuthenticatedOpportunitiesCommentsRouteImport } from './routes/_authenticated/opportunities.comments'
+import { Route as ApiPublicAccountApprovedRouteImport } from './routes/api/public/account-approved'
 import { Route as ApiPublicAuthActionRouteImport } from './routes/api/public/auth-action'
 import { Route as ApiPublicAuthEmailRouteImport } from './routes/api/public/auth-email'
 import { Route as ApiPublicCommentsAlertRouteImport } from './routes/api/public/comments-alert'
@@ -85,6 +86,12 @@ const AuthenticatedOpportunitiesCommentsRoute =
     path: '/opportunities/comments',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiPublicAccountApprovedRoute =
+  ApiPublicAccountApprovedRouteImport.update({
+    id: '/api/public/account-approved',
+    path: '/api/public/account-approved',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicAuthActionRoute = ApiPublicAuthActionRouteImport.update({
   id: '/api/public/auth-action',
   path: '/api/public/auth-action',
@@ -144,6 +151,7 @@ export interface FileRoutesByFullPath {
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/opportunities/comments': typeof AuthenticatedOpportunitiesCommentsRoute
+  '/api/public/account-approved': typeof ApiPublicAccountApprovedRoute
   '/api/public/auth-action': typeof ApiPublicAuthActionRoute
   '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
   '/api/public/comments-alert': typeof ApiPublicCommentsAlertRoute
@@ -165,6 +173,7 @@ export interface FileRoutesByTo {
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/opportunities/comments': typeof AuthenticatedOpportunitiesCommentsRoute
+  '/api/public/account-approved': typeof ApiPublicAccountApprovedRoute
   '/api/public/auth-action': typeof ApiPublicAuthActionRoute
   '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
   '/api/public/comments-alert': typeof ApiPublicCommentsAlertRoute
@@ -188,6 +197,7 @@ export interface FileRoutesById {
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/_authenticated/opportunities/comments': typeof AuthenticatedOpportunitiesCommentsRoute
+  '/api/public/account-approved': typeof ApiPublicAccountApprovedRoute
   '/api/public/auth-action': typeof ApiPublicAuthActionRoute
   '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
   '/api/public/comments-alert': typeof ApiPublicCommentsAlertRoute
@@ -211,6 +221,7 @@ export interface FileRouteTypes {
     | '/auth/confirm'
     | '/auth/reset-password'
     | '/opportunities/comments'
+    | '/api/public/account-approved'
     | '/api/public/auth-action'
     | '/api/public/auth-email'
     | '/api/public/comments-alert'
@@ -232,6 +243,7 @@ export interface FileRouteTypes {
     | '/auth/confirm'
     | '/auth/reset-password'
     | '/opportunities/comments'
+    | '/api/public/account-approved'
     | '/api/public/auth-action'
     | '/api/public/auth-email'
     | '/api/public/comments-alert'
@@ -254,6 +266,7 @@ export interface FileRouteTypes {
     | '/auth/confirm'
     | '/auth/reset-password'
     | '/_authenticated/opportunities/comments'
+    | '/api/public/account-approved'
     | '/api/public/auth-action'
     | '/api/public/auth-email'
     | '/api/public/comments-alert'
@@ -271,6 +284,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   DiscoverRoute: typeof DiscoverRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ApiPublicAccountApprovedRoute: typeof ApiPublicAccountApprovedRoute
   ApiPublicAuthActionRoute: typeof ApiPublicAuthActionRoute
   ApiPublicAuthEmailRoute: typeof ApiPublicAuthEmailRoute
   ApiPublicCommentsAlertRoute: typeof ApiPublicCommentsAlertRoute
@@ -360,6 +374,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/opportunities/comments'
       preLoaderRoute: typeof AuthenticatedOpportunitiesCommentsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/public/account-approved': {
+      id: '/api/public/account-approved'
+      path: '/api/public/account-approved'
+      fullPath: '/api/public/account-approved'
+      preLoaderRoute: typeof ApiPublicAccountApprovedRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/public/auth-action': {
       id: '/api/public/auth-action'
@@ -463,6 +484,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   DiscoverRoute: DiscoverRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ApiPublicAccountApprovedRoute: ApiPublicAccountApprovedRoute,
   ApiPublicAuthActionRoute: ApiPublicAuthActionRoute,
   ApiPublicAuthEmailRoute: ApiPublicAuthEmailRoute,
   ApiPublicCommentsAlertRoute: ApiPublicCommentsAlertRoute,
