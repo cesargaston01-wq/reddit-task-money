@@ -30,6 +30,7 @@ import { Route as ApiPublicMissionDigestRouteImport } from './routes/api/public/
 import { Route as ApiPublicMissionsAlertRouteImport } from './routes/api/public/missions-alert'
 import { Route as ApiPublicReferralAnnouncementRouteImport } from './routes/api/public/referral-announcement'
 import { Route as ApiPublicReferralReminderRouteImport } from './routes/api/public/referral-reminder'
+import { Route as ApiPublicSpecialReferralAlertRouteImport } from './routes/api/public/special-referral-alert'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -139,6 +140,12 @@ const ApiPublicReferralReminderRoute =
     path: '/api/public/referral-reminder',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicSpecialReferralAlertRoute =
+  ApiPublicSpecialReferralAlertRouteImport.update({
+    id: '/api/public/special-referral-alert',
+    path: '/api/public/special-referral-alert',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -161,6 +168,7 @@ export interface FileRoutesByFullPath {
   '/api/public/missions-alert': typeof ApiPublicMissionsAlertRoute
   '/api/public/referral-announcement': typeof ApiPublicReferralAnnouncementRoute
   '/api/public/referral-reminder': typeof ApiPublicReferralReminderRoute
+  '/api/public/special-referral-alert': typeof ApiPublicSpecialReferralAlertRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -183,6 +191,7 @@ export interface FileRoutesByTo {
   '/api/public/missions-alert': typeof ApiPublicMissionsAlertRoute
   '/api/public/referral-announcement': typeof ApiPublicReferralAnnouncementRoute
   '/api/public/referral-reminder': typeof ApiPublicReferralReminderRoute
+  '/api/public/special-referral-alert': typeof ApiPublicSpecialReferralAlertRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -207,6 +216,7 @@ export interface FileRoutesById {
   '/api/public/missions-alert': typeof ApiPublicMissionsAlertRoute
   '/api/public/referral-announcement': typeof ApiPublicReferralAnnouncementRoute
   '/api/public/referral-reminder': typeof ApiPublicReferralReminderRoute
+  '/api/public/special-referral-alert': typeof ApiPublicSpecialReferralAlertRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -231,6 +241,7 @@ export interface FileRouteTypes {
     | '/api/public/missions-alert'
     | '/api/public/referral-announcement'
     | '/api/public/referral-reminder'
+    | '/api/public/special-referral-alert'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -253,6 +264,7 @@ export interface FileRouteTypes {
     | '/api/public/missions-alert'
     | '/api/public/referral-announcement'
     | '/api/public/referral-reminder'
+    | '/api/public/special-referral-alert'
   id:
     | '__root__'
     | '/'
@@ -276,6 +288,7 @@ export interface FileRouteTypes {
     | '/api/public/missions-alert'
     | '/api/public/referral-announcement'
     | '/api/public/referral-reminder'
+    | '/api/public/special-referral-alert'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -294,6 +307,7 @@ export interface RootRouteChildren {
   ApiPublicMissionsAlertRoute: typeof ApiPublicMissionsAlertRoute
   ApiPublicReferralAnnouncementRoute: typeof ApiPublicReferralAnnouncementRoute
   ApiPublicReferralReminderRoute: typeof ApiPublicReferralReminderRoute
+  ApiPublicSpecialReferralAlertRoute: typeof ApiPublicSpecialReferralAlertRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -445,6 +459,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicReferralReminderRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/special-referral-alert': {
+      id: '/api/public/special-referral-alert'
+      path: '/api/public/special-referral-alert'
+      fullPath: '/api/public/special-referral-alert'
+      preLoaderRoute: typeof ApiPublicSpecialReferralAlertRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -494,6 +515,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicMissionsAlertRoute: ApiPublicMissionsAlertRoute,
   ApiPublicReferralAnnouncementRoute: ApiPublicReferralAnnouncementRoute,
   ApiPublicReferralReminderRoute: ApiPublicReferralReminderRoute,
+  ApiPublicSpecialReferralAlertRoute: ApiPublicSpecialReferralAlertRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
