@@ -22,6 +22,13 @@
       "when": 1793139811799,
       "tag": "0002_require_wallet_for_missions",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1793381450674,
+      "tag": "0003_remove_wallet_requirement",
+      "breakpoints": true
     }
   ]
 }
