@@ -29,6 +29,20 @@
       "when": 1793381450674,
       "tag": "0003_remove_wallet_requirement",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793381890761,
+      "tag": "0004_talentir_payout_fields",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793381913247,
+      "tag": "0005_reset_payout_fields_on_submit",
+      "breakpoints": true
     }
   ]
 }

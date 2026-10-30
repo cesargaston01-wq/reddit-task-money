@@ -13,12 +13,15 @@ import {
   Pencil,
   Plus,
   Radio,
+  RefreshCw,
+  Send,
   Trash2,
   Star,
   UserRound,
   Gift,
   XCircle,
 } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
 import { DashboardLayout } from "@/components/dashboard-layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -38,6 +41,7 @@ import {
   useToggleFavorite,
   type Mission,
 } from "@/lib/data";
+import { payWithTalentir, refreshTalentirStatus } from "@/lib/talentir.functions";
 
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -62,6 +66,23 @@ type AdminReferralRow = {
 };
 type SubmissionTypeFilter = "all" | "post" | "comment";
 type SubmissionStatusFilter = "all" | "pending" | "approved" | "rejected";
+
+function talentirStatusLabel(status: string | null | undefined) {
+  switch (status) {
+    case "approved":
+      return "claim link sent";
+    case "requested":
+      return "claimed, transfer in progress";
+    case "completed":
+      return "money received";
+    case "failed":
+      return "failed";
+    case "expired":
+      return "link expired";
+    default:
+      return status ?? "sent";
+  }
+}
 
 function extractRedditSubreddit(value: string) {
   const match = value.match(/(?:^|\/)r\/([^/?#]+)/i);
@@ -97,6 +118,17 @@ function AdminPage() {
   const [submissionTypeFilter, setSubmissionTypeFilter] = useState<SubmissionTypeFilter>("all");
   const [submissionStatusFilter, setSubmissionStatusFilter] = useState<SubmissionStatusFilter>("all");
   const [missionFilter, setMissionFilter] = useState<"live" | "all">("live");
+  const [pendingPay, setPendingPay] = useState<{
+    id: string;
+    name: string;
+    email: string;
+    title: string;
+    amount: number;
+    url: string;
+  } | null>(null);
+  const [paying, setPaying] = useState(false);
+  const payTalentirFn = useServerFn(payWithTalentir);
+  const refreshTalentirFn = useServerFn(refreshTalentirStatus);
 
 
   if (loadingRole) {
@@ -313,6 +345,31 @@ function AdminPage() {
     qc.invalidateQueries({ queryKey: ["submissions"] });
   }
 
+  async function confirmTalentirPay() {
+    if (!pendingPay) return;
+    setPaying(true);
+    try {
+      const res = await payTalentirFn({ data: { submissionId: pendingPay.id } });
+      toast.success(`Payment sent — Talentir emailed a claim link to ${res.email}.`);
+      setPendingPay(null);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Talentir payment failed.");
+    } finally {
+      setPaying(false);
+      qc.invalidateQueries({ queryKey: ["submissions"] });
+    }
+  }
+
+  async function refreshTalentir(id: string) {
+    try {
+      const res = await refreshTalentirFn({ data: { submissionId: id } });
+      toast.success(`Talentir status: ${talentirStatusLabel(res.status)}`);
+      qc.invalidateQueries({ queryKey: ["submissions"] });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Could not refresh status.");
+    }
+  }
+
   async function setAccountStatus(id: string, status: "accepted" | "rejected" | "pending") {
     const { error } = await supabase.from("profiles").update({ status }).eq("id", id);
     if (error) return toast.error(error.message);
@@ -454,8 +511,34 @@ function AdminPage() {
                   <Button size="sm" onClick={() => reviewSubmission(s.id, "approved")}>Approve</Button>
                   <Button size="sm" variant="outline" onClick={() => reviewSubmission(s.id, "rejected")}>Reject</Button>
                 </> : null}
-                {s.status === "approved" && !s.paid ? <Button size="sm" variant="outline" onClick={() => markPaid(s.id)}>Mark as paid</Button> : null}
-                {s.paid ? <span className="text-xs text-success">Paid</span> : null}
+                {s.status === "approved" && !s.paid ? <>
+                  <Button
+                    size="sm"
+                    onClick={() =>
+                      setPendingPay({
+                        id: s.id,
+                        name: s.profile?.full_name || "Unknown worker",
+                        email: s.profile?.email ?? "",
+                        title: s.missions?.title ?? "Mission",
+                        amount: Number(s.amount),
+                        url: s.submitted_url,
+                      })
+                    }
+                  >
+                    <Send className="h-4 w-4" />
+                    Pay with Talentir
+                  </Button>
+                  <Button size="sm" variant="ghost" onClick={() => markPaid(s.id)}>Mark as paid (manual)</Button>
+                </> : null}
+                {s.paid && s.talentir_payout_id ? <>
+                  <span className="text-xs text-success">
+                    Paid via Talentir · {talentirStatusLabel(s.talentir_status)}
+                  </span>
+                  <Button size="sm" variant="ghost" className="h-7 px-2 text-xs" onClick={() => refreshTalentir(s.id)}>
+                    <RefreshCw className="h-3 w-3" />
+                    Refresh
+                  </Button>
+                </> : s.paid ? <span className="text-xs text-success">Paid</span> : null}
               </div>
             </div>
           ))}
@@ -744,6 +827,51 @@ function AdminPage() {
             >
               {deleteMember.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
               Delete permanently
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={!!pendingPay} onOpenChange={(o) => !o && !paying && setPendingPay(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Pay this mission with Talentir?</DialogTitle>
+          </DialogHeader>
+          {pendingPay ? (
+            <div className="space-y-3 text-sm">
+              <div className="rounded-lg border border-border bg-background/60 p-3">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-muted-foreground">Member</span>
+                  <span className="truncate font-medium">{pendingPay.name}</span>
+                </div>
+                <div className="mt-1 flex items-center justify-between gap-3">
+                  <span className="text-muted-foreground">Email</span>
+                  <span className="truncate font-medium">{pendingPay.email || "—"}</span>
+                </div>
+                <div className="mt-1 flex items-center justify-between gap-3">
+                  <span className="text-muted-foreground">Mission</span>
+                  <span className="truncate font-medium">{pendingPay.title}</span>
+                </div>
+                <div className="mt-1 flex items-center justify-between gap-3">
+                  <span className="text-muted-foreground">Amount</span>
+                  <span className="font-display text-base font-semibold text-primary">${pendingPay.amount.toFixed(2)} USD</span>
+                </div>
+              </div>
+              <a href={pendingPay.url} target="_blank" rel="noopener noreferrer" className="block break-all text-xs text-primary hover:underline">
+                Check the comment one last time ↗
+              </a>
+              <p className="text-xs text-muted-foreground">
+                Talentir will take this amount from your balance and email the member a link to claim it (bank, PayPal or crypto). This cannot be undone from TaskReddit.
+              </p>
+            </div>
+          ) : null}
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" disabled={paying} onClick={() => setPendingPay(null)}>
+              Cancel
+            </Button>
+            <Button disabled={paying || !pendingPay?.email} onClick={confirmTalentirPay}>
+              {paying ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+              Confirm and pay
             </Button>
           </div>
         </DialogContent>
