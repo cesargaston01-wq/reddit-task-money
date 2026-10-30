@@ -9,7 +9,6 @@ import {
   Loader2,
   Lock,
   Timer,
-  Wallet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -149,8 +148,6 @@ export function MissionBrowser({
   const missions = canSubmit ? realMissions : PREVIEW_MISSIONS[type];
   const isLoading = canSubmit && realLoading;
   const { data: user } = useSession();
-  const { data: profile } = useProfile();
-  const hasWallet = !canSubmit || !!profile?.wallet_address?.trim();
   const submit = useSubmitMission();
   const reserve = useReserveMission();
   const release = useReleaseMission();
