@@ -263,6 +263,9 @@ export type Database = {
           reviewed_at: string | null
           status: Database["public"]["Enums"]["submission_status"]
           submitted_url: string
+          talentir_payout_id: string | null
+          talentir_sent_at: string | null
+          talentir_status: string | null
           user_id: string
         }
         Insert: {
@@ -275,6 +278,9 @@ export type Database = {
           reviewed_at?: string | null
           status?: Database["public"]["Enums"]["submission_status"]
           submitted_url: string
+          talentir_payout_id?: string | null
+          talentir_sent_at?: string | null
+          talentir_status?: string | null
           user_id: string
         }
         Update: {
@@ -287,6 +293,9 @@ export type Database = {
           reviewed_at?: string | null
           status?: Database["public"]["Enums"]["submission_status"]
           submitted_url?: string
+          talentir_payout_id?: string | null
+          talentir_sent_at?: string | null
+          talentir_status?: string | null
           user_id?: string
         }
         Relationships: [
