@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+## Rules
+- Talentir payouts run only from server functions in `src/lib/talentir.functions.ts` (admin check + gateway calls in `talentir.server.ts`), one submission per call with `customId = taskreddit-sub-<submissionId>` — why: keeps the API key server-side and makes a double payment for the same submission impossible.
