@@ -31,6 +31,7 @@ import { Route as ApiPublicMissionsAlertRouteImport } from './routes/api/public/
 import { Route as ApiPublicReferralAnnouncementRouteImport } from './routes/api/public/referral-announcement'
 import { Route as ApiPublicReferralReminderRouteImport } from './routes/api/public/referral-reminder'
 import { Route as ApiPublicSpecialReferralAlertRouteImport } from './routes/api/public/special-referral-alert'
+import { Route as ApiPublicTalentirAnnouncementRouteImport } from './routes/api/public/talentir-announcement'
 import { Route as ApiPublicTodayReminderRouteImport } from './routes/api/public/today-reminder'
 
 const IndexRoute = IndexRouteImport.update({
@@ -147,6 +148,12 @@ const ApiPublicSpecialReferralAlertRoute =
     path: '/api/public/special-referral-alert',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicTalentirAnnouncementRoute =
+  ApiPublicTalentirAnnouncementRouteImport.update({
+    id: '/api/public/talentir-announcement',
+    path: '/api/public/talentir-announcement',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicTodayReminderRoute = ApiPublicTodayReminderRouteImport.update({
   id: '/api/public/today-reminder',
   path: '/api/public/today-reminder',
@@ -175,6 +182,7 @@ export interface FileRoutesByFullPath {
   '/api/public/referral-announcement': typeof ApiPublicReferralAnnouncementRoute
   '/api/public/referral-reminder': typeof ApiPublicReferralReminderRoute
   '/api/public/special-referral-alert': typeof ApiPublicSpecialReferralAlertRoute
+  '/api/public/talentir-announcement': typeof ApiPublicTalentirAnnouncementRoute
   '/api/public/today-reminder': typeof ApiPublicTodayReminderRoute
 }
 export interface FileRoutesByTo {
@@ -199,6 +207,7 @@ export interface FileRoutesByTo {
   '/api/public/referral-announcement': typeof ApiPublicReferralAnnouncementRoute
   '/api/public/referral-reminder': typeof ApiPublicReferralReminderRoute
   '/api/public/special-referral-alert': typeof ApiPublicSpecialReferralAlertRoute
+  '/api/public/talentir-announcement': typeof ApiPublicTalentirAnnouncementRoute
   '/api/public/today-reminder': typeof ApiPublicTodayReminderRoute
 }
 export interface FileRoutesById {
@@ -225,6 +234,7 @@ export interface FileRoutesById {
   '/api/public/referral-announcement': typeof ApiPublicReferralAnnouncementRoute
   '/api/public/referral-reminder': typeof ApiPublicReferralReminderRoute
   '/api/public/special-referral-alert': typeof ApiPublicSpecialReferralAlertRoute
+  '/api/public/talentir-announcement': typeof ApiPublicTalentirAnnouncementRoute
   '/api/public/today-reminder': typeof ApiPublicTodayReminderRoute
 }
 export interface FileRouteTypes {
@@ -251,6 +261,7 @@ export interface FileRouteTypes {
     | '/api/public/referral-announcement'
     | '/api/public/referral-reminder'
     | '/api/public/special-referral-alert'
+    | '/api/public/talentir-announcement'
     | '/api/public/today-reminder'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -275,6 +286,7 @@ export interface FileRouteTypes {
     | '/api/public/referral-announcement'
     | '/api/public/referral-reminder'
     | '/api/public/special-referral-alert'
+    | '/api/public/talentir-announcement'
     | '/api/public/today-reminder'
   id:
     | '__root__'
@@ -300,6 +312,7 @@ export interface FileRouteTypes {
     | '/api/public/referral-announcement'
     | '/api/public/referral-reminder'
     | '/api/public/special-referral-alert'
+    | '/api/public/talentir-announcement'
     | '/api/public/today-reminder'
   fileRoutesById: FileRoutesById
 }
@@ -320,6 +333,7 @@ export interface RootRouteChildren {
   ApiPublicReferralAnnouncementRoute: typeof ApiPublicReferralAnnouncementRoute
   ApiPublicReferralReminderRoute: typeof ApiPublicReferralReminderRoute
   ApiPublicSpecialReferralAlertRoute: typeof ApiPublicSpecialReferralAlertRoute
+  ApiPublicTalentirAnnouncementRoute: typeof ApiPublicTalentirAnnouncementRoute
   ApiPublicTodayReminderRoute: typeof ApiPublicTodayReminderRoute
 }
 
@@ -479,6 +493,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicSpecialReferralAlertRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/talentir-announcement': {
+      id: '/api/public/talentir-announcement'
+      path: '/api/public/talentir-announcement'
+      fullPath: '/api/public/talentir-announcement'
+      preLoaderRoute: typeof ApiPublicTalentirAnnouncementRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/today-reminder': {
       id: '/api/public/today-reminder'
       path: '/api/public/today-reminder'
@@ -536,6 +557,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicReferralAnnouncementRoute: ApiPublicReferralAnnouncementRoute,
   ApiPublicReferralReminderRoute: ApiPublicReferralReminderRoute,
   ApiPublicSpecialReferralAlertRoute: ApiPublicSpecialReferralAlertRoute,
+  ApiPublicTalentirAnnouncementRoute: ApiPublicTalentirAnnouncementRoute,
   ApiPublicTodayReminderRoute: ApiPublicTodayReminderRoute,
 }
 export const routeTree = rootRouteImport
