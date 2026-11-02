@@ -50,7 +50,10 @@ async function talentirFetch(path: string, init: RequestInit & { idempotencyKey?
   return JSON.parse(text) as TalentirPayout;
 }
 
-/** Creates, approves and emails a claim-link payout in one atomic request. */
+/**
+ * Creates a claim-link payout in status "created". The API key cannot approve payouts
+ * (payouts:approve is not self-service), so approval happens on Talentir's hosted screen.
+ */
 export async function createClaimLinkPayout(input: {
   customId: string;
   email: string;
@@ -67,13 +70,30 @@ export async function createClaimLinkPayout(input: {
       currency: "USD",
       recipient: { type: "email", email: input.email },
       tags: ["taskreddit"],
-      andThen: "approve_and_send_claim_link",
     }),
   });
 }
 
 export async function getPayout(idOrCustomId: string) {
   return talentirFetch(`/payouts/${encodeURIComponent(idOrCustomId)}`, { method: "GET" });
+}
+
+/** Emails the claim link of an approved payout (needs only payouts:write). */
+export async function sendClaimLink(idOrCustomId: string) {
+  return talentirFetch(`/payouts/${encodeURIComponent(idOrCustomId)}/send-claim-link`, {
+    method: "POST",
+    idempotencyKey: `send-${idOrCustomId}-${Date.now()}`,
+  });
+}
+
+/** Mints a Talentir-hosted screen where a team member approves the payout. */
+export async function createApprovalSession(payoutId: string, redirectUrl: string) {
+  const res = (await talentirFetch("/sessions", {
+    method: "POST",
+    body: JSON.stringify({ type: "payout_approval", payoutIds: [payoutId], redirectUrl }),
+  })) as unknown as { url?: string };
+  if (!res?.url) throw new Error("Talentir did not return an approval link.");
+  return res.url;
 }
 
 // ---- Shared payment logic (used by the server functions and by the live-site endpoint) ----
@@ -96,8 +116,22 @@ export function talentirConfigured() {
   return Boolean(process.env["LOVABLE_API_KEY"] && process.env["UDC_TALENTIR_API_KEY"]);
 }
 
-/** Pays ONE approved submission through a Talentir claim link. Caller must be admin. */
-export async function payOneSubmission(supabase: UserClient, userId: string, submissionId: string) {
+export type PayStep =
+  | { ok: true; step: "approve"; url: string; email: string }
+  | { ok: true; step: "sent"; status: string; email: string };
+
+/**
+ * Pays ONE approved submission through a Talentir claim link, step by step. Caller must be admin.
+ * 1st call: creates the payout and returns Talentir's approval screen URL.
+ * Next call (after approving on Talentir): emails the claim link and marks the submission paid.
+ * Safe to call again at any point: the payout is keyed by customId, so it is never created twice.
+ */
+export async function payOneSubmission(
+  supabase: UserClient,
+  userId: string,
+  submissionId: string,
+  returnUrl: string,
+): Promise<PayStep> {
   await assertAdmin(supabase, userId);
 
   const { data: sub, error } = await supabase
@@ -108,7 +142,7 @@ export async function payOneSubmission(supabase: UserClient, userId: string, sub
   if (error) throw new Error(error.message);
   if (!sub) throw new Error("Submission not found.");
   if (sub.status !== "approved") throw new Error("Approve the submission before paying it.");
-  if (sub.paid || sub.talentir_payout_id) throw new Error("This submission is already paid.");
+  if (sub.paid) throw new Error("This submission is already paid.");
 
   const { data: profile, error: pErr } = await supabase
     .from("profiles")
@@ -119,27 +153,47 @@ export async function payOneSubmission(supabase: UserClient, userId: string, sub
   const email = (profile?.email as string | undefined)?.trim();
   if (!email) throw new Error("This member has no email address.");
 
-  const amount = Number(sub.amount);
-  if (!(amount >= 0.1)) throw new Error("Amount must be at least $0.10.");
-
   const customId = `taskreddit-sub-${sub.id}`;
-  const title = (sub.missions as { title?: string } | null)?.title ?? "Reddit mission";
-
   let payout: TalentirPayout;
-  try {
-    payout = await createClaimLinkPayout({
-      customId,
-      email,
-      amount,
-      description: `TaskReddit payment for your approved mission: ${title}`,
-    });
-  } catch (e) {
-    // Already created earlier (e.g. the page was closed mid-request): reconcile instead of paying twice.
-    if (e instanceof TalentirError && e.code === "CUSTOM_ID_TAKEN") {
-      payout = await getPayout(customId);
-    } else {
-      throw e;
+  if (sub.talentir_payout_id) {
+    payout = await getPayout(sub.talentir_payout_id);
+  } else {
+    const amount = Number(sub.amount);
+    if (!(amount >= 0.1)) throw new Error("Amount must be at least $0.10.");
+    const title = (sub.missions as { title?: string } | null)?.title ?? "Reddit mission";
+    try {
+      payout = await createClaimLinkPayout({
+        customId,
+        email,
+        amount,
+        description: `TaskReddit payment for your approved mission: ${title}`,
+      });
+    } catch (e) {
+      // Already created earlier (e.g. the page was closed mid-request): reuse it instead of paying twice.
+      if (e instanceof TalentirError && e.code === "CUSTOM_ID_TAKEN") payout = await getPayout(customId);
+      else throw e;
     }
+    const { error: sErr } = await supabase
+      .from("submissions")
+      .update({ talentir_payout_id: payout.id, talentir_status: payout.status })
+      .eq("id", sub.id);
+    if (sErr) throw new Error(sErr.message);
+  }
+
+  if (payout.status === "created") {
+    const url = await createApprovalSession(payout.id, returnUrl);
+    return { ok: true, step: "approve", url, email };
+  }
+
+  if (payout.status === "approved" && !payout.claimLinkSentAt) {
+    payout = await sendClaimLink(payout.id);
+  }
+
+  if (!["approved", "requested", "completed"].includes(payout.status)) {
+    await supabase.from("submissions").update({ talentir_status: payout.status }).eq("id", sub.id);
+    throw new Error(
+      `Talentir payment is "${payout.status}"${payout.failureReason ? `: ${payout.failureReason}` : ""}.`,
+    );
   }
 
   const { error: uErr } = await supabase
@@ -153,7 +207,7 @@ export async function payOneSubmission(supabase: UserClient, userId: string, sub
     .eq("id", sub.id);
   if (uErr) throw new Error(uErr.message);
 
-  return { ok: true as const, status: payout.status, email };
+  return { ok: true, step: "sent", status: payout.status, email };
 }
 
 /** Refreshes the Talentir status of one submission. Caller must be admin. */

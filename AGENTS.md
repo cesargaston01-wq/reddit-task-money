@@ -11,4 +11,5 @@
 
 ## Rules
 - Talentir payout logic lives only in `src/lib/talentir.server.ts` (admin check + gateway calls), one submission per call with `customId = taskreddit-sub-<submissionId>`; it is reached via the server functions in `talentir.functions.ts`, or, when the editor preview's server has no Talentir key, via the live site's `/api/public/talentir-action` with the admin's bearer token — why: keeps the API key server-side, makes a double payment impossible, and lets payments work from the preview.
+- Talentir payouts are approved by a human on Talentir's hosted `payout_approval` screen, never via the API: create (status created) → approval screen → return to `/admin?talentir=<id>` → `send-claim-link` → mark paid — why: the team's API key has no `payouts:approve` scope (Talentir grants it only on request).
 - App server functions use `requireAuth` from `src/lib/auth-middleware.ts` instead of the generated `requireSupabaseAuth` — why: it falls back to the build-time VITE_ Supabase URL/key, so admin actions keep working when the runtime env vars are missing.
