@@ -353,11 +353,18 @@ function AdminPage() {
     const { data } = await supabase.auth.getSession();
     const token = data.session?.access_token;
     if (!token) throw new Error("Please sign in again.");
-    const r = await fetch(`${LIVE_SITE}/api/public/talentir-action`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ action, submissionId }),
-    });
+    let r: Response;
+    try {
+      r = await fetch(`${LIVE_SITE}/api/public/talentir-action`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ action, submissionId }),
+      });
+    } catch {
+      throw new Error(
+        "Could not reach the live site from the preview. Publish the site, or pay from the live site's admin page.",
+      );
+    }
     const j = (await r.json().catch(() => null)) as ({ ok?: boolean; error?: string } & T) | null;
     if (!r.ok || !j?.ok) {
       if (r.status === 404) throw new Error("Publish the site once, then try again.");
