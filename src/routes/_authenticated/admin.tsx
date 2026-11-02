@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState, type ComponentType } from "react";
+import { useEffect, useRef, useState, type ComponentType } from "react";
 import { toast } from "sonner";
 import {
   CheckCircle2,
@@ -131,6 +131,21 @@ function AdminPage() {
   const [paying, setPaying] = useState(false);
   const payTalentirFn = useServerFn(payWithTalentir);
   const refreshTalentirFn = useServerFn(refreshTalentirStatus);
+  const finishedReturn = useRef(false);
+
+  // Back from Talentir's approval screen (?talentir=<submissionId>): send the claim link.
+  useEffect(() => {
+    if (!isAdmin || finishedReturn.current) return;
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("talentir");
+    if (!id) return;
+    finishedReturn.current = true;
+    params.delete("talentir");
+    const qs = params.toString();
+    window.history.replaceState(null, "", `${window.location.pathname}${qs ? `?${qs}` : ""}`);
+    void runTalentirPay(id, true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAdmin]);
 
 
   if (loadingRole) {
@@ -349,7 +364,11 @@ function AdminPage() {
 
   // The editor preview's server has no Talentir key: in that case the request is sent
   // to the live site, which runs the same admin checks with your sign-in token.
-  async function viaLiveSite<T>(action: "pay" | "refresh", submissionId: string): Promise<T> {
+  async function viaLiveSite<T>(
+    action: "pay" | "refresh",
+    submissionId: string,
+    extra: Record<string, string> = {},
+  ): Promise<T> {
     const { data } = await supabase.auth.getSession();
     const token = data.session?.access_token;
     if (!token) throw new Error("Please sign in again.");
@@ -358,7 +377,7 @@ function AdminPage() {
       r = await fetch(`${LIVE_SITE}/api/public/talentir-action`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ action, submissionId }),
+        body: JSON.stringify({ action, submissionId, ...extra }),
       });
     } catch {
       throw new Error(
@@ -377,16 +396,29 @@ function AdminPage() {
     return e instanceof Error && e.message.includes("Talentir is not connected");
   }
 
-  async function confirmTalentirPay() {
-    if (!pendingPay) return;
+  type PayStep = { step: "approve"; url: string; email: string } | { step: "sent"; status: string; email: string };
+
+  // Step 1 opens Talentir's approval screen; once approved there, Talentir sends us back here
+  // and step 2 emails the member the claim link.
+  async function runTalentirPay(submissionId: string, returning = false) {
     setPaying(true);
     try {
-      let res: { email: string };
+      const returnUrl = `${window.location.origin}/admin?talentir=${submissionId}`;
+      let res: PayStep;
       try {
-        res = await payTalentirFn({ data: { submissionId: pendingPay.id } });
+        res = (await payTalentirFn({ data: { submissionId, returnUrl } })) as PayStep;
       } catch (e) {
         if (!isNotConnected(e)) throw e;
-        res = await viaLiveSite<{ email: string }>("pay", pendingPay.id);
+        res = await viaLiveSite<PayStep>("pay", submissionId, { returnUrl });
+      }
+      if (res.step === "approve") {
+        if (returning) {
+          toast.message("This payment is not approved on Talentir yet. Click “Finish payment” to approve it.");
+          return;
+        }
+        toast.message("Opening Talentir to approve this payment…");
+        window.location.href = res.url;
+        return;
       }
       toast.success(`Payment sent — Talentir emailed a claim link to ${res.email}.`);
       setPendingPay(null);
@@ -396,6 +428,11 @@ function AdminPage() {
       setPaying(false);
       qc.invalidateQueries({ queryKey: ["submissions"] });
     }
+  }
+
+  async function confirmTalentirPay() {
+    if (!pendingPay) return;
+    await runTalentirPay(pendingPay.id);
   }
 
   async function refreshTalentir(id: string) {
