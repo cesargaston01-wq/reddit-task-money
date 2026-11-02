@@ -21,9 +21,9 @@ const stats = [
   },
   {
     icon: TrendingUp,
-    value: "$3",
+    value: "$3.50",
     label: "Fixed payout per mission",
-    description: "Transparent pricing: $3 per approved comment.",
+    description: "Transparent pricing: $3.50 per approved comment.",
   },
 ];
 

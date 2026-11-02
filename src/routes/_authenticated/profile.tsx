@@ -1,3 +1,4 @@
+import { formatAmount } from "@/lib/utils";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -131,7 +132,7 @@ function ProfilePage() {
         <div className="space-y-6">
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <Stat label="Missions completed" value={String(done)} />
-            <Stat label="Total earned" value={`$${earned.toFixed(0)}`} />
+            <Stat label="Total earned" value={`$${formatAmount(earned)}`} />
             <Stat label="Pending" value={String(pending)} />
             <Stat label="Approved" value={String(approved.length)} />
           </div>

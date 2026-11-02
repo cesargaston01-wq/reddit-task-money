@@ -7,13 +7,13 @@ export const Route = createFileRoute("/_authenticated/opportunities/comments")({
   head: () => ({
     meta: [
       { title: "Comment opportunities — TaskReddit" },
-      { name: "description", content: "Paid Reddit comment missions rewarded $3 each." },
+      { name: "description", content: "Paid Reddit comment missions rewarded $3.50 each." },
     ],
   }),
   component: () => (
     <DashboardLayout
       title="Comment opportunities"
-      description="A mission disappears as soon as a member submits it. $3 per approved comment."
+      description="A mission disappears as soon as a member submits it. $3.50 per approved comment."
     >
       <OpportunityList type="comment" />
       <CommunityHistory className="mt-10" />
