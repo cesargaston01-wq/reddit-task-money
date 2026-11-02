@@ -4,17 +4,14 @@ import { z } from "zod";
 // Used by the editor preview, whose server has no Talentir key: the admin's browser sends the
 // payment request here (live site), with the admin's own sign-in token. The handler checks the
 // token and the admin role before touching Talentir, exactly like the server functions do.
-function corsFor(origin: string | null) {
-  const ok =
-    !!origin &&
-    (/^https:\/\/[a-z0-9-]+\.lovable\.app$/i.test(origin) ||
-      /^https:\/\/[a-z0-9-]+\.lovableproject\.com$/i.test(origin) ||
-      /^http:\/\/localhost(:\d+)?$/.test(origin));
+// Any origin may call it: access depends only on the bearer token in the Authorization header
+// (never on cookies), so an allowed origin grants nothing by itself.
+function corsFor(_origin: string | null) {
   return {
-    "Access-Control-Allow-Origin": ok ? origin! : "https://reddit-task-money.lovable.app",
+    "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
-    Vary: "Origin",
+    "Access-Control-Max-Age": "600",
   };
 }
 
