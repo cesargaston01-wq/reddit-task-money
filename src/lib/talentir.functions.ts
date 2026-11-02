@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireAuth } from "@/lib/auth-middleware";
 
 type Ctx = { supabase: any; userId: string };
 
@@ -17,7 +17,7 @@ async function assertAdmin(context: Ctx) {
 
 /** Pays ONE approved submission through a Talentir claim link (admin only, manual). */
 export const payWithTalentir = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireAuth])
   .inputValidator((data) => z.object({ submissionId: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     await assertAdmin(context as Ctx);
@@ -81,7 +81,7 @@ export const payWithTalentir = createServerFn({ method: "POST" })
 
 /** Refreshes the Talentir status of one submission (admin only). */
 export const refreshTalentirStatus = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireAuth])
   .inputValidator((data) => z.object({ submissionId: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     await assertAdmin(context as Ctx);

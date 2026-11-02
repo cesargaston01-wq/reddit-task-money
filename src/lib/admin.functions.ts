@@ -1,10 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { requireAuth } from "@/lib/auth-middleware";
 
 /** Permanently deletes a member account (admins only). */
 export const deleteMemberAccount = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([requireAuth])
   .inputValidator((data) => z.object({ userId: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
     const { data: role, error: roleError } = await context.supabase
