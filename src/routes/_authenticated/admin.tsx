@@ -43,6 +43,8 @@ import {
 } from "@/lib/data";
 import { payWithTalentir, refreshTalentirStatus } from "@/lib/talentir.functions";
 
+const LIVE_SITE = "https://reddit-task-money.lovable.app";
+
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
