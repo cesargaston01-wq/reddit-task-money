@@ -54,7 +54,7 @@ const faqs = [
 
 const HOME_TITLE = "Get paid for Reddit comments — TaskReddit";
 const HOME_DESCRIPTION =
-  "TaskReddit pays $3 per approved Reddit comment. Verified accounts pick missions and get paid in crypto.";
+  "TaskReddit pays $3.50 per approved Reddit comment. Verified accounts pick missions and get paid in crypto.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -228,7 +228,7 @@ function Landing() {
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <MessageSquare className="h-4 w-4 text-primary" /> Comment mission
                   </div>
-                  <div className="mt-2 font-display text-3xl font-bold">$3</div>
+                  <div className="mt-2 font-display text-3xl font-bold">$3.50</div>
                   <p className="mt-1 text-xs text-muted-foreground">per approved comment</p>
                 </div>
               </div>

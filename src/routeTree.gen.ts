@@ -28,6 +28,7 @@ import { Route as ApiPublicConfirmEmailRouteImport } from './routes/api/public/c
 import { Route as ApiPublicInactiveAlertRouteImport } from './routes/api/public/inactive-alert'
 import { Route as ApiPublicMissionDigestRouteImport } from './routes/api/public/mission-digest'
 import { Route as ApiPublicMissionsAlertRouteImport } from './routes/api/public/missions-alert'
+import { Route as ApiPublicPriceIncreaseAlertRouteImport } from './routes/api/public/price-increase-alert'
 import { Route as ApiPublicReferralAnnouncementRouteImport } from './routes/api/public/referral-announcement'
 import { Route as ApiPublicReferralReminderRouteImport } from './routes/api/public/referral-reminder'
 import { Route as ApiPublicSpecialReferralAlertRouteImport } from './routes/api/public/special-referral-alert'
@@ -131,6 +132,12 @@ const ApiPublicMissionsAlertRoute = ApiPublicMissionsAlertRouteImport.update({
   path: '/api/public/missions-alert',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicPriceIncreaseAlertRoute =
+  ApiPublicPriceIncreaseAlertRouteImport.update({
+    id: '/api/public/price-increase-alert',
+    path: '/api/public/price-increase-alert',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicReferralAnnouncementRoute =
   ApiPublicReferralAnnouncementRouteImport.update({
     id: '/api/public/referral-announcement',
@@ -185,6 +192,7 @@ export interface FileRoutesByFullPath {
   '/api/public/inactive-alert': typeof ApiPublicInactiveAlertRoute
   '/api/public/mission-digest': typeof ApiPublicMissionDigestRoute
   '/api/public/missions-alert': typeof ApiPublicMissionsAlertRoute
+  '/api/public/price-increase-alert': typeof ApiPublicPriceIncreaseAlertRoute
   '/api/public/referral-announcement': typeof ApiPublicReferralAnnouncementRoute
   '/api/public/referral-reminder': typeof ApiPublicReferralReminderRoute
   '/api/public/special-referral-alert': typeof ApiPublicSpecialReferralAlertRoute
@@ -211,6 +219,7 @@ export interface FileRoutesByTo {
   '/api/public/inactive-alert': typeof ApiPublicInactiveAlertRoute
   '/api/public/mission-digest': typeof ApiPublicMissionDigestRoute
   '/api/public/missions-alert': typeof ApiPublicMissionsAlertRoute
+  '/api/public/price-increase-alert': typeof ApiPublicPriceIncreaseAlertRoute
   '/api/public/referral-announcement': typeof ApiPublicReferralAnnouncementRoute
   '/api/public/referral-reminder': typeof ApiPublicReferralReminderRoute
   '/api/public/special-referral-alert': typeof ApiPublicSpecialReferralAlertRoute
@@ -239,6 +248,7 @@ export interface FileRoutesById {
   '/api/public/inactive-alert': typeof ApiPublicInactiveAlertRoute
   '/api/public/mission-digest': typeof ApiPublicMissionDigestRoute
   '/api/public/missions-alert': typeof ApiPublicMissionsAlertRoute
+  '/api/public/price-increase-alert': typeof ApiPublicPriceIncreaseAlertRoute
   '/api/public/referral-announcement': typeof ApiPublicReferralAnnouncementRoute
   '/api/public/referral-reminder': typeof ApiPublicReferralReminderRoute
   '/api/public/special-referral-alert': typeof ApiPublicSpecialReferralAlertRoute
@@ -267,6 +277,7 @@ export interface FileRouteTypes {
     | '/api/public/inactive-alert'
     | '/api/public/mission-digest'
     | '/api/public/missions-alert'
+    | '/api/public/price-increase-alert'
     | '/api/public/referral-announcement'
     | '/api/public/referral-reminder'
     | '/api/public/special-referral-alert'
@@ -293,6 +304,7 @@ export interface FileRouteTypes {
     | '/api/public/inactive-alert'
     | '/api/public/mission-digest'
     | '/api/public/missions-alert'
+    | '/api/public/price-increase-alert'
     | '/api/public/referral-announcement'
     | '/api/public/referral-reminder'
     | '/api/public/special-referral-alert'
@@ -320,6 +332,7 @@ export interface FileRouteTypes {
     | '/api/public/inactive-alert'
     | '/api/public/mission-digest'
     | '/api/public/missions-alert'
+    | '/api/public/price-increase-alert'
     | '/api/public/referral-announcement'
     | '/api/public/referral-reminder'
     | '/api/public/special-referral-alert'
@@ -342,6 +355,7 @@ export interface RootRouteChildren {
   ApiPublicInactiveAlertRoute: typeof ApiPublicInactiveAlertRoute
   ApiPublicMissionDigestRoute: typeof ApiPublicMissionDigestRoute
   ApiPublicMissionsAlertRoute: typeof ApiPublicMissionsAlertRoute
+  ApiPublicPriceIncreaseAlertRoute: typeof ApiPublicPriceIncreaseAlertRoute
   ApiPublicReferralAnnouncementRoute: typeof ApiPublicReferralAnnouncementRoute
   ApiPublicReferralReminderRoute: typeof ApiPublicReferralReminderRoute
   ApiPublicSpecialReferralAlertRoute: typeof ApiPublicSpecialReferralAlertRoute
@@ -485,6 +499,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicMissionsAlertRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/price-increase-alert': {
+      id: '/api/public/price-increase-alert'
+      path: '/api/public/price-increase-alert'
+      fullPath: '/api/public/price-increase-alert'
+      preLoaderRoute: typeof ApiPublicPriceIncreaseAlertRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/referral-announcement': {
       id: '/api/public/referral-announcement'
       path: '/api/public/referral-announcement'
@@ -574,6 +595,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicInactiveAlertRoute: ApiPublicInactiveAlertRoute,
   ApiPublicMissionDigestRoute: ApiPublicMissionDigestRoute,
   ApiPublicMissionsAlertRoute: ApiPublicMissionsAlertRoute,
+  ApiPublicPriceIncreaseAlertRoute: ApiPublicPriceIncreaseAlertRoute,
   ApiPublicReferralAnnouncementRoute: ApiPublicReferralAnnouncementRoute,
   ApiPublicReferralReminderRoute: ApiPublicReferralReminderRoute,
   ApiPublicSpecialReferralAlertRoute: ApiPublicSpecialReferralAlertRoute,

@@ -13,12 +13,12 @@ export const Route = createFileRoute("/discover")({
       {
         name: "description",
         content:
-          "Browse every available Reddit comment mission for free: $3 per approved comment, with full read-only instructions.",
+          "Browse every available Reddit comment mission for free: $3.50 per approved comment, with full read-only instructions.",
       },
       { property: "og:title", content: "Discover paid tasks — TaskReddit" },
       {
         property: "og:description",
-        content: "All open Reddit comment opportunities: $3 per approved comment.",
+        content: "All open Reddit comment opportunities: $3.50 per approved comment.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://reddit-task-money.lovable.app/discover" },

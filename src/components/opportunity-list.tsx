@@ -1,3 +1,4 @@
+import { formatAmount } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Link } from "@tanstack/react-router";
@@ -59,7 +60,7 @@ function buildPreviewMissions(type: "post" | "comment"): Mission[] {
             ? `Sponsored post opportunity in r/${subreddit}`
             : `Comment opportunity in r/${subreddit}`,
         subreddit,
-        payout: type === "post" ? 5 : 3,
+        payout: type === "post" ? 5 : 3.5,
         is_active: true,
         is_locked: false,
         reserved_by: null,
@@ -284,7 +285,7 @@ export function MissionBrowser({
                 </div>
               </div>
 
-              <Badge className="w-fit shrink-0 text-sm">${Number(m.payout).toFixed(0)}</Badge>
+              <Badge className="w-fit shrink-0 text-sm">${formatAmount(m.payout)}</Badge>
             </button>
           );
         })}
@@ -303,7 +304,7 @@ export function MissionBrowser({
               <div className="space-y-5 text-sm">
                 <div className="flex flex-wrap gap-2">
                   <Badge variant="secondary">r/{selected.subreddit}</Badge>
-                  <Badge>${Number(selected.payout).toFixed(0)}</Badge>
+                  <Badge>${formatAmount(selected.payout)}</Badge>
                   {held ? (
                     <Badge variant="outline" className="border-primary/60 text-primary">
                       <Timer className="mr-1 h-3 w-3" /> {formatLeft(msLeft)} left

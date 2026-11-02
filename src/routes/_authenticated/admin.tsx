@@ -1,3 +1,4 @@
+import { formatAmount } from "@/lib/utils";
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState, type ComponentType } from "react";
@@ -313,7 +314,7 @@ function AdminPage() {
       title: (draft.title ?? "").trim(),
       subreddit,
       community_url: draft.type === "post" ? communityUrl : "",
-      payout: Number(draft.payout ?? (draft.type === "post" ? 5 : 3)),
+      payout: Number(draft.payout ?? (draft.type === "post" ? 5 : 3.5)),
       post_title: draft.post_title ?? null,
       post_body: draft.post_body ?? null,
       flair: draft.flair ?? null,
@@ -461,7 +462,7 @@ function AdminPage() {
   return (
     <DashboardLayout
       title="Administration"
-      description={`Total amount to pay: $${toPay.toFixed(0)} · Referral rewards owed: $${referralOwed.toFixed(2)}`}
+      description={`Total amount to pay: $${formatAmount(toPay)} · Referral rewards owed: $${referralOwed.toFixed(2)}`}
     >
       <section aria-label="Account overview" className="mb-7">
         <div className="mb-3 flex items-end justify-between gap-3">
@@ -489,7 +490,7 @@ function AdminPage() {
 
         <TabsContent value="missions" className="mt-6 space-y-4">
           <div className="flex flex-wrap gap-2">
-            <Button size="sm" onClick={() => setDraft({ type: "comment", payout: 3 })}>
+            <Button size="sm" onClick={() => setDraft({ type: "comment", payout: 3.5 })}>
               <Plus className="mr-1 h-4 w-4" /> Comment mission
             </Button>
             <Button size="sm" variant={missionFilter === "live" ? "default" : "outline"} onClick={() => setMissionFilter("live")}>
@@ -508,7 +509,7 @@ function AdminPage() {
                     <div className="truncate font-medium">{m.title}</div>
                     <div className="text-xs text-muted-foreground">
                       {m.type === "post" ? "Post" : "Comment"} · r/{m.subreddit} · $
-                      {Number(m.payout).toFixed(0)} {m.is_active ? "" : "· inactive"} {m.is_locked ? "· locked" : ""}
+                      {formatAmount(m.payout)} {m.is_active ? "" : "· inactive"} {m.is_locked ? "· locked" : ""}
                     </div>
                   </div>
                   <div className="flex shrink-0 gap-1">
@@ -578,7 +579,7 @@ function AdminPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="font-display text-sm font-semibold text-primary">${Number(s.amount).toFixed(0)}</span>
+                  <span className="font-display text-sm font-semibold text-primary">${formatAmount(s.amount)}</span>
                   <Badge variant={s.status === "pending" ? "secondary" : s.status === "approved" ? "default" : "destructive"}>
                     {s.status === "pending" ? "Pending" : s.status === "approved" ? "Approved" : "Rejected"}
                   </Badge>
