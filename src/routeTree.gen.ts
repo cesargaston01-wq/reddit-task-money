@@ -25,7 +25,6 @@ import { Route as ApiPublicAuthActionRouteImport } from './routes/api/public/aut
 import { Route as ApiPublicAuthEmailRouteImport } from './routes/api/public/auth-email'
 import { Route as ApiPublicCommentsAlertRouteImport } from './routes/api/public/comments-alert'
 import { Route as ApiPublicConfirmEmailRouteImport } from './routes/api/public/confirm-email'
-import { Route as ApiPublicEnvCheckTmpRouteImport } from './routes/api/public/env-check-tmp'
 import { Route as ApiPublicInactiveAlertRouteImport } from './routes/api/public/inactive-alert'
 import { Route as ApiPublicMissionDigestRouteImport } from './routes/api/public/mission-digest'
 import { Route as ApiPublicMissionsAlertRouteImport } from './routes/api/public/missions-alert'
@@ -116,11 +115,6 @@ const ApiPublicConfirmEmailRoute = ApiPublicConfirmEmailRouteImport.update({
   path: '/api/public/confirm-email',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicEnvCheckTmpRoute = ApiPublicEnvCheckTmpRouteImport.update({
-  id: '/api/public/env-check-tmp',
-  path: '/api/public/env-check-tmp',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiPublicInactiveAlertRoute = ApiPublicInactiveAlertRouteImport.update({
   id: '/api/public/inactive-alert',
   path: '/api/public/inactive-alert',
@@ -182,7 +176,6 @@ export interface FileRoutesByFullPath {
   '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
   '/api/public/comments-alert': typeof ApiPublicCommentsAlertRoute
   '/api/public/confirm-email': typeof ApiPublicConfirmEmailRoute
-  '/api/public/env-check-tmp': typeof ApiPublicEnvCheckTmpRoute
   '/api/public/inactive-alert': typeof ApiPublicInactiveAlertRoute
   '/api/public/mission-digest': typeof ApiPublicMissionDigestRoute
   '/api/public/missions-alert': typeof ApiPublicMissionsAlertRoute
@@ -208,7 +201,6 @@ export interface FileRoutesByTo {
   '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
   '/api/public/comments-alert': typeof ApiPublicCommentsAlertRoute
   '/api/public/confirm-email': typeof ApiPublicConfirmEmailRoute
-  '/api/public/env-check-tmp': typeof ApiPublicEnvCheckTmpRoute
   '/api/public/inactive-alert': typeof ApiPublicInactiveAlertRoute
   '/api/public/mission-digest': typeof ApiPublicMissionDigestRoute
   '/api/public/missions-alert': typeof ApiPublicMissionsAlertRoute
@@ -236,7 +228,6 @@ export interface FileRoutesById {
   '/api/public/auth-email': typeof ApiPublicAuthEmailRoute
   '/api/public/comments-alert': typeof ApiPublicCommentsAlertRoute
   '/api/public/confirm-email': typeof ApiPublicConfirmEmailRoute
-  '/api/public/env-check-tmp': typeof ApiPublicEnvCheckTmpRoute
   '/api/public/inactive-alert': typeof ApiPublicInactiveAlertRoute
   '/api/public/mission-digest': typeof ApiPublicMissionDigestRoute
   '/api/public/missions-alert': typeof ApiPublicMissionsAlertRoute
@@ -264,7 +255,6 @@ export interface FileRouteTypes {
     | '/api/public/auth-email'
     | '/api/public/comments-alert'
     | '/api/public/confirm-email'
-    | '/api/public/env-check-tmp'
     | '/api/public/inactive-alert'
     | '/api/public/mission-digest'
     | '/api/public/missions-alert'
@@ -290,7 +280,6 @@ export interface FileRouteTypes {
     | '/api/public/auth-email'
     | '/api/public/comments-alert'
     | '/api/public/confirm-email'
-    | '/api/public/env-check-tmp'
     | '/api/public/inactive-alert'
     | '/api/public/mission-digest'
     | '/api/public/missions-alert'
@@ -317,7 +306,6 @@ export interface FileRouteTypes {
     | '/api/public/auth-email'
     | '/api/public/comments-alert'
     | '/api/public/confirm-email'
-    | '/api/public/env-check-tmp'
     | '/api/public/inactive-alert'
     | '/api/public/mission-digest'
     | '/api/public/missions-alert'
@@ -339,7 +327,6 @@ export interface RootRouteChildren {
   ApiPublicAuthEmailRoute: typeof ApiPublicAuthEmailRoute
   ApiPublicCommentsAlertRoute: typeof ApiPublicCommentsAlertRoute
   ApiPublicConfirmEmailRoute: typeof ApiPublicConfirmEmailRoute
-  ApiPublicEnvCheckTmpRoute: typeof ApiPublicEnvCheckTmpRoute
   ApiPublicInactiveAlertRoute: typeof ApiPublicInactiveAlertRoute
   ApiPublicMissionDigestRoute: typeof ApiPublicMissionDigestRoute
   ApiPublicMissionsAlertRoute: typeof ApiPublicMissionsAlertRoute
@@ -464,13 +451,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicConfirmEmailRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/env-check-tmp': {
-      id: '/api/public/env-check-tmp'
-      path: '/api/public/env-check-tmp'
-      fullPath: '/api/public/env-check-tmp'
-      preLoaderRoute: typeof ApiPublicEnvCheckTmpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/public/inactive-alert': {
       id: '/api/public/inactive-alert'
       path: '/api/public/inactive-alert'
@@ -571,7 +551,6 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicAuthEmailRoute: ApiPublicAuthEmailRoute,
   ApiPublicCommentsAlertRoute: ApiPublicCommentsAlertRoute,
   ApiPublicConfirmEmailRoute: ApiPublicConfirmEmailRoute,
-  ApiPublicEnvCheckTmpRoute: ApiPublicEnvCheckTmpRoute,
   ApiPublicInactiveAlertRoute: ApiPublicInactiveAlertRoute,
   ApiPublicMissionDigestRoute: ApiPublicMissionDigestRoute,
   ApiPublicMissionsAlertRoute: ApiPublicMissionsAlertRoute,
