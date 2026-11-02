@@ -50,7 +50,10 @@ async function talentirFetch(path: string, init: RequestInit & { idempotencyKey?
   return JSON.parse(text) as TalentirPayout;
 }
 
-/** Creates, approves and emails a claim-link payout in one atomic request. */
+/**
+ * Creates a claim-link payout in status "created". The API key cannot approve payouts
+ * (payouts:approve is not self-service), so approval happens on Talentir's hosted screen.
+ */
 export async function createClaimLinkPayout(input: {
   customId: string;
   email: string;
@@ -67,13 +70,30 @@ export async function createClaimLinkPayout(input: {
       currency: "USD",
       recipient: { type: "email", email: input.email },
       tags: ["taskreddit"],
-      andThen: "approve_and_send_claim_link",
     }),
   });
 }
 
 export async function getPayout(idOrCustomId: string) {
   return talentirFetch(`/payouts/${encodeURIComponent(idOrCustomId)}`, { method: "GET" });
+}
+
+/** Emails the claim link of an approved payout (needs only payouts:write). */
+export async function sendClaimLink(idOrCustomId: string) {
+  return talentirFetch(`/payouts/${encodeURIComponent(idOrCustomId)}/send-claim-link`, {
+    method: "POST",
+    idempotencyKey: `send-${idOrCustomId}-${Date.now()}`,
+  });
+}
+
+/** Mints a Talentir-hosted screen where a team member approves the payout. */
+export async function createApprovalSession(payoutId: string, redirectUrl: string) {
+  const res = (await talentirFetch("/sessions", {
+    method: "POST",
+    body: JSON.stringify({ type: "payout_approval", payoutIds: [payoutId], redirectUrl }),
+  })) as unknown as { url?: string };
+  if (!res?.url) throw new Error("Talentir did not return an approval link.");
+  return res.url;
 }
 
 // ---- Shared payment logic (used by the server functions and by the live-site endpoint) ----
