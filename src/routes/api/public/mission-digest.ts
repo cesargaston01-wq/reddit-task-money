@@ -68,7 +68,7 @@ export const Route = createFileRoute("/api/public/mission-digest")({
         const html = emailLayout(
           "New missions are available",
           `<h1 style="color:#0F172A;font-size:24px;margin:0 0 16px;">${missions.length} new missions are live</h1>
-<p style="color:#334155;font-size:16px;line-height:1.5;margin:0 0 12px;">Fresh comment missions were just posted — worth <strong>$${total.toFixed(0)}</strong> in total.</p>
+<p style="color:#334155;font-size:16px;line-height:1.5;margin:0 0 12px;">Fresh comment missions were just posted — worth <strong>$${Number.isInteger(total) ? total.toFixed(0) : total.toFixed(2)}</strong> in total.</p>
 <p style="color:#334155;font-size:15px;line-height:1.5;margin:0 0 24px;">Communities: ${subs.map((s) => `r/${escapeHtml(s.replace(/^r\//, ""))}`).join(", ")}</p>
 ${button(`${SITE_URL}/opportunities/comments`, "See the missions")}
 <p style="color:#64748B;font-size:14px;margin-top:24px;">First come, first served. Remember: stay naturally active on Reddit between tasks.</p>`,
