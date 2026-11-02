@@ -607,7 +607,7 @@ function AdminPage() {
                     }
                   >
                     <Send className="h-4 w-4" />
-                    Pay with Talentir
+                    {s.talentir_payout_id ? "Finish Talentir payment" : "Pay with Talentir"}
                   </Button>
                   <Button size="sm" variant="ghost" onClick={() => markPaid(s.id)}>Mark as paid (manual)</Button>
                 </> : null}
@@ -942,7 +942,7 @@ function AdminPage() {
                 Check the comment one last time ↗
               </a>
               <p className="text-xs text-muted-foreground">
-                Talentir will take this amount from your balance and email the member a link to claim it (bank, PayPal or crypto). This cannot be undone from TaskReddit.
+                You will be taken to Talentir to approve this payment (sign in there if asked). Once approved, you come back here and Talentir emails the member a link to claim it (bank, PayPal or crypto).
               </p>
             </div>
           ) : null}
@@ -952,7 +952,7 @@ function AdminPage() {
             </Button>
             <Button disabled={paying || !pendingPay?.email} onClick={confirmTalentirPay}>
               {paying ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-              Confirm and pay
+              Continue to Talentir
             </Button>
           </div>
         </DialogContent>
