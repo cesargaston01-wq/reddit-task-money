@@ -345,11 +345,40 @@ function AdminPage() {
     qc.invalidateQueries({ queryKey: ["submissions"] });
   }
 
+  // The editor preview's server has no Talentir key: in that case the request is sent
+  // to the live site, which runs the same admin checks with your sign-in token.
+  async function viaLiveSite<T>(action: "pay" | "refresh", submissionId: string): Promise<T> {
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token;
+    if (!token) throw new Error("Please sign in again.");
+    const r = await fetch(`${LIVE_SITE}/api/public/talentir-action`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ action, submissionId }),
+    });
+    const j = (await r.json().catch(() => null)) as ({ ok?: boolean; error?: string } & T) | null;
+    if (!r.ok || !j?.ok) {
+      if (r.status === 404) throw new Error("Publish the site once, then try again.");
+      throw new Error(j?.error ?? `Talentir request failed (${r.status}).`);
+    }
+    return j;
+  }
+
+  function isNotConnected(e: unknown) {
+    return e instanceof Error && e.message.includes("Talentir is not connected");
+  }
+
   async function confirmTalentirPay() {
     if (!pendingPay) return;
     setPaying(true);
     try {
-      const res = await payTalentirFn({ data: { submissionId: pendingPay.id } });
+      let res: { email: string };
+      try {
+        res = await payTalentirFn({ data: { submissionId: pendingPay.id } });
+      } catch (e) {
+        if (!isNotConnected(e)) throw e;
+        res = await viaLiveSite<{ email: string }>("pay", pendingPay.id);
+      }
       toast.success(`Payment sent — Talentir emailed a claim link to ${res.email}.`);
       setPendingPay(null);
     } catch (e) {
@@ -362,7 +391,13 @@ function AdminPage() {
 
   async function refreshTalentir(id: string) {
     try {
-      const res = await refreshTalentirFn({ data: { submissionId: id } });
+      let res: { status: string };
+      try {
+        res = await refreshTalentirFn({ data: { submissionId: id } });
+      } catch (e) {
+        if (!isNotConnected(e)) throw e;
+        res = await viaLiveSite<{ status: string }>("refresh", id);
+      }
       toast.success(`Talentir status: ${talentirStatusLabel(res.status)}`);
       qc.invalidateQueries({ queryKey: ["submissions"] });
     } catch (e) {
