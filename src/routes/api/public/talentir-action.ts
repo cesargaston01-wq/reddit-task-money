@@ -18,6 +18,12 @@ function corsFor(_origin: string | null) {
 const body = z.object({
   action: z.enum(["pay", "refresh"]),
   submissionId: z.string().uuid(),
+  returnUrl: z
+    .string()
+    .url()
+    .max(500)
+    .refine((u) => u.startsWith("https://"), "Invalid return URL")
+    .optional(),
 });
 
 export const Route = createFileRoute("/api/public/talentir-action")({
@@ -45,7 +51,12 @@ export const Route = createFileRoute("/api/public/talentir-action")({
           if (!t.talentirConfigured()) return json({ ok: false, error: "Talentir is not connected." }, 503);
           const r =
             parsed.data.action === "pay"
-              ? await t.payOneSubmission(ctx.supabase, ctx.userId, parsed.data.submissionId)
+              ? await t.payOneSubmission(
+                  ctx.supabase,
+                  ctx.userId,
+                  parsed.data.submissionId,
+                  parsed.data.returnUrl ?? "https://reddit-task-money.lovable.app/admin",
+                )
               : await t.refreshOneSubmission(ctx.supabase, ctx.userId, parsed.data.submissionId);
           return json({ ok: true, ...r });
         } catch (e) {
