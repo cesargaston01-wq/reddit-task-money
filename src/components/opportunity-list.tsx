@@ -18,6 +18,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import {
   DAILY_LIMITS,
   useDailyQuota,
+  useMissionBrief,
   useMissions,
   useProfile,
   useReleaseMission,
@@ -168,6 +169,7 @@ export function MissionBrowser({
   const held = selected ? heldBy(selected) : false;
   const msLeft =
     selected?.reserved_until ? new Date(selected.reserved_until).getTime() - now : 0;
+  const brief = useMissionBrief(selected?.id ?? null, canSubmit && held);
 
   useEffect(() => {
     if (selected && selected.reserved_by === user?.id && msLeft <= 0 && msLeft > -2000) {
@@ -190,8 +192,14 @@ export function MissionBrowser({
   function onReserve() {
     if (!selected) return;
     reserve.mutate(selected.id, {
-      onSuccess: () => toast.success("Mission reserved for 10 minutes. It's hidden from others."),
-      onError: (err) => toast.error(err.message),
+      onSuccess: () =>
+        toast.success("Mission reserved for 10 minutes. The Reddit link is now unlocked."),
+      onError: (err) => {
+        toast.error(err.message);
+        // Someone else got it first: close the window and refresh the list.
+        setSelectedId(null);
+        refetch();
+      },
     });
   }
 
@@ -226,6 +234,31 @@ export function MissionBrowser({
 
   return (
     <>
+      <div className="mb-3 rounded-xl border border-primary/40 bg-primary/5 p-4">
+        <p className="flex items-center gap-2 text-sm font-semibold">
+          <Lock className="h-4 w-4 text-primary" /> Always take the mission before doing it
+        </p>
+        <ol className="mt-3 grid gap-2 text-xs text-muted-foreground sm:grid-cols-3">
+          <li className="rounded-lg border border-border bg-background/60 p-2.5">
+            <span className="font-semibold text-foreground">1. Take the mission</span>
+            <br />
+            It's reserved for you for 10 minutes and disappears for everyone else.
+          </li>
+          <li className="rounded-lg border border-border bg-background/60 p-2.5">
+            <span className="font-semibold text-foreground">2. Open the unlocked link</span>
+            <br />
+            The Reddit link and the comment only appear once the mission is yours.
+          </li>
+          <li className="rounded-lg border border-border bg-background/60 p-2.5">
+            <span className="font-semibold text-foreground">3. Submit your link</span>
+            <br />
+            Paste your comment link before the 10 minutes run out.
+          </li>
+        </ol>
+        <p className="mt-3 text-xs font-medium text-destructive">
+          A comment posted without taking the mission first will not be paid.
+        </p>
+      </div>
       {canSubmit ? (
         <div
           className={`mb-3 flex items-start gap-2 rounded-lg border p-3 text-xs ${
@@ -312,51 +345,60 @@ export function MissionBrowser({
                   ) : null}
                 </div>
 
-                <Field label="Reddit community">
-                  <LinkOut
-                    href={
-                      type === "post"
-                        ? selected.community_url || `https://reddit.com/r/${selected.subreddit}`
-                        : selected.target_post_url || `https://reddit.com/r/${selected.subreddit}`
+                {held && brief.data ? (
+                  <div className="space-y-5">
+                    <Field label={type === "post" ? "Reddit community" : "Reddit post to comment on"}>
+                      <LinkOut
+                        href={
+                          type === "post"
+                            ? brief.data.community_url || `https://reddit.com/r/${selected.subreddit}`
+                            : brief.data.target_post_url ||
+                              brief.data.community_url ||
+                              `https://reddit.com/r/${selected.subreddit}`
+                        }
+                      />
+                    </Field>
+                    {type === "post" ? (
+                      <>
+                        <Field label="Exact title to use">
+                          <pre className="whitespace-pre-wrap font-sans">{brief.data.post_title}</pre>
+                        </Field>
+                        <Field label="Full body">
+                          <pre className="whitespace-pre-wrap font-sans">{brief.data.post_body}</pre>
+                        </Field>
+                        {brief.data.flair ? (
+                          <Field label="Flair to select">{brief.data.flair}</Field>
+                        ) : null}
+                      </>
+                    ) : (
+                      <Field label="Exact comment to publish">
+                        <pre className="whitespace-pre-wrap font-sans">{brief.data.comment_text}</pre>
+                      </Field>
+                    )}
+                    {brief.data.instructions ? (
+                      <Field label="Specific instructions">
+                        <pre className="whitespace-pre-wrap font-sans">{brief.data.instructions}</pre>
+                      </Field>
+                    ) : null}
+                  </div>
+                ) : held && brief.isLoading ? (
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Loader2 className="h-4 w-4 animate-spin" /> Unlocking the Reddit link…
+                  </div>
+                ) : held && brief.isError ? (
+                  <p className="rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-xs text-destructive">
+                    {brief.error.message}
+                  </p>
+                ) : (
+                  <LockedBrief
+                    type={type}
+                    message={
+                      canSubmit
+                        ? "Take the mission to unlock the Reddit link and the comment"
+                        : "Sign in with a verified account to see the details"
                     }
                   />
-                </Field>
-
-                <Blurred hidden={!canSubmit}>
-                  {type === "post" ? (
-                    <>
-                      <Field label="Exact title to use">
-                        <pre className="whitespace-pre-wrap font-sans">
-                          {selected.post_title ?? LOCKED_PLACEHOLDER}
-                        </pre>
-                      </Field>
-                      <Field label="Full body">
-                        <pre className="whitespace-pre-wrap font-sans">
-                          {selected.post_body ?? LOCKED_PLACEHOLDER}
-                        </pre>
-                      </Field>
-                      {selected.flair || !canSubmit ? (
-                        <Field label="Flair to select">
-                          {selected.flair ?? "Locked flair"}
-                        </Field>
-                      ) : null}
-                    </>
-                  ) : (
-                    <Field label="Exact comment to publish">
-                      <pre className="whitespace-pre-wrap font-sans">
-                        {selected.comment_text ?? LOCKED_PLACEHOLDER}
-                      </pre>
-                    </Field>
-                  )}
-
-                  {selected.instructions || !canSubmit ? (
-                    <Field label="Specific instructions">
-                      <pre className="whitespace-pre-wrap font-sans">
-                        {selected.instructions ?? LOCKED_PLACEHOLDER}
-                      </pre>
-                    </Field>
-                  ) : null}
-                </Blurred>
+                )}
 
                 <div className="flex gap-3 rounded-lg border border-destructive/40 bg-destructive/10 p-3">
                   <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
@@ -464,9 +506,10 @@ export function MissionBrowser({
                     <div className="space-y-3">
                       <p className="flex items-start gap-2 text-xs text-muted-foreground">
                         <Clock className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-                        Taking this mission reserves it for you for 10 minutes. It disappears for
-                        everyone else, and comes back online automatically if you don't submit a link
-                        in time.
+                        Take the mission first: it unlocks the Reddit link and reserves the mission
+                        for you for 10 minutes. It disappears for everyone else, and comes back
+                        online automatically if you don't submit a link in time. Don't comment
+                        before taking it — that comment won't be paid.
                       </p>
                       <Button className="w-full" onClick={onReserve} disabled={reserve.isPending}>
                         {reserve.isPending ? (
@@ -524,16 +567,24 @@ function LinkOut({ href }: { href: string }) {
   );
 }
 
-function Blurred({ hidden, children }: { hidden: boolean; children: React.ReactNode }) {
-  if (!hidden) return <div className="space-y-5">{children}</div>;
+/**
+ * Blurred stand-in for the Reddit link and the brief. It only contains fake
+ * text: the real link is never loaded before the member reserves the mission.
+ */
+function LockedBrief({ type, message }: { type: "post" | "comment"; message: string }) {
   return (
     <div className="relative">
       <div aria-hidden className="pointer-events-none select-none space-y-5 blur-[6px]">
-        {children}
+        <Field label={type === "post" ? "Reddit community" : "Reddit post to comment on"}>
+          <span className="text-primary">https://www.reddit.com/r/xxxxxxxx/comments/xxxxxx/xxxxxxxxxxxx</span>
+        </Field>
+        <Field label={type === "post" ? "Exact title to use" : "Exact comment to publish"}>
+          {LOCKED_PLACEHOLDER} {LOCKED_PLACEHOLDER}
+        </Field>
       </div>
-      <div className="absolute inset-0 flex items-center justify-center">
-        <span className="inline-flex items-center gap-2 rounded-full border border-border bg-background/80 px-3 py-1.5 text-xs text-muted-foreground backdrop-blur-sm">
-          <Lock className="h-3.5 w-3.5" /> Sign in with a verified account to see the details
+      <div className="absolute inset-0 flex items-center justify-center p-4">
+        <span className="inline-flex items-center gap-2 rounded-full border border-primary/50 bg-background/90 px-4 py-2 text-center text-xs font-medium text-foreground backdrop-blur-sm">
+          <Lock className="h-3.5 w-3.5 shrink-0 text-primary" /> {message}
         </span>
       </div>
     </div>

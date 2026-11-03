@@ -67,16 +67,36 @@ export function useIsAdmin() {
   });
 }
 
+/**
+ * Columns members may see before reserving. The Reddit link and the comment
+ * are only returned by `get_mission_brief` once the member holds the mission.
+ */
+const MISSION_LIST_COLUMNS =
+  "id, type, title, subreddit, payout, is_active, is_locked, created_at, reserved_by, reserved_until";
+
+export type MissionBrief = {
+  community_url: string;
+  target_post_url: string | null;
+  comment_text: string | null;
+  post_title: string | null;
+  post_body: string | null;
+  flair: string | null;
+  instructions: string | null;
+};
+
 export function useMissions(type: "post" | "comment") {
   return useQuery({
     queryKey: ["missions", type],
-    refetchInterval: 30_000,
+    // Short polling so a mission reserved or submitted by someone else
+    // disappears from everyone's list within seconds.
+    refetchInterval: 8_000,
+    refetchOnWindowFocus: true,
     queryFn: async () => {
       const { data: sessionData } = await supabase.auth.getSession();
       const source = sessionData.session ? "missions" : "public_missions";
       const { data, error } = await supabase
         .from(source as "missions")
-        .select("*")
+        .select(sessionData.session ? MISSION_LIST_COLUMNS : "id, type, title, subreddit, payout, is_active, is_locked, created_at, reserved_until")
         .eq("type", type)
         .eq("is_active", true)
         .eq("is_locked", false)
@@ -290,6 +310,24 @@ export function useReserveMission() {
       return { reservedUntil: data as unknown as string };
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["missions"] }),
+  });
+}
+
+/** Reddit link + comment for a mission the member currently holds. */
+export function useMissionBrief(missionId: string | null, enabled: boolean) {
+  return useQuery({
+    queryKey: ["mission-brief", missionId],
+    enabled: !!missionId && enabled,
+    retry: 1,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("get_mission_brief", {
+        _mission_id: missionId!,
+      });
+      if (error) throw new Error(error.message);
+      const row = (data as MissionBrief[] | null)?.[0];
+      if (!row) throw new Error("This mission is no longer available.");
+      return row;
+    },
   });
 }
 

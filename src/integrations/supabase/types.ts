@@ -388,6 +388,18 @@ export type Database = {
           wallet: string
         }[]
       }
+      get_mission_brief: {
+        Args: { _mission_id: string }
+        Returns: {
+          comment_text: string
+          community_url: string
+          flair: string
+          instructions: string
+          post_body: string
+          post_title: string
+          target_post_url: string
+        }[]
+      }
       get_my_referrals: {
         Args: never
         Returns: {
