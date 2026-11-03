@@ -43,6 +43,13 @@
       "when": 1793381913247,
       "tag": "0005_reset_payout_fields_on_submit",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793713033791,
+      "tag": "0006_mission_brief_after_reservation",
+      "breakpoints": true
     }
   ]
 }
