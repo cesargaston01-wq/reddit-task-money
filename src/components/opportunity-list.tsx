@@ -234,6 +234,31 @@ export function MissionBrowser({
 
   return (
     <>
+      <div className="mb-3 rounded-xl border border-primary/40 bg-primary/5 p-4">
+        <p className="flex items-center gap-2 text-sm font-semibold">
+          <Lock className="h-4 w-4 text-primary" /> Always take the mission before doing it
+        </p>
+        <ol className="mt-3 grid gap-2 text-xs text-muted-foreground sm:grid-cols-3">
+          <li className="rounded-lg border border-border bg-background/60 p-2.5">
+            <span className="font-semibold text-foreground">1. Take the mission</span>
+            <br />
+            It's reserved for you for 10 minutes and disappears for everyone else.
+          </li>
+          <li className="rounded-lg border border-border bg-background/60 p-2.5">
+            <span className="font-semibold text-foreground">2. Open the unlocked link</span>
+            <br />
+            The Reddit link and the comment only appear once the mission is yours.
+          </li>
+          <li className="rounded-lg border border-border bg-background/60 p-2.5">
+            <span className="font-semibold text-foreground">3. Submit your link</span>
+            <br />
+            Paste your comment link before the 10 minutes run out.
+          </li>
+        </ol>
+        <p className="mt-3 text-xs font-medium text-destructive">
+          A comment posted without taking the mission first will not be paid.
+        </p>
+      </div>
       {canSubmit ? (
         <div
           className={`mb-3 flex items-start gap-2 rounded-lg border p-3 text-xs ${
@@ -481,9 +506,10 @@ export function MissionBrowser({
                     <div className="space-y-3">
                       <p className="flex items-start gap-2 text-xs text-muted-foreground">
                         <Clock className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-                        Taking this mission reserves it for you for 10 minutes. It disappears for
-                        everyone else, and comes back online automatically if you don't submit a link
-                        in time.
+                        Take the mission first: it unlocks the Reddit link and reserves the mission
+                        for you for 10 minutes. It disappears for everyone else, and comes back
+                        online automatically if you don't submit a link in time. Don't comment
+                        before taking it — that comment won't be paid.
                       </p>
                       <Button className="w-full" onClick={onReserve} disabled={reserve.isPending}>
                         {reserve.isPending ? (
