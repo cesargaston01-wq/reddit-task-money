@@ -252,6 +252,21 @@ export type Database = {
         }
         Relationships: []
       }
+      submission_rejection_email_log: {
+        Row: {
+          sent_at: string
+          submission_id: string
+        }
+        Insert: {
+          sent_at?: string
+          submission_id: string
+        }
+        Update: {
+          sent_at?: string
+          submission_id?: string
+        }
+        Relationships: []
+      }
       submissions: {
         Row: {
           admin_note: string | null
