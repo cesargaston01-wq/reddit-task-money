@@ -72,7 +72,7 @@ export function useIsAdmin() {
  * are only returned by `get_mission_brief` once the member holds the mission.
  */
 const MISSION_LIST_COLUMNS =
-  "id, type, title, subreddit, payout, is_active, is_locked, created_at, reserved_by, reserved_until";
+  "id, type, title, subreddit, payout, is_active, is_locked, created_at, reserved_by, reserved_until, comment_text, post_title, post_body, flair";
 
 export type MissionBrief = {
   community_url: string;

@@ -29,8 +29,6 @@ import {
 } from "@/lib/data";
 
 
-const LOCKED_PLACEHOLDER =
-  "Locked content. Sign in with a verified account to view the full mission brief.";
 
 /**
  * Static teaser missions shown to visitors who cannot submit yet.
@@ -390,14 +388,33 @@ export function MissionBrowser({
                     {brief.error.message}
                   </p>
                 ) : (
-                  <LockedBrief
-                    type={type}
-                    message={
-                      canSubmit
-                        ? "Take the mission to unlock the Reddit link and the comment"
-                        : "Sign in with a verified account to see the details"
-                    }
-                  />
+                  <div className="space-y-5">
+                    <LockedBrief
+                      type={type}
+                      message={
+                        canSubmit
+                          ? "Take the mission to unlock the Reddit link"
+                          : "Sign in with a verified account to see the link"
+                      }
+                    />
+                    {canSubmit && type === "comment" && selected.comment_text ? (
+                      <Field label="Exact comment to publish">
+                        <pre className="whitespace-pre-wrap font-sans">{selected.comment_text}</pre>
+                      </Field>
+                    ) : null}
+                    {canSubmit && type === "post" && selected.post_title ? (
+                      <>
+                        <Field label="Exact title to use">
+                          <pre className="whitespace-pre-wrap font-sans">{selected.post_title}</pre>
+                        </Field>
+                        {selected.post_body ? (
+                          <Field label="Full body">
+                            <pre className="whitespace-pre-wrap font-sans">{selected.post_body}</pre>
+                          </Field>
+                        ) : null}
+                      </>
+                    ) : null}
+                  </div>
                 )}
 
                 <div className="flex gap-3 rounded-lg border border-destructive/40 bg-destructive/10 p-3">
@@ -577,9 +594,6 @@ function LockedBrief({ type, message }: { type: "post" | "comment"; message: str
       <div aria-hidden className="pointer-events-none select-none space-y-5 blur-[6px]">
         <Field label={type === "post" ? "Reddit community" : "Reddit post to comment on"}>
           <span className="text-primary">https://www.reddit.com/r/xxxxxxxx/comments/xxxxxx/xxxxxxxxxxxx</span>
-        </Field>
-        <Field label={type === "post" ? "Exact title to use" : "Exact comment to publish"}>
-          {LOCKED_PLACEHOLDER} {LOCKED_PLACEHOLDER}
         </Field>
       </div>
       <div className="absolute inset-0 flex items-center justify-center p-4">
