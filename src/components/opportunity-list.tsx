@@ -29,8 +29,6 @@ import {
 } from "@/lib/data";
 
 
-const LOCKED_PLACEHOLDER =
-  "Locked content. Sign in with a verified account to view the full mission brief.";
 
 /**
  * Static teaser missions shown to visitors who cannot submit yet.
