@@ -50,6 +50,13 @@
       "when": 1793713033791,
       "tag": "0006_mission_brief_after_reservation",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1793717840796,
+      "tag": "0007_submission_rejected_email",
+      "breakpoints": true
     }
   ]
 }

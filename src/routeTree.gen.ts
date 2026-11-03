@@ -32,6 +32,7 @@ import { Route as ApiPublicPriceIncreaseAlertRouteImport } from './routes/api/pu
 import { Route as ApiPublicReferralAnnouncementRouteImport } from './routes/api/public/referral-announcement'
 import { Route as ApiPublicReferralReminderRouteImport } from './routes/api/public/referral-reminder'
 import { Route as ApiPublicSpecialReferralAlertRouteImport } from './routes/api/public/special-referral-alert'
+import { Route as ApiPublicSubmissionRejectedRouteImport } from './routes/api/public/submission-rejected'
 import { Route as ApiPublicTalentirActionRouteImport } from './routes/api/public/talentir-action'
 import { Route as ApiPublicTalentirAnnouncementRouteImport } from './routes/api/public/talentir-announcement'
 import { Route as ApiPublicTodayReminderRouteImport } from './routes/api/public/today-reminder'
@@ -156,6 +157,12 @@ const ApiPublicSpecialReferralAlertRoute =
     path: '/api/public/special-referral-alert',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicSubmissionRejectedRoute =
+  ApiPublicSubmissionRejectedRouteImport.update({
+    id: '/api/public/submission-rejected',
+    path: '/api/public/submission-rejected',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicTalentirActionRoute = ApiPublicTalentirActionRouteImport.update({
   id: '/api/public/talentir-action',
   path: '/api/public/talentir-action',
@@ -196,6 +203,7 @@ export interface FileRoutesByFullPath {
   '/api/public/referral-announcement': typeof ApiPublicReferralAnnouncementRoute
   '/api/public/referral-reminder': typeof ApiPublicReferralReminderRoute
   '/api/public/special-referral-alert': typeof ApiPublicSpecialReferralAlertRoute
+  '/api/public/submission-rejected': typeof ApiPublicSubmissionRejectedRoute
   '/api/public/talentir-action': typeof ApiPublicTalentirActionRoute
   '/api/public/talentir-announcement': typeof ApiPublicTalentirAnnouncementRoute
   '/api/public/today-reminder': typeof ApiPublicTodayReminderRoute
@@ -223,6 +231,7 @@ export interface FileRoutesByTo {
   '/api/public/referral-announcement': typeof ApiPublicReferralAnnouncementRoute
   '/api/public/referral-reminder': typeof ApiPublicReferralReminderRoute
   '/api/public/special-referral-alert': typeof ApiPublicSpecialReferralAlertRoute
+  '/api/public/submission-rejected': typeof ApiPublicSubmissionRejectedRoute
   '/api/public/talentir-action': typeof ApiPublicTalentirActionRoute
   '/api/public/talentir-announcement': typeof ApiPublicTalentirAnnouncementRoute
   '/api/public/today-reminder': typeof ApiPublicTodayReminderRoute
@@ -252,6 +261,7 @@ export interface FileRoutesById {
   '/api/public/referral-announcement': typeof ApiPublicReferralAnnouncementRoute
   '/api/public/referral-reminder': typeof ApiPublicReferralReminderRoute
   '/api/public/special-referral-alert': typeof ApiPublicSpecialReferralAlertRoute
+  '/api/public/submission-rejected': typeof ApiPublicSubmissionRejectedRoute
   '/api/public/talentir-action': typeof ApiPublicTalentirActionRoute
   '/api/public/talentir-announcement': typeof ApiPublicTalentirAnnouncementRoute
   '/api/public/today-reminder': typeof ApiPublicTodayReminderRoute
@@ -281,6 +291,7 @@ export interface FileRouteTypes {
     | '/api/public/referral-announcement'
     | '/api/public/referral-reminder'
     | '/api/public/special-referral-alert'
+    | '/api/public/submission-rejected'
     | '/api/public/talentir-action'
     | '/api/public/talentir-announcement'
     | '/api/public/today-reminder'
@@ -308,6 +319,7 @@ export interface FileRouteTypes {
     | '/api/public/referral-announcement'
     | '/api/public/referral-reminder'
     | '/api/public/special-referral-alert'
+    | '/api/public/submission-rejected'
     | '/api/public/talentir-action'
     | '/api/public/talentir-announcement'
     | '/api/public/today-reminder'
@@ -336,6 +348,7 @@ export interface FileRouteTypes {
     | '/api/public/referral-announcement'
     | '/api/public/referral-reminder'
     | '/api/public/special-referral-alert'
+    | '/api/public/submission-rejected'
     | '/api/public/talentir-action'
     | '/api/public/talentir-announcement'
     | '/api/public/today-reminder'
@@ -359,6 +372,7 @@ export interface RootRouteChildren {
   ApiPublicReferralAnnouncementRoute: typeof ApiPublicReferralAnnouncementRoute
   ApiPublicReferralReminderRoute: typeof ApiPublicReferralReminderRoute
   ApiPublicSpecialReferralAlertRoute: typeof ApiPublicSpecialReferralAlertRoute
+  ApiPublicSubmissionRejectedRoute: typeof ApiPublicSubmissionRejectedRoute
   ApiPublicTalentirActionRoute: typeof ApiPublicTalentirActionRoute
   ApiPublicTalentirAnnouncementRoute: typeof ApiPublicTalentirAnnouncementRoute
   ApiPublicTodayReminderRoute: typeof ApiPublicTodayReminderRoute
@@ -527,6 +541,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicSpecialReferralAlertRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/submission-rejected': {
+      id: '/api/public/submission-rejected'
+      path: '/api/public/submission-rejected'
+      fullPath: '/api/public/submission-rejected'
+      preLoaderRoute: typeof ApiPublicSubmissionRejectedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/talentir-action': {
       id: '/api/public/talentir-action'
       path: '/api/public/talentir-action'
@@ -599,6 +620,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicReferralAnnouncementRoute: ApiPublicReferralAnnouncementRoute,
   ApiPublicReferralReminderRoute: ApiPublicReferralReminderRoute,
   ApiPublicSpecialReferralAlertRoute: ApiPublicSpecialReferralAlertRoute,
+  ApiPublicSubmissionRejectedRoute: ApiPublicSubmissionRejectedRoute,
   ApiPublicTalentirActionRoute: ApiPublicTalentirActionRoute,
   ApiPublicTalentirAnnouncementRoute: ApiPublicTalentirAnnouncementRoute,
   ApiPublicTodayReminderRoute: ApiPublicTodayReminderRoute,
