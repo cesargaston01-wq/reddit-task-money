@@ -57,6 +57,13 @@
       "when": 1793717840796,
       "tag": "0007_submission_rejected_email",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1793970607384,
+      "tag": "0008_mission_digest_two_waves",
+      "breakpoints": true
     }
   ]
 }

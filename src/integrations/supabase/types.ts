@@ -98,20 +98,32 @@ export type Database = {
         Row: {
           id: string
           mission_count: number
+          mission_ids: string[] | null
           recipient_count: number
           sent_at: string
+          wave2_due_at: string | null
+          wave2_recipient_count: number | null
+          wave2_sent_at: string | null
         }
         Insert: {
           id?: string
           mission_count: number
+          mission_ids?: string[] | null
           recipient_count: number
           sent_at?: string
+          wave2_due_at?: string | null
+          wave2_recipient_count?: number | null
+          wave2_sent_at?: string | null
         }
         Update: {
           id?: string
           mission_count?: number
+          mission_ids?: string[] | null
           recipient_count?: number
           sent_at?: string
+          wave2_due_at?: string | null
+          wave2_recipient_count?: number | null
+          wave2_sent_at?: string | null
         }
         Relationships: []
       }
@@ -434,6 +446,7 @@ export type Database = {
       }
       is_accepted: { Args: { _user_id: string }; Returns: boolean }
       reserve_mission: { Args: { _mission_id: string }; Returns: string }
+      run_mission_digest_wave2: { Args: never; Returns: undefined }
     }
     Enums: {
       account_status: "pending" | "accepted" | "rejected"
