@@ -76,12 +76,11 @@ ${button(`${SITE_URL}/opportunities/comments`, "See the missions")}
         for (const log of (pending ?? []) as Log[]) {
           await supabaseAdmin.from("mission_digest_log" as never)
             .update({ wave2_sent_at: new Date().toISOString(), wave2_recipient_count: 0 } as never).eq("id", log.id);
-          const ids = log.mission_ids ?? [];
+          // Every mission posted from this wave's start onward (missions added later the same day included).
           const nowIso = new Date().toISOString();
-          const { data: open } = ids.length
-            ? await supabaseAdmin.from("missions").select("id, subreddit, payout, reserved_until")
-                .in("id", ids).eq("is_active", true).eq("is_locked", false)
-            : { data: [] };
+          const from = new Date(new Date(log.sent_at).getTime() - 10 * 60 * 1000).toISOString();
+          const { data: open } = await supabaseAdmin.from("missions").select("id, subreddit, payout, reserved_until")
+            .gte("created_at", from).eq("is_active", true).eq("is_locked", false);
           const still = (open ?? []).filter((m) => !m.reserved_until || m.reserved_until < nowIso);
           if (still.length === 0) { wave2.push({ id: log.id, sent: false, reason: "all_taken" }); continue; }
           const emails = await audience(true);
