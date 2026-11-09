@@ -36,7 +36,7 @@ const faqs = [
   },
   {
     q: "When do I get paid?",
-    a: "After your publication is reviewed and has been online for at least 3 hours. The payment is then sent to your crypto wallet.",
+    a: "We manually review your comment after it has stayed online for at least 3 hours. Once approved, our team prepares your payment and Talentir emails you a claim link. Choose crypto, PayPal or bank transfer from the options available to you. Review and payment processing times vary; payment within 48 hours is not guaranteed.",
   },
   {
     q: "Can I delete my comment?",
@@ -54,7 +54,7 @@ const faqs = [
 
 const HOME_TITLE = "Get paid for Reddit comments — TaskReddit";
 const HOME_DESCRIPTION =
-  "TaskReddit pays $3.50 per approved Reddit comment. Verified accounts pick missions and get paid in crypto.";
+  "Earn $3.50 per approved Reddit comment. Missions are manually reviewed, then paid through a Talentir email link with available crypto, PayPal or bank transfer options.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -101,7 +101,7 @@ const steps = [
   {
     n: "03",
     title: "Complete missions",
-    text: "Pick a mission, publish it, submit your link. Paid in crypto once approved.",
+    text: "Reserve a mission, publish your comment and submit its link. After manual approval, receive your Talentir payment link by email.",
   },
 ];
 
@@ -167,7 +167,7 @@ function Landing() {
 
               <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/60 px-3 py-1 text-xs text-muted-foreground">
                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
-                Missions paid in crypto, no admin delays
+                Manually reviewed · Paid through Talentir
               </span>
               <h1 className="mt-6 text-4xl font-bold leading-[1.05] md:text-6xl">
                 Earn money with your <span className="text-primary">Reddit</span> account
@@ -201,12 +201,15 @@ function Landing() {
               </div>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-muted-foreground md:justify-start">
                 <span className="inline-flex items-center gap-1.5">
-                  <ShieldCheck className="h-3.5 w-3.5 text-primary" /> Manual review under 48h
+                  <ShieldCheck className="h-3.5 w-3.5 text-primary" /> Manual mission review
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <Wallet className="h-3.5 w-3.5 text-primary" /> Crypto payouts
+                  <Wallet className="h-3.5 w-3.5 text-primary" /> Crypto · PayPal · Bank transfer
                 </span>
               </div>
+              <p className="mt-3 text-xs leading-5 text-muted-foreground">
+                Choose from the methods available through your Talentir email link. Processing times vary.
+              </p>
 
             </div>
 
@@ -333,7 +336,7 @@ function Landing() {
         <section className="mx-auto max-w-3xl px-5 py-24 text-center">
           <h2 className="text-3xl font-bold md:text-4xl">Ready to monetize your karma?</h2>
           <p className="mx-auto mt-3 max-w-lg text-sm text-muted-foreground">
-            Free sign-up. Manual review within 48 hours.
+            Free sign-up. Manual account review before mission access.
           </p>
           <Button asChild size="lg" className="mt-8">
             <Link to="/auth">

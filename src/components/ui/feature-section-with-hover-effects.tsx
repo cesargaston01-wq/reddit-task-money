@@ -28,7 +28,7 @@ const FEATURES: Feature[] = [
     value: "$25K+",
     label: "Already paid out",
     description:
-      "Manually sent in crypto to verified contributors around the world.",
+      "Approved contributions are paid through a Talentir email link. Choose from available crypto, PayPal or bank transfer options.",
     icon: <IconWallet className="h-6 w-6" />,
   },
   {
