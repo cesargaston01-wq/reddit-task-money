@@ -19,6 +19,8 @@ import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedReferralsRouteImport } from './routes/_authenticated/referrals'
 import { Route as AuthConfirmRouteImport } from './routes/auth.confirm'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth.reset-password'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthenticatedOpportunitiesCommentsRouteImport } from './routes/_authenticated/opportunities.comments'
 import { Route as ApiPublicAccountApprovedRouteImport } from './routes/api/public/account-approved'
 import { Route as ApiPublicAuthActionRouteImport } from './routes/api/public/auth-action'
@@ -85,6 +87,16 @@ const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
   getParentRoute: () => AuthRoute,
+} as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedOpportunitiesCommentsRoute =
   AuthenticatedOpportunitiesCommentsRouteImport.update({
@@ -190,6 +202,8 @@ export interface FileRoutesByFullPath {
   '/referrals': typeof AuthenticatedReferralsRoute
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/blog/': typeof BlogIndexRoute
   '/opportunities/comments': typeof AuthenticatedOpportunitiesCommentsRoute
   '/api/public/account-approved': typeof ApiPublicAccountApprovedRoute
   '/api/public/auth-action': typeof ApiPublicAuthActionRoute
@@ -218,6 +232,8 @@ export interface FileRoutesByTo {
   '/referrals': typeof AuthenticatedReferralsRoute
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/blog': typeof BlogIndexRoute
   '/opportunities/comments': typeof AuthenticatedOpportunitiesCommentsRoute
   '/api/public/account-approved': typeof ApiPublicAccountApprovedRoute
   '/api/public/auth-action': typeof ApiPublicAuthActionRoute
@@ -248,6 +264,8 @@ export interface FileRoutesById {
   '/_authenticated/referrals': typeof AuthenticatedReferralsRoute
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/blog/': typeof BlogIndexRoute
   '/_authenticated/opportunities/comments': typeof AuthenticatedOpportunitiesCommentsRoute
   '/api/public/account-approved': typeof ApiPublicAccountApprovedRoute
   '/api/public/auth-action': typeof ApiPublicAuthActionRoute
@@ -278,6 +296,8 @@ export interface FileRouteTypes {
     | '/referrals'
     | '/auth/confirm'
     | '/auth/reset-password'
+    | '/blog/$slug'
+    | '/blog/'
     | '/opportunities/comments'
     | '/api/public/account-approved'
     | '/api/public/auth-action'
@@ -306,6 +326,8 @@ export interface FileRouteTypes {
     | '/referrals'
     | '/auth/confirm'
     | '/auth/reset-password'
+    | '/blog/$slug'
+    | '/blog'
     | '/opportunities/comments'
     | '/api/public/account-approved'
     | '/api/public/auth-action'
@@ -335,6 +357,8 @@ export interface FileRouteTypes {
     | '/_authenticated/referrals'
     | '/auth/confirm'
     | '/auth/reset-password'
+    | '/blog/$slug'
+    | '/blog/'
     | '/_authenticated/opportunities/comments'
     | '/api/public/account-approved'
     | '/api/public/auth-action'
@@ -360,6 +384,8 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   DiscoverRoute: typeof DiscoverRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  BlogSlugRoute: typeof BlogSlugRoute
+  BlogIndexRoute: typeof BlogIndexRoute
   ApiPublicAccountApprovedRoute: typeof ApiPublicAccountApprovedRoute
   ApiPublicAuthActionRoute: typeof ApiPublicAuthActionRoute
   ApiPublicAuthEmailRoute: typeof ApiPublicAuthEmailRoute
@@ -449,6 +475,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth/reset-password'
       preLoaderRoute: typeof AuthResetPasswordRouteImport
       parentRoute: typeof AuthRoute
+    }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/opportunities/comments': {
       id: '/_authenticated/opportunities/comments'
@@ -608,6 +648,8 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   DiscoverRoute: DiscoverRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  BlogSlugRoute: BlogSlugRoute,
+  BlogIndexRoute: BlogIndexRoute,
   ApiPublicAccountApprovedRoute: ApiPublicAccountApprovedRoute,
   ApiPublicAuthActionRoute: ApiPublicAuthActionRoute,
   ApiPublicAuthEmailRoute: ApiPublicAuthEmailRoute,

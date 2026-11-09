@@ -10,6 +10,7 @@
 <!-- LOVABLE:END -->
 
 ## Rules
+- Blog content lives in the browser-safe static catalog `src/lib/blog.ts`, reused by public SSR routes and the sitemap — why: article pages, metadata and discovery stay consistent without a database or runtime filesystem dependency.
 - Talentir payout logic lives only in `src/lib/talentir.server.ts` (admin check + gateway calls), one submission per call with `customId = taskreddit-sub-<submissionId>`; it is reached via the server functions in `talentir.functions.ts`, or, when the editor preview's server has no Talentir key, via the live site's `/api/public/talentir-action` with the admin's bearer token — why: keeps the API key server-side, makes a double payment impossible, and lets payments work from the preview.
 - Talentir payouts are approved by a human on Talentir's hosted `payout_approval` screen, never via the API: create (status created) → approval screen → return to `/admin?talentir=<id>` → `send-claim-link` → mark paid — why: the team's API key has no `payouts:approve` scope (Talentir grants it only on request).
 - Member-facing mission lists may show the comment/post text but never the Reddit link or instructions; the link comes only from the `get_mission_brief` RPC, which returns them to the member holding an active reservation (or an admin) — why: members must reserve before they can do a mission, so nobody comments on a mission someone else holds.

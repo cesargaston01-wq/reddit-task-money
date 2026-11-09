@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
+import { blogArticles } from "@/lib/blog";
 
 const BASE_URL = "https://reddit-task-money.lovable.app";
 
@@ -17,6 +18,8 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/", changefreq: "weekly", priority: "1.0" },
           { path: "/discover", changefreq: "daily", priority: "0.8" },
           { path: "/auth", changefreq: "monthly", priority: "0.5" },
+          { path: "/blog", changefreq: "weekly", priority: "0.7" },
+          ...blogArticles.map((article) => ({ path: `/blog/${article.slug}`, changefreq: "monthly" as const, priority: "0.7" })),
         ];
 
         const urls = entries.map((e) =>

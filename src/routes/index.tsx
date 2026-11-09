@@ -130,6 +130,9 @@ function Landing() {
             <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
               <Link to="/discover">Discover paid tasks</Link>
             </Button>
+            <Button asChild variant="ghost" size="sm" className="hidden md:inline-flex">
+              <Link to="/blog">Blog</Link>
+            </Button>
             <Button asChild variant="ghost" size="sm" className="hidden lg:inline-flex">
               <a href={WHOP_COMMUNITY_URL} target="_blank" rel="noopener noreferrer">
                 Community
@@ -347,6 +350,7 @@ function Landing() {
             © {new Date().getFullYear()} TaskReddit — Paid Reddit missions.
           </div>
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            <Link to="/blog" className="transition-colors hover:text-foreground">Blog</Link>
             <Link to="/discover" className="transition-colors hover:text-foreground">
               Discover paid tasks
             </Link>

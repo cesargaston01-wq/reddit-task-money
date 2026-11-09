@@ -52,6 +52,10 @@ export const Route = createFileRoute("/_authenticated/admin")({
     meta: [
       { title: "Administration — TaskReddit" },
       { name: "description", content: "Manage missions, submissions and Reddit accounts." },
+      { property: "og:title", content: "Administration — TaskReddit" },
+      { property: "og:description", content: "TaskReddit mission and submission administration." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AdminPage,

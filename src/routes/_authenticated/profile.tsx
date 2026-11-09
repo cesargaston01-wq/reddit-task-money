@@ -20,6 +20,10 @@ export const Route = createFileRoute("/_authenticated/profile")({
     meta: [
       { title: "Profile — TaskReddit" },
       { name: "description", content: "Your crypto wallet, your Reddit profile and your earnings." },
+      { property: "og:title", content: "Profile — TaskReddit" },
+      { property: "og:description", content: "Manage your TaskReddit profile and view your earnings." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: ProfilePage,
