@@ -32,7 +32,7 @@ export const Route = createFileRoute("/api/public/mission-digest")({
         const { UNSUBSCRIBED } = await import("@/lib/email-layout.server");
         type Log = { id: string; sent_at: string; mission_ids: string[] | null; wave2_due_at: string | null; wave2_sent_at: string | null };
 
-        const audience = async (hasSubmitted: boolean) /* false = 0-3 submissions, true = more than 3 */ => {
+        const audience = async (hasSubmitted: boolean | null) /* false = 0-3 submissions, true = more than 3 */ => {
           const { data: members, error } = await supabaseAdmin.from("profiles").select("id, email").eq("status", "accepted");
           if (error) throw new Error(error.message);
           const { data: subs, error: sErr } = await supabaseAdmin.from("submissions").select("user_id");
@@ -40,7 +40,7 @@ export const Route = createFileRoute("/api/public/mission-digest")({
           const counts = new Map<string, number>();
           for (const s of subs ?? []) counts.set(s.user_id, (counts.get(s.user_id) ?? 0) + 1);
           return [...new Set((members ?? [])
-            .filter((m) => ((counts.get(m.id) ?? 0) > 3) === hasSubmitted)
+            .filter((m) => hasSubmitted === null || ((counts.get(m.id) ?? 0) > 3) === hasSubmitted)
             .map((m) => (m.email ?? "").trim().toLowerCase())
             .filter((e) => e && !UNSUBSCRIBED.has(e)))];
         };
@@ -107,13 +107,13 @@ ${button(`${SITE_URL}/opportunities/comments`, "See the missions")}
         if (!missions || missions.length === 0) {
           return Response.json({ sent: false, reason: "no_new_missions", wave2 });
         }
-        const emails = await audience(false);
+        const emails = await audience(null); // everyone at once
         await send(missions, emails);
         await supabaseAdmin.from("mission_digest_log" as never).insert({
           mission_count: missions.length,
           recipient_count: emails.length,
           mission_ids: missions.map((m) => m.id),
-          wave2_due_at: new Date(Date.now() + 12 * 3600 * 1000).toISOString(),
+          wave2_due_at: null,
         } as never);
 
         return Response.json({ sent: true, missions: missions.length, recipients: emails.length, wave2 });
